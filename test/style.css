@@ -116,19 +116,3 @@ progress {
 [hidden] {
   display: none;
 }
-
-
-
-table.funkyheatmap tr:nth-child(even) {
-  background-color: #eee;
-}
-
-table.funkyheatmap td {
-  text-align: center;
-}
-
-table.funkyheatmap i.circle {
-  border: 1px solid black;
-  display: inline-block;
-  vertical-align: middle;
-}
