@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A JavaScript project",
   "source": "./src/main.js",
-  "main": "./dist/funkyheatmap.js",
+  "module": "./dist/funkyheatmap.js",
   "scripts": {
     "start": "parcel test/index.html test/mtcars.csv",
     "build": "parcel build",
@@ -27,7 +27,14 @@
   },
   "targets": {
     "default": {
-      "distDir": "./dist"
+        "distDir": "./dist",
+        "context": "browser",
+        "outputFormat": "esmodule"
+    }
+  },
+  "alias": {
+    "d3": {
+        "global": "d3"
     }
   }
 }
