@@ -19,3 +19,12 @@ export function convertDataframe(data) {
     }
     return result;
 };
+
+export function maybeConvertDataframe(...objects) {
+    return objects.map(obj => {
+        if (obj && !Array.isArray(obj)) {
+            obj = convertDataframe(obj);
+        }
+        return obj;
+    });
+};
