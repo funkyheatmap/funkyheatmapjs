@@ -8,7 +8,8 @@ export class Column {
             name: this.name,
             geom: this.geom,
             width: this.width,
-            palette: this.palette
+            palette: this.palette,
+            group: this.group
         } = info);
 
         let type = typeof value;

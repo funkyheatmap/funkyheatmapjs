@@ -92,9 +92,11 @@ const GEOMS = {
 };
 
 class FHeatmap {
-    constructor(data, columnInfo, options, svg) {
+    constructor(data, columnInfo, columnGroups, palettes, options, svg) {
         this.data = data;
         this.columnInfo = columnInfo;
+        this.columnGroups = d3.index(columnGroups, group => group.group);
+        this.palettes = palettes;
         this.options = {...DEFAULT_OPTIONS, ...options};
         this.calculateOptions();
         this.svg = svg;
@@ -120,6 +122,7 @@ class FHeatmap {
         const O = this.options;
         let offset = 0;
         O.bodyHeight = this.data.length * O.rowHeight;
+        let group;
 
         this.columnInfo.forEach(column => {
             let maxWidth = 0;
@@ -128,6 +131,9 @@ class FHeatmap {
                 padding = O.padding;
             }
             offset += padding;
+            if (group && column.group && group !== column.group) {
+                offset += 2 * O.padding;
+            }
             this.data.forEach((item, j) => {
                 let value = item[column.id];
                 if (column.numeric) {
@@ -155,6 +161,7 @@ class FHeatmap {
             column.width = Math.max(maxWidth, O.rowHeight);
             column.offset = offset;
             offset += column.width + padding;
+            group = column.group;
         });
         O.bodyWidth = offset + O.padding;
     }
@@ -164,9 +171,64 @@ class FHeatmap {
         let headerHeight = 0;
         let bodyWidth = 0;
         let nonZeroRotate = false;
+        const groups = this.header.append('g');
+        const labels = this.header.append('g')
+            .attr('transform', `translate(0, ${O.rowHeight + O.padding})`);
+
+        const columnGroups = d3.group(this.columnInfo, column => column.group);
+        let abcCounter = 0;
+        columnGroups.forEach((group, groupName) => {
+            if (!groupName) {
+                return;
+            }
+            const groupInfo = this.columnGroups.get(groupName);
+            if (!groupInfo.name || !groupInfo.palette) {
+                return;
+            }
+
+            const column = new Column({
+                id: '_group',
+                palette: groupInfo.palette
+            }, 1);
+            column.maybeCalculateStats(null, false);
+            assignPalettes([column], this.palettes);
+            const lastCol = group[group.length - 1];
+            const groupStart = group[0].offset;
+            const groupEnd = lastCol.offset + lastCol.width;
+            const fill = column.palette(0.5);
+            groups.append('rect')
+                .attr('x', groupStart)
+                .attr('y', 0)
+                .attr('width', groupEnd - groupStart)
+                .attr('height', O.rowHeight)
+                .attr('fill', fill);
+            const text = groups.append('text')
+                .attr('x', groupStart + (groupEnd - groupStart) / 2)
+                .attr('y', O.rowHeight / 2)
+                .attr('text-anchor', 'middle')
+                .attr('dominant-baseline', 'central')
+                .attr('fill', 'white')
+                .text(groupInfo.name);
+            if (O.fontSize) {
+                text.attr('font-size', O.fontSize);
+            }
+            if (O.labelGroupsAbc) {
+                const letter = String.fromCharCode("a".charCodeAt(0) + abcCounter);
+                const text = groups.append('text')
+                    .attr('x', groupStart + O.padding)
+                    .attr('y', O.rowHeight / 2)
+                    .attr('dominant-baseline', 'central')
+                    .attr('fill', 'white')
+                    .text(`${letter})`);
+                if (O.fontSize) {
+                    text.attr('font-size', O.fontSize);
+                }
+            }
+            abcCounter += 1;
+        });
 
         this.columnInfo.forEach(column => {
-            const el = this.header.append("g")
+            const el = labels.append("g")
                 .attr("transform", `rotate(${-O.columnRotate})`)
                 .classed(`column-${column.id}`, true);
             el.append("text")
@@ -198,10 +260,10 @@ class FHeatmap {
                     `translate(${center}, ${headerHeight - 2 * O.padding}) rotate(${rotate})`
                 );
             if (rotate === 0) {
-                this.header.select(`.column-${column.id} text`)
+                labels.select(`.column-${column.id} text`)
                     .attr('text-anchor', 'middle');
             } else {
-                this.header.append('line')
+                labels.append('line')
                     .attr('x1', center)
                     .attr('x2', center)
                     .attr('y1', headerHeight - 2)
@@ -210,7 +272,7 @@ class FHeatmap {
             }
         });
         this.options.width = bodyWidth;
-        this.options.headerHeight = headerHeight;
+        this.options.headerHeight = headerHeight + O.rowHeight + O.padding;
     }
 
     renderLegend() {
@@ -264,13 +326,14 @@ class FHeatmap {
                         .attr('dominant-baseline', 'text-top')
                         .text(tick);
                 }
-
                 offset += width + 4 * O.geomPadding;
-
             }
-            const height = legend.node().getBBox().height;
+            const { width, height } = legend.node().getBBox();
             if (height > footerHeight) {
                 footerHeight = height;
+            }
+            if (offset > O.width) {
+                O.width = offset;
             }
         }
         this.options.footerHeight = footerHeight + O.rowHeight;
@@ -292,6 +355,9 @@ class FHeatmap {
         this.body.selectAll('.row').attr('width', O.bodyWidth);
         this.body.attr("transform", `translate(0, ${O.headerHeight})`);
         this.footer.attr('transform', `translate(0, ${O.headerHeight + O.bodyHeight})`);
+        if (this.options.rootStyle) {
+            this.svg.attr('style', this.options.rootStyle);
+        }
     }
 };
 
@@ -329,7 +395,8 @@ function funkyheatmap(
     [data, columnInfo, columnGroups] = maybeConvertDataframe(data, columnInfo, columnGroups);
     columnInfo = buildColumnInfo(data, columns, columnInfo, scaleColumn);
     assignPalettes(columnInfo, palettes);
-    const heatmap = new FHeatmap(data, columnInfo, options, d3.create('svg'));
+    // TODO: redo palettes or group palettes
+    const heatmap = new FHeatmap(data, columnInfo, columnGroups, palettes, options, d3.create('svg'));
 
     // dimensions of text & shapes are not available before svg is in DOM
     // so we first return svg and then do the rest

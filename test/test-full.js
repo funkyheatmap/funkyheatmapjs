@@ -50,7 +50,8 @@ d3.csv('mtcars.csv').then((data) => {
         false,
         true,
         {
-            rowHeight: 28
+            rowHeight: 28,
+            labelGroupsAbc: true
         }
     ));
 });
