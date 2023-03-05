@@ -1,5 +1,7 @@
 import * as d3 from 'd3';
 
+import { convertDataframe } from './util';
+
 const ROW_HEIGHT = 24;
 const GEOM_GAP = 1.5;
 const GEOM_SIZE = ROW_HEIGHT - 2 * GEOM_GAP;
@@ -11,11 +13,27 @@ const Blues = [
 ];
 
 const GEOMS = {
-    text: (container, x, y, item, column) => container.append('text')
-        .attr('x', x)
-        .attr('y', ROW_HEIGHT / 2 + y * ROW_HEIGHT)
-        .attr('dominant-baseline', 'middle')
-        .text(item[column.name]),
+    text: (container, x, y, item, column) => {
+        return container.append('text')
+            .attr('x', x)
+            .attr('y', ROW_HEIGHT / 2 + y * ROW_HEIGHT)
+            .attr('dominant-baseline', 'middle')
+            .text(item[column.name])
+    },
+
+    bar: (container, x, y, item, column) => {
+        const value = column.scale(+item[column.name]);
+        const width = value * column.width * GEOM_SIZE;
+        const fill = column.palette(+item[column.name]);
+        return container.append('rect')
+            .attr('x', x + GEOM_GAP)
+            .attr('y', y * ROW_HEIGHT + GEOM_GAP)
+            .attr('width', width)
+            .attr('height', GEOM_SIZE)
+            .style('stroke', '#555')
+            .style('stroke-width', 1)
+            .style('fill', fill);
+    },
 
     circle: (container, x, y, item, column) => {
         const value = column.scale(+item[column.name]);
@@ -65,6 +83,7 @@ const GEOMS = {
 };
 
 function isNumeric(str) {
+    if (typeof str === 'number') return true;
     if (typeof (str) !== 'string') return false; // we only process strings!
     // use type coercion to parse the _entirety_ of the string
     // (`parseFloat` alone does not do this)...
@@ -134,71 +153,106 @@ function verifyColumnInfo(data, columns, columnInfo) {
  * @param {boolean} [scaleColumn] - whether to apply min-max scaling to numerical
  *      columns. Defaults to true
  */
-function funkyheatmap(id, data, columns, columnInfo, scaleColumn) {
+function funkyheatmap(data, columns, columnInfo, scaleColumn) {
+    if (!Array.isArray(data)) {
+        data = convertDataframe(data);
+    }
+    if (columnInfo && !Array.isArray(columnInfo)) {
+        columnInfo = convertDataframe(columnInfo);
+    }
     const height = data.length * ROW_HEIGHT; // + legend + header
     let width = 500;
 
     columnInfo = verifyColumnInfo(data, columns, columnInfo);
     calculateColumnStats(data, columnInfo);
-    console.log(columnInfo);
 
-    const container = d3.select(`#${id}`)
-        .append('svg')
+    const container = d3.create('svg')
             .attr('width', width)
             .attr('height', height);
 
-    const header = container.append("g");
-    const body = container.append("g");
+    // dimensions of text & shapes are not available before svg is in DOM
+    // so we first return svg and then do the rest
+    // ugly…
+    setTimeout(() => {
+        const header = container.append("g");
+        const body = container.append("g");
+        const footer = container.append("g");
 
-    data.forEach((_, i) => {
-        body.append('rect')
-            .classed('row', true)
-            .attr('width', width)
-            .attr('height', ROW_HEIGHT)
-            .attr('x', 0)
-            .attr('y', i * ROW_HEIGHT)
-            .attr('fill', i % 2 === 0 ? '#eee' : 'white');
-    });
-
-    let offset = LEFT_MARGIN;
-    let headerHeight = 0;
-    let bodyWidth = 0;
-    columnInfo.forEach((column) => {
-        let maxWidth = 0;
-        data.forEach((item, j) => {
-            const el = GEOMS[column.geom](
-                body,
-                offset,
-                j,
-                item,
-                column,
-            );
-            const width = el.node().getBBox().width;
-            if (width > maxWidth) {
-                maxWidth = width;
-            }
+        data.forEach((_, i) => {
+            body.append('rect')
+                .classed('row', true)
+                .attr('width', width)
+                .attr('height', ROW_HEIGHT)
+                .attr('x', 0)
+                .attr('y', i * ROW_HEIGHT)
+                .attr('fill', i % 2 === 0 ? '#eee' : 'white');
         });
-        column.width = maxWidth;
-        const el = header.append("g")
-            .attr("transform", `translate(${offset + maxWidth / 2}, 40) rotate(-30)`);
-        el.append("text")
-            .attr("x", 0)
-            .attr("y", 0)
-            .text(column.name);
-        const { width, height } = el.node().getBoundingClientRect();
-        if (height > headerHeight) {
-            headerHeight = height;
+
+        let offset = LEFT_MARGIN;
+        let headerHeight = 0;
+        let bodyWidth = 0;
+        columnInfo.forEach(column => {
+            let maxWidth = 0;
+            data.forEach((item, j) => {
+                const el = GEOMS[column.geom](
+                    body,
+                    offset,
+                    j,
+                    item,
+                    column,
+                );
+                const width = el.node().getBBox().width;
+                if (width > maxWidth) {
+                    maxWidth = width;
+                }
+            });
+            column.width = maxWidth;
+            column.offset = offset;
+
+            const el = header.append("g")
+                .attr("transform", "rotate(-30)")
+                .classed(`column-${column.name}`, true);
+            el.append("text")
+                .attr("x", 0)
+                .attr("y", 0)
+                .text(column.name);
+            const { width, height } = el.node().getBoundingClientRect();
+            if (height > headerHeight) {
+                headerHeight = height;
+            }
+            if (offset + width > bodyWidth) {
+                bodyWidth = offset + width;
+            }
+
+            offset += maxWidth + 2 * LEFT_MARGIN;
+        });
+        width = offset - LEFT_MARGIN;
+
+        if (d3.some(columnInfo, column => column.geom === "funkyrect")) {
+            // Locate first funkyrect column for legend position
+            offset = LEFT_MARGIN;
+            for (let column of columnInfo) {
+                if (column.geom === "funkyrect") {
+                    break;
+                }
+                offset += column.width + 2 * LEFT_MARGIN;
+            }
         }
-        if (offset + width > bodyWidth) {
-            bodyWidth = offset + width;
-        }
-        offset += maxWidth + 2 * LEFT_MARGIN;
-    });
-    width = offset - LEFT_MARGIN;
-    container.attr('width', bodyWidth);
-    container.attr('height', height + headerHeight);
-    body.selectAll('.row').attr('width', width);
-    body.attr("transform", `translate(0, ${headerHeight})`);
+        columnInfo.forEach(column => {
+            let center = column.offset + column.width / 2;
+            header.select(`.column-${column.name}`)
+                .attr('transform', `translate(${center}, ${headerHeight}) rotate(-30)`);
+        });
+
+        container.attr('width', bodyWidth);
+        container.attr('height', height + headerHeight);
+        body.selectAll('.row').attr('width', width);
+        body.attr("transform", `translate(0, ${headerHeight})`);
+
+        return container.node();
+    }, 10);
+
+    return container.node();
 }
 
 export default funkyheatmap;
