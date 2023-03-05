@@ -30,9 +30,9 @@ const GEOMS = {
     },
 
     bar: (value, column, O) => {
+        const fill = column.palette(value);
         value = column.scale(value);
         const width = value * column.width * O.geomSize;
-        const fill = column.palette(value);
         return d3.create('svg:rect')
             .attr('x', O.geomPadding)
             .attr('y', O.geomPadding)
@@ -44,11 +44,12 @@ const GEOMS = {
     },
 
     circle: (value, column, O) => {
+        const fill = column.palette(value);
         value = column.scale(value);
         return d3.create('svg:circle')
             .style('stroke', O.geomStroke)
             .style('stroke-width', 1)
-            .style('fill', '#ccc')
+            .style('fill', fill)
             .attr('cx', O.rowHeight / 2)
             .attr('cy', O.rowHeight / 2)
             .attr('r', value * O.geomSize / 2);
@@ -118,6 +119,7 @@ class FHeatmap {
     renderColumns() {
         const O = this.options;
         let offset = 0;
+        O.bodyHeight = this.data.length * O.rowHeight;
 
         this.columnInfo.forEach(column => {
             let maxWidth = 0;
@@ -140,12 +142,21 @@ class FHeatmap {
                 }
             });
             if (column.geom === 'bar') {
-                maxWidth = O.geomSize * column.width;
+                maxWidth = O.geomSize * column.width + O.geomPadding;
+                this.body.append('line')
+                    .attr('x1', offset + maxWidth)
+                    .attr('x2', offset + maxWidth)
+                    .attr('y1', 0)
+                    .attr('y2', O.bodyHeight)
+                    .attr('stroke', O.geomStroke)
+                    .attr('stroke-dasharray', '5 5')
+                    .attr('opacity', 0.5);
             }
             column.width = Math.max(maxWidth, O.rowHeight);
             column.offset = offset;
             offset += column.width + padding;
         });
+        O.bodyWidth = offset + O.padding;
     }
 
     renderHeader() {
@@ -276,12 +287,11 @@ class FHeatmap {
         this.renderLegend();
 
         const O = this.options;
-        const bodyHeight = this.data.length * O.rowHeight;
         this.svg.attr('width', O.width);
-        this.svg.attr('height', bodyHeight + O.headerHeight + O.footerHeight);
-        this.body.selectAll('.row').attr('width', O.width);
+        this.svg.attr('height', O.bodyHeight + O.headerHeight + O.footerHeight);
+        this.body.selectAll('.row').attr('width', O.bodyWidth);
         this.body.attr("transform", `translate(0, ${O.headerHeight})`);
-        this.footer.attr('transform', `translate(0, ${O.headerHeight + bodyHeight})`);
+        this.footer.attr('transform', `translate(0, ${O.headerHeight + O.bodyHeight})`);
     }
 };
 

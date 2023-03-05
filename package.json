@@ -5,7 +5,7 @@
   "source": "./src/main.js",
   "module": "./dist/funkyheatmap.js",
   "scripts": {
-    "start": "parcel test/index.html test/mtcars.csv",
+    "start": "parcel test/*.html test/mtcars.csv",
     "build": "parcel build",
     "lint": "node ./node_modules/eslint/bin/eslint . --ext .js --fix"
   },
@@ -34,7 +34,7 @@
   },
   "alias": {
     "d3": {
-        "global": "d3"
+        "module": "d3"
     }
   }
 }
