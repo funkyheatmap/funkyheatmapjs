@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 import { maybeConvertDataframe } from './input_util';
-import { buildColumnInfo } from './columns';
+import { buildColumnInfo, Column } from './columns';
 import { assignPalettes } from './palettes';
 
 
@@ -11,25 +11,28 @@ const DEFAULT_OPTIONS = {
     padding: 5,
     geomPadding: 1.5,
     geomStroke: '#555',
-    columnRotate: 30
+    columnRotate: 30,
+    midpoint: 0.8,
+    legendFontSize: 12,
+    legendTicks: [0, 0.2, 0.4, 0.6, 0.8, 1]
 };
 
 const GEOMS = {
-    text: (item, column, O) => {
+    text: (value, _, O) => {
         const el = d3.create('svg:text')
             .attr('dominant-baseline', 'middle')
             .attr('y', O.rowHeight / 2)
-            .text(item[column.id]);
+            .text(value);
         if (O.fontSize) {
-            el.style('font-size', O.fontSize);
+            el.attr('font-size', O.fontSize);
         }
         return el;
     },
 
-    bar: (item, column, O) => {
-        const value = column.scale(+item[column.id]);
+    bar: (value, column, O) => {
+        value = column.scale(value);
         const width = value * column.width * O.geomSize;
-        const fill = column.palette(+item[column.id]);
+        const fill = column.palette(value);
         return d3.create('svg:rect')
             .attr('x', O.geomPadding)
             .attr('y', O.geomPadding)
@@ -40,8 +43,8 @@ const GEOMS = {
             .style('fill', fill);
     },
 
-    circle: (item, column, O) => {
-        const value = column.scale(+item[column.id]);
+    circle: (value, column, O) => {
+        value = column.scale(value);
         return d3.create('svg:circle')
             .style('stroke', O.geomStroke)
             .style('stroke-width', 1)
@@ -51,14 +54,14 @@ const GEOMS = {
             .attr('r', value * O.geomSize / 2);
     },
 
-    funkyrect: (item, column, O) => {
-        let value = column.scale(+item[column.id]);
-        const fill = column.palette(+item[column.id]);
-        if (value < column.midpoint) {
+    funkyrect: (value, column, O) => {
+        let scaled = column.scale(value);
+        const fill = column.palette(value);
+        if (scaled < O.midpoint) {
             // transform value to a 0.0 .. 0.5 range
             value = column.scale.copy()
                 .range([0, 0.5])
-                .domain([column.min, column.min + column.range * column.midpoint])(+item[column.id]);
+                .domain([column.min, column.min + column.range * O.midpoint])(value);
             const radius = (value * 0.9 + 0.12) * O.geomSize - O.geomPadding; // 0.5 for stroke
             return d3.create('svg:circle')
                 .style('stroke', O.geomStroke)
@@ -72,7 +75,7 @@ const GEOMS = {
         value = column.scale
             .copy()
             .range([0.5, 1])
-            .domain([column.min + column.range * column.midpoint, column.max])(+item[column.id]);
+            .domain([column.min + column.range * O.midpoint, column.max])(value);
         const cornerSize = (0.9 - 0.8 * value) * O.geomSize;
         return d3.create('svg:rect')
             .style('stroke', O.geomStroke)
@@ -114,23 +117,34 @@ class FHeatmap {
 
     renderColumns() {
         const O = this.options;
-        let offset = O.padding;
+        let offset = 0;
 
         this.columnInfo.forEach(column => {
             let maxWidth = 0;
+            let padding = 0;
+            if (column.geom === "text" || column.geom === 'bar') {
+                padding = O.padding;
+            }
+            offset += padding;
             this.data.forEach((item, j) => {
-                let el = GEOMS[column.geom](item, column, O);
+                let value = item[column.id];
+                if (column.numeric) {
+                    value = +value;
+                }
+                let el = GEOMS[column.geom](value, column, O);
                 el.attr('transform', `translate(${offset}, ${j * O.rowHeight})`);
-                this.body.node().appendChild(el.node());
-                el = d3.select(el.node());
+                this.body.append(() => el.node());
                 const width = el.node().getBBox().width;
                 if (width > maxWidth) {
                     maxWidth = width;
                 }
             });
-            column.width = maxWidth;
+            if (column.geom === 'bar') {
+                maxWidth = O.geomSize * column.width;
+            }
+            column.width = Math.max(maxWidth, O.rowHeight);
             column.offset = offset;
-            offset += maxWidth + 2 * O.padding;
+            offset += column.width + padding;
         });
     }
 
@@ -165,7 +179,7 @@ class FHeatmap {
             }
         });
         this.columnInfo.forEach(column => {
-            let center = column.offset + column.width / 2 + O.geomPadding;
+            let center = column.offset + column.width / 2;
             let rotate = column.rotate ? -O.columnRotate : 0;
             this.header.select(`.column-${column.id}`)
                 .attr(
@@ -188,6 +202,69 @@ class FHeatmap {
         this.options.headerHeight = headerHeight;
     }
 
+    renderLegend() {
+        const O = this.options;
+        let footerHeight = 0;
+        if (d3.some(this.columnInfo, column => column.geom === "funkyrect")) {
+            const legend = this.footer.append('g');
+            // Locate first funkyrect column for legend position
+            let offset = 0;
+            for (let column of this.columnInfo) {
+                if (column.geom === "funkyrect") {
+                    offset = column.offset;
+                    break;
+                }
+            }
+            legend.append('text')
+                .attr('x', offset + O.geomSize / 2)
+                .attr('y', O.rowHeight + O.padding)
+                .attr('font-size', O.legendFontSize)
+                .text('Score:');
+
+            const column = new Column({
+                id: '_legend',
+                palette: 'Greys'
+            }, 1);
+            column.maybeCalculateStats(null, false);
+            assignPalettes([column]);
+            const range = [...d3.range(0, 1, 0.1), 1];
+            for (let i of range) {
+                let el = GEOMS.funkyrect(i, column, O);
+                legend.append(() => el.node());
+                const { width, height } = el.node().getBBox();
+                el.attr(
+                    'transform',
+                    `translate(${offset}, ${1.5 * O.rowHeight - height / 2})`
+                );
+                let tick = parseFloat(i.toFixed(3));
+                if (O.legendTicks.indexOf(tick) > -1) {
+                    tick = tick.toFixed(1);
+                    if (tick === '0.0') {
+                        tick = '0';
+                    }
+                    if (tick === '1.0') {
+                        tick = '1';
+                    }
+                    legend.append('text')
+                        .attr('x', offset + O.geomSize / 2 + O.geomPadding)
+                        .attr('y', 2.5 * O.rowHeight + O.padding)
+                        .attr('font-size', O.legendFontSize)
+                        .attr('text-anchor', 'middle')
+                        .attr('dominant-baseline', 'text-top')
+                        .text(tick);
+                }
+
+                offset += width + 4 * O.geomPadding;
+
+            }
+            const height = legend.node().getBBox().height;
+            if (height > footerHeight) {
+                footerHeight = height;
+            }
+        }
+        this.options.footerHeight = footerHeight + O.rowHeight;
+    }
+
     render() {
         this.header = this.svg.append("g");
         this.body = this.svg.append("g");
@@ -196,24 +273,15 @@ class FHeatmap {
         this.stripedRows();
         this.renderColumns();
         this.renderHeader();
-
-        // if (d3.some(columnInfo, column => column.geom === "funkyrect")) {
-        //     // Locate first funkyrect column for legend position
-        //     offset = LEFT_MARGIN;
-        //     for (let column of columnInfo) {
-        //         if (column.geom === "funkyrect") {
-        //             break;
-        //         }
-        //         offset += column.width + 2 * LEFT_MARGIN;
-        //     }
-        // }
+        this.renderLegend();
 
         const O = this.options;
         const bodyHeight = this.data.length * O.rowHeight;
         this.svg.attr('width', O.width);
-        this.svg.attr('height', bodyHeight + O.headerHeight);
+        this.svg.attr('height', bodyHeight + O.headerHeight + O.footerHeight);
         this.body.selectAll('.row').attr('width', O.width);
         this.body.attr("transform", `translate(0, ${O.headerHeight})`);
+        this.footer.attr('transform', `translate(0, ${O.headerHeight + bodyHeight})`);
     }
 };
 

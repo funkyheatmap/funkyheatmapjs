@@ -1,5 +1,59 @@
 import * as d3 from 'd3';
 
+
+export class Column {
+    constructor(info, value) {
+        ({
+            id: this.id,
+            name: this.name,
+            geom: this.geom,
+            width: this.width,
+            palette: this.palette
+        } = info);
+
+        let type = typeof value;
+        if (isNumeric(value)) {
+            type = 'number';
+            this.numeric = true;
+        }
+
+        if (this.name === undefined) {
+            this.name = this.id;
+        }
+
+        if (this.geom === undefined) {
+            if (type === 'number') {
+                this.geom = 'funkyrect';
+            } else {
+                this.geom = 'text';
+            }
+        }
+        if (this.width === undefined) {
+            if (this.geom === 'bar') {
+                this.width = 4;
+            }
+        }
+        if (this.palette === undefined) {
+            if (this.geom === 'pie') {
+                this.palette = 'categorical';
+            }
+            if (this.numeric) {
+                this.palette = 'numerical';
+            }
+        }
+    }
+
+    maybeCalculateStats(data, scaleColumn) {
+        let extent = [0, 1];
+        if (scaleColumn) {
+            extent = d3.extent(data, i => +i[this.id]);
+        }
+        [this.min, this.max] = extent;
+        this.range = this.max - this.min;
+        this.scale = d3.scaleLinear().domain(extent);
+    }
+}
+
 /**
  * Assemble all column information needed for drawing
  *
@@ -13,44 +67,9 @@ export function buildColumnInfo(data, columns, columnInfo, scaleColumn) {
     return columns.map((column, i) => {
         const info = columnInfo ? columnInfo[i] : {};
         info.id = column;
-        let type = typeof item[column];
-        if (isNumeric(item[column])) {
-            type = 'number';
-            info.numeric = true;
-            calculateColumnStats(data, info, scaleColumn);
-        }
-        if (info.name === undefined) {
-            info.name = info.id;
-        }
-        if (info.geom === undefined) {
-            if (type === 'string') {
-                info.geom = 'text';
-            } else if (type === 'number') {
-                info.geom = 'funkyrect';
-                info.midpoint = 0.8;
-            } else {
-                info.geom = null;
-            }
-        }
-        if (info.width === undefined) {
-            if (info.geom === 'text') {
-                info.width = 6;
-            } else if (info.geom === 'bar') {
-                info.width = 4;
-            } else {
-                info.width = 1;
-            }
-        }
-        if (info.palette === undefined) {
-            if (info.geom === 'pie') {
-                info.palette = 'categorical';
-            }
-            if (info.numeric) {
-                info.palette = 'numerical';
-            }
-        }
-
-        return info;
+        column = new Column(info, item[column]);
+        column.maybeCalculateStats(data, scaleColumn);
+        return column;
     });
 };
 
@@ -61,14 +80,4 @@ function isNumeric(str) {
     // (`parseFloat` alone does not do this)...
     return !Number.isNaN(str)
         && !Number.isNaN(parseFloat(str)); // ...and ensure strings of whitespace fail
-}
-
-function calculateColumnStats(data, column, scaleColumn) {
-    let extent = [0, 1];
-    if (scaleColumn) {
-        extent = d3.extent(data, (i) => +i[column.id]);
-    }
-    [column.min, column.max] = extent;
-    column.range = column.max - column.min;
-    column.scale = d3.scaleLinear().domain(extent);
 }

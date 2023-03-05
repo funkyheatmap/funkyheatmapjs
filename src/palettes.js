@@ -60,7 +60,10 @@ export function assignPalettes(columnInfo, palettes) {
     palettes = { numerical: "Blues", categorical: "Set1", ...palettes };
     columnInfo.forEach(column => {
         if (column.palette) {
-            const name = palettes[column.palette];
+            let name = palettes[column.palette];
+            if (name === undefined) { // fallback
+                name = column.palette;
+            }
             let colors;
             if (defaultPalettes.numerical[name]) {
                 colors = defaultPalettes.numerical[name];
@@ -75,7 +78,7 @@ export function assignPalettes(columnInfo, palettes) {
             }
 
             if (column.numeric) {
-                const step = column.range / colors.length;
+                const step = column.range / (colors.length - 1);
                 const domain = [...d3.range(column.min, column.max, step), column.max];
                 column.palette = d3.scaleLinear().domain(domain).range(colors);
             }
