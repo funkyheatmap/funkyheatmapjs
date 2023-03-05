@@ -1,40 +1,45 @@
 {
-  "name": "funkyheatmap-js",
-  "version": "1.0.0",
-  "description": "A JavaScript project",
-  "source": "./src/main.js",
-  "module": "./dist/funkyheatmap.js",
-  "scripts": {
-    "start": "parcel test/*.html test/mtcars.csv",
-    "build": "parcel build",
-    "lint": "node ./node_modules/eslint/bin/eslint . --ext .js --fix"
-  },
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "d3": "^7.8.2"
-  },
-  "devDependencies": {
-    "eslint": "^8.35.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.27.5",
-    "parcel": "^2.8.3"
-  },
-  "targets": {
-    "default": {
-        "distDir": "./dist",
-        "context": "browser",
-        "outputFormat": "esmodule"
+    "name": "funkyheatmap-js",
+    "version": "0.1.2",
+    "description": "A JavaScript project",
+    "source": "./src/main.js",
+    "module": "./dist/funkyheatmap.js",
+    "scripts": {
+        "start": "parcel test/*.html test/mtcars.csv",
+        "build": "parcel build",
+        "lint": "node ./node_modules/eslint/bin/eslint . --ext .js --fix"
+    },
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "files": [
+        "./dist/funkyheatmap.js",
+        "./src/*",
+        "./test/*"
+    ],
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "d3": "^7.8.2"
+    },
+    "devDependencies": {
+        "eslint": "^8.35.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-plugin-import": "^2.27.5",
+        "parcel": "^2.8.3"
+    },
+    "targets": {
+        "default": {
+            "distDir": "./dist",
+            "context": "browser",
+            "outputFormat": "esmodule"
+        }
+    },
+    "alias": {
+        "d3": {
+            "global": "d3"
+        }
     }
-  },
-  "alias": {
-    "d3": {
-        "module": "d3"
-    }
-  }
 }
