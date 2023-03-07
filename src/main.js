@@ -14,7 +14,8 @@ const DEFAULT_OPTIONS = {
     columnRotate: 30,
     midpoint: 0.8,
     legendFontSize: 12,
-    legendTicks: [0, 0.2, 0.4, 0.6, 0.8, 1]
+    legendTicks: [0, 0.2, 0.4, 0.6, 0.8, 1],
+    scaleColumn: true
 };
 
 const GEOMS = {
@@ -141,6 +142,14 @@ class FHeatmap {
                 }
                 let el = GEOMS[column.geom](value, column, O);
                 el.attr('transform', `translate(${offset}, ${j * O.rowHeight})`);
+                if (column.numeric) {
+                    let tooltip = column.scale(+value).toFixed(4);
+                    tooltip = tooltip.replace(/\.?0+$/, '');
+                    if (O.scaleColumn) {
+                        tooltip += " (scaled)";
+                    }
+                    el.datum({tooltip: tooltip});
+                }
                 this.body.append(() => el.node());
                 const width = el.node().getBBox().width;
                 if (width > maxWidth) {
@@ -328,7 +337,7 @@ class FHeatmap {
                 }
                 offset += width + 4 * O.geomPadding;
             }
-            const { width, height } = legend.node().getBBox();
+            const { height } = legend.node().getBBox();
             if (height > footerHeight) {
                 footerHeight = height;
             }
@@ -337,6 +346,48 @@ class FHeatmap {
             }
         }
         this.options.footerHeight = footerHeight + O.rowHeight;
+    }
+
+    hideTooltip() {
+        if (this.tooltip) {
+            this.tooltip.style("display", "none");
+        }
+    }
+
+    showTooltip(mouse, text) {
+        if (this.tooltip === undefined) {
+            this.tooltip = d3.select("body")
+                .append("div")
+                    .style("z-index", 2000)
+                    .style("position", "absolute")
+                    .style("background-color", "#333")
+                    .style("color", "white")
+                    .style("border", "solid")
+                    .style("border-width", "1px")
+                    .style("border-radius", "5px")
+                    .style("padding", "10px")
+                    .style("display", "none");
+        }
+
+        const offset = 10;
+        this.tooltip
+            .html(text)
+            .style("top", mouse[1] + 2 * offset + "px")
+            .style("left", mouse[0] + offset + "px")
+            .style("display", "block");
+    }
+
+    mouseMove(e) {
+        if (e.target) {
+            const el = e.target;
+            const d = d3.select(el).datum();
+            if (d) {
+                const mouse = d3.pointer(e, document.body);
+                this.showTooltip(mouse, d.tooltip);
+                return;
+            }
+        }
+        this.hideTooltip();
     }
 
     render() {
@@ -348,6 +399,8 @@ class FHeatmap {
         this.renderColumns();
         this.renderHeader();
         this.renderLegend();
+
+        this.svg.on("mousemove", this.mouseMove.bind(this));
 
         const O = this.options;
         this.svg.attr('width', O.width);
@@ -392,6 +445,7 @@ function funkyheatmap(
     options
 ) {
     console.log(arguments);
+    options.scaleColumn = scaleColumn;
     [data, columnInfo, columnGroups] = maybeConvertDataframe(data, columnInfo, columnGroups);
     columnInfo = buildColumnInfo(data, columns, columnInfo, scaleColumn);
     assignPalettes(columnInfo, palettes);
