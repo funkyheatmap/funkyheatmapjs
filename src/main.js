@@ -14,8 +14,7 @@ const DEFAULT_OPTIONS = {
     columnRotate: 30,
     midpoint: 0.8,
     legendFontSize: 12,
-    legendTicks: [0, 0.2, 0.4, 0.6, 0.8, 1],
-    scaleColumn: true
+    legendTicks: [0, 0.2, 0.4, 0.6, 0.8, 1]
 };
 
 const GEOMS = {
@@ -143,11 +142,8 @@ class FHeatmap {
                 let el = GEOMS[column.geom](value, column, O);
                 el.attr('transform', `translate(${offset}, ${j * O.rowHeight})`);
                 if (column.numeric) {
-                    let tooltip = column.scale(+value).toFixed(4);
+                    let tooltip = (+value).toFixed(4);
                     tooltip = tooltip.replace(/\.?0+$/, '');
-                    if (O.scaleColumn) {
-                        tooltip += " (scaled)";
-                    }
                     el.datum({tooltip: tooltip});
                 }
                 this.body.append(() => el.node());
@@ -445,7 +441,6 @@ function funkyheatmap(
     options
 ) {
     console.log(arguments);
-    options.scaleColumn = scaleColumn;
     [data, columnInfo, columnGroups] = maybeConvertDataframe(data, columnInfo, columnGroups);
     columnInfo = buildColumnInfo(data, columns, columnInfo, scaleColumn);
     assignPalettes(columnInfo, palettes);
