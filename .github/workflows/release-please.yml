@@ -21,6 +21,7 @@ jobs:
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"ci","section":"Misc","hidden":false},{"type":"docs","section":"Misc","hidden":false},{"type":"style","section":"Misc","hidden":false},{"type":"refactor","section":"Misc","hidden":false},{"type":"test","section":"Tests","hidden":false}]'
           pull-request-header: 'New release'
           pull-request-title-pattern: 'ci: release${component} ${version}'
+          bumpPatchForMinorPreMajor: true
       - uses: actions/checkout@v3
         if: ${{ steps.release.outputs.release_created }}
       # Setup .npmrc file to publish to npm
