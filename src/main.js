@@ -433,7 +433,7 @@ function funkyheatmap(
     data,
     columns,
     columnInfo,
-    columnGroups,
+    columnGroups = [],
     palettes,
     expand,
     colAnnotOffset,
