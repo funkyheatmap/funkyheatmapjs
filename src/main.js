@@ -14,7 +14,8 @@ const DEFAULT_OPTIONS = {
     columnRotate: 30,
     midpoint: 0.8,
     legendFontSize: 12,
-    legendTicks: [0, 0.2, 0.4, 0.6, 0.8, 1]
+    legendTicks: [0, 0.2, 0.4, 0.6, 0.8, 1],
+    labelGroupsAbc: false
 };
 
 const GEOMS = {
@@ -32,7 +33,7 @@ const GEOMS = {
     bar: (value, column, O) => {
         const fill = column.palette(value);
         value = column.scale(value);
-        const width = value * column.width * O.geomSize;
+        const width = value * column.widthUnits * O.geomSize;
         return d3.create('svg:rect')
             .attr('x', O.geomPadding)
             .attr('y', O.geomPadding)
@@ -153,7 +154,7 @@ class FHeatmap {
                 }
             });
             if (column.geom === 'bar') {
-                maxWidth = O.geomSize * column.width + O.geomPadding;
+                maxWidth = O.geomSize * column.widthUnits + O.geomPadding;
                 this.body.append('line')
                     .attr('x1', offset + maxWidth)
                     .attr('x2', offset + maxWidth)
@@ -240,9 +241,16 @@ class FHeatmap {
                 .attr("x", 0)
                 .attr("y", 0)
                 .attr('font-size', O.fontSize)
+                .style('cursor', 'pointer')
+                .datum(column)
+                .on('click', this.onColumnClick.bind(this))
+                .on('mouseenter', () => {
+                    el.style('text-decoration', 'underline dashed').style('fill', '#1385cb')
+                })
+                .on('mouseleave', () => el.style('text-decoration', '').style('fill', ''))
                 .text(column.name);
             const nativeWidth = el.node().getBBox().width;
-            if (!nonZeroRotate && nativeWidth < column.width + 2 * O.padding) {
+            if (!nonZeroRotate && nativeWidth < column.width - 2 * O.padding) {
                 column.rotate = false;
             } else {
                 column.rotate = true;
@@ -253,7 +261,7 @@ class FHeatmap {
                 headerHeight = height;
             }
             if (column.offset + width > bodyWidth) {
-                bodyWidth = column.offset + width;
+                bodyWidth = column.offset + width + O.padding;
             }
         });
         this.columnInfo.forEach(column => {
@@ -264,7 +272,7 @@ class FHeatmap {
                     'transform',
                     `translate(${center}, ${headerHeight - 2 * O.padding}) rotate(${rotate})`
                 );
-            if (rotate === 0) {
+            if (!column.rotate) {
                 labels.select(`.column-${column.id} text`)
                     .attr('text-anchor', 'middle');
             } else {
@@ -373,17 +381,64 @@ class FHeatmap {
             .style("display", "block");
     }
 
-    mouseMove(e) {
+    onMouseMove(e) {
         if (e.target) {
             const el = e.target;
             const d = d3.select(el).datum();
-            if (d) {
+            if (d && d.tooltip) {
                 const mouse = d3.pointer(e, document.body);
                 this.showTooltip(mouse, d.tooltip);
                 return;
             }
         }
         this.hideTooltip();
+    }
+
+    onColumnClick(e) {
+        const el = d3.select(e.target);
+        const column = el.datum();
+        const comparator = column.sort();
+        this.data = d3.sort(this.data, (a, b) => {
+            [a, b] = [a[column.id], b[column.id]];
+            if (column.numeric) {
+                [a, b] = [+a, +b];
+            }
+            return comparator(a, b);
+        });
+        this.body.selectChildren().remove();
+        this.stripedRows();
+        this.body.selectAll('.row').attr('width', this.options.bodyWidth);
+        this.renderColumns();
+
+        this.indicateSort(column, el);
+    }
+
+    indicateSort(column, label) {
+        const O = this.options;
+        if (this.sortIndicator === undefined) {
+            this.sortIndicator = this.header.append("text")
+                .attr('font-size', 12)
+                .attr('fill', '#1385cb');
+        }
+        if (column.sortState === "asc") {
+            this.sortIndicator.text('↓');
+        } else {
+            this.sortIndicator.text('↑');
+        }
+        this.sortIndicator
+            .attr('text-anchor', 'right')
+            .attr('dominant-baseline', 'text-bottom');
+        let x = column.offset + column.width / 2 - 2 * O.padding;
+        let y = O.headerHeight - O.padding;
+        if (!column.rotate) {
+            const box = label.node().getBBox();
+            x -= box.width / 2;
+            y -= box.height / 2;
+            this.sortIndicator.attr('dominant-baseline', 'central');
+        }
+        this.sortIndicator
+            .attr('x', x)
+            .attr('y', y);
     }
 
     render() {
@@ -396,7 +451,7 @@ class FHeatmap {
         this.renderHeader();
         this.renderLegend();
 
-        this.svg.on("mousemove", this.mouseMove.bind(this));
+        this.svg.on("mousemove", this.onMouseMove.bind(this));
 
         const O = this.options;
         this.svg.attr('width', O.width);
@@ -423,7 +478,7 @@ class FHeatmap {
  * @param {Object} palettes - mapping of names to palette colors
  * @param {int} expand -
  * @param {int} colAnnotOffset -
- * @param {boolean} addAbc -
+ * @param {boolean} addAbc - deprecated, moved to options.labelGroupsAbc
  * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
  *      columns. Defaults to true
  * @param {Object} options - options for the heatmap

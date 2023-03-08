@@ -7,9 +7,9 @@ export class Column {
             id: this.id,
             name: this.name,
             geom: this.geom,
-            width: this.width,
             palette: this.palette,
-            group: this.group
+            group: this.group,
+            options: this.options
         } = info);
 
         let type = typeof value;
@@ -29,9 +29,15 @@ export class Column {
                 this.geom = 'text';
             }
         }
-        if (this.width === undefined) {
+        if (this.options === undefined) {
+            this.options = {};
+        }
+        if (this.options.width) {
+            this.widthUnits = this.options.width;
+        }
+        if (this.widthUnits === undefined) {
             if (this.geom === 'bar') {
-                this.width = 4;
+                this.widthUnits = 4;
             }
         }
         if (this.palette === undefined) {
@@ -42,6 +48,7 @@ export class Column {
                 this.palette = 'numerical';
             }
         }
+        this.sortState = null;
     }
 
     maybeCalculateStats(data, scaleColumn) {
@@ -52,6 +59,15 @@ export class Column {
         [this.min, this.max] = extent;
         this.range = this.max - this.min;
         this.scale = d3.scaleLinear().domain(extent);
+    }
+
+    sort() {
+        if (this.sortState === "asc") {
+            this.sortState = "desc";
+            return d3.descending;
+        }
+        this.sortState = "asc";
+        return d3.ascending;
     }
 }
 
