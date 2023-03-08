@@ -404,6 +404,7 @@ class FHeatmap {
         this.body.selectAll('.row').attr('width', O.bodyWidth);
         this.body.attr("transform", `translate(0, ${O.headerHeight})`);
         this.footer.attr('transform', `translate(0, ${O.headerHeight + O.bodyHeight})`);
+        this.svg.attr('style', '');
         if (this.options.rootStyle) {
             this.svg.attr('style', this.options.rootStyle);
         }
@@ -445,12 +446,15 @@ function funkyheatmap(
     columnInfo = buildColumnInfo(data, columns, columnInfo, scaleColumn);
     assignPalettes(columnInfo, palettes);
     // TODO: redo palettes or group palettes
-    const heatmap = new FHeatmap(data, columnInfo, columnGroups, palettes, options, d3.create('svg'));
 
-    // dimensions of text & shapes are not available before svg is in DOM
-    // so we first return svg and then do the rest
-    // ugly…
-    setTimeout(() => heatmap.render(), 10);
+    const svg = d3.select('body')
+        .append('svg')
+            .style('visibility', 'hidden')
+            .style('position', 'absolute')
+            .style('left', '-2000px');
+    const heatmap = new FHeatmap(data, columnInfo, columnGroups, palettes, options, svg);
+    heatmap.render();
+    heatmap.svg.remove();
 
     return heatmap.svg.node();
 }
