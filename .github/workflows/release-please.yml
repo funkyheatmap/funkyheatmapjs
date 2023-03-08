@@ -20,3 +20,4 @@ jobs:
           package-name: funkyheatmap-js
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"ci","section":"Misc","hidden":false},{"type":"docs","section":"Misc","hidden":false},{"type":"style","section":"Misc","hidden":false},{"type":"refactor","section":"Misc","hidden":false},{"type":"test","section":"Tests","hidden":false}]'
           pull-request-header: 'New release'
+          pull-request-title-pattern: 'ci: release${component} ${version}'
