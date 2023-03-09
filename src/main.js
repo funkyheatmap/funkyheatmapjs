@@ -15,11 +15,12 @@ const DEFAULT_OPTIONS = {
     midpoint: 0.8,
     legendFontSize: 12,
     legendTicks: [0, 0.2, 0.4, 0.6, 0.8, 1],
-    labelGroupsAbc: false
+    labelGroupsAbc: false,
+    colorByRank: false
 };
 
 const GEOMS = {
-    text: (value, _, O) => {
+    text: (value, _, __, O) => {
         const el = d3.create('svg:text')
             .attr('dominant-baseline', 'middle')
             .attr('y', O.rowHeight / 2)
@@ -30,8 +31,8 @@ const GEOMS = {
         return el;
     },
 
-    bar: (value, column, O) => {
-        const fill = column.palette(value);
+    bar: (value, colorValue, column, O) => {
+        const fill = column.palette(colorValue);
         value = column.scale(value);
         const width = value * column.widthUnits * O.geomSize;
         return d3.create('svg:rect')
@@ -44,8 +45,8 @@ const GEOMS = {
             .style('fill', fill);
     },
 
-    circle: (value, column, O) => {
-        const fill = column.palette(value);
+    circle: (value, colorValue, column, O) => {
+        const fill = column.palette(colorValue);
         value = column.scale(value);
         return d3.create('svg:circle')
             .style('stroke', O.geomStroke)
@@ -56,9 +57,9 @@ const GEOMS = {
             .attr('r', value * O.geomSize / 2);
     },
 
-    funkyrect: (value, column, O) => {
+    funkyrect: (value, colorValue, column, O) => {
         let scaled = column.scale(value);
-        const fill = column.palette(value);
+        const fill = column.palette(colorValue);
         if (scaled < O.midpoint) {
             // transform value to a 0.0 .. 0.5 range
             value = column.scale.copy()
@@ -135,12 +136,20 @@ class FHeatmap {
             if (group && column.group && group !== column.group) {
                 offset += 2 * O.padding;
             }
+            let rankedData;
+            if (O.colorByRank && column.numeric) {
+                rankedData = d3.rank(this.data, item => +item[column.id]);
+            }
             this.data.forEach((item, j) => {
                 let value = item[column.id];
+                let colorValue = value;
                 if (column.numeric) {
                     value = +value;
                 }
-                let el = GEOMS[column.geom](value, column, O);
+                if (O.colorByRank && column.numeric) {
+                    colorValue = rankedData[j];
+                }
+                let el = GEOMS[column.geom](value, colorValue, column, O);
                 el.attr('transform', `translate(${offset}, ${j * O.rowHeight})`);
                 if (column.numeric) {
                     let tooltip = (+value).toFixed(4);
@@ -315,13 +324,16 @@ class FHeatmap {
             assignPalettes([column]);
             const range = [...d3.range(0, 1, 0.1), 1];
             for (let i of range) {
-                let el = GEOMS.funkyrect(i, column, O);
+                let el = GEOMS.funkyrect(i, i, column, O);
                 legend.append(() => el.node());
                 const { width, height } = el.node().getBBox();
                 el.attr(
                     'transform',
                     `translate(${offset}, ${1.5 * O.rowHeight - height / 2})`
                 );
+                if (O.colorByRank) {
+                    el.style('fill', 'white');
+                }
                 let tick = parseFloat(i.toFixed(3));
                 if (O.legendTicks.indexOf(tick) > -1) {
                     tick = tick.toFixed(1);
@@ -496,9 +508,8 @@ function funkyheatmap(
     scaleColumn = true,
     options
 ) {
-    console.log(arguments);
     [data, columnInfo, columnGroups] = maybeConvertDataframe(data, columnInfo, columnGroups);
-    columnInfo = buildColumnInfo(data, columns, columnInfo, scaleColumn);
+    columnInfo = buildColumnInfo(data, columns, columnInfo, scaleColumn, options.colorByRank);
     assignPalettes(columnInfo, palettes);
     // TODO: redo palettes or group palettes
 

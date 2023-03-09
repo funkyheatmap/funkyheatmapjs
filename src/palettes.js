@@ -78,8 +78,13 @@ export function assignPalettes(columnInfo, palettes) {
             }
 
             if (column.numeric) {
-                const step = column.range / (colors.length - 1);
-                const domain = [...d3.range(column.min, column.max, step), column.max];
+                let scale = column.scale;
+                if (column.colorScale) {
+                    scale = column.colorScale;
+                }
+                const [min, max] = scale.domain();
+                const step = (max - min) / (colors.length - 1);
+                const domain = [...d3.range(min, max, step), max];
                 column.palette = d3.scaleLinear().domain(domain).range(colors);
             }
         }

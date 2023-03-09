@@ -51,7 +51,7 @@ export class Column {
         this.sortState = null;
     }
 
-    maybeCalculateStats(data, scaleColumn) {
+    maybeCalculateStats(data, scaleColumn, colorByRank) {
         let extent = [0, 1];
         if (scaleColumn) {
             extent = d3.extent(data, i => +i[this.id]);
@@ -59,6 +59,9 @@ export class Column {
         [this.min, this.max] = extent;
         this.range = this.max - this.min;
         this.scale = d3.scaleLinear().domain(extent);
+        if (colorByRank) {
+            this.colorScale = d3.scaleLinear().domain([0, data.length - 1]);
+        }
     }
 
     sort() {
@@ -78,14 +81,15 @@ export class Column {
  * @param {string[]} columns - names of the columns
  * @param {Object[]} columnInfo - properties of the columns for drawing, which we will modify
  * @param {boolean} scaleColumn - whether to min-max scale data per column
+ * @param {boolean} colorByRank - whether to color by rank per column instead of by value
  */
-export function buildColumnInfo(data, columns, columnInfo, scaleColumn) {
+export function buildColumnInfo(data, columns, columnInfo, scaleColumn, colorByRank) {
     const item = data[0];
     return columns.map((column, i) => {
         const info = columnInfo ? columnInfo[i] : {};
         info.id = column;
         column = new Column(info, item[column]);
-        column.maybeCalculateStats(data, scaleColumn);
+        column.maybeCalculateStats(data, scaleColumn, colorByRank);
         return column;
     });
 };

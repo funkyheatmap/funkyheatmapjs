@@ -51,7 +51,8 @@ d3.csv('mtcars.csv').then((data) => {
         true,
         {
             rowHeight: 28,
-            labelGroupsAbc: true
+            labelGroupsAbc: true,
+            colorByRank: true
         }
     ));
 });
