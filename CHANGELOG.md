@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.7](https://github.com/mxposed/funkyheatmap-js/compare/v0.1.6...v0.1.7) (2023-03-09)
+
+
+### Features
+
+* color by rank option ([3cae87a](https://github.com/mxposed/funkyheatmap-js/commit/3cae87a39b49181579ed17216ead7c822e722e72))
+
+
+### Bug Fixes
+
+* set first sort to descending ([3d18eeb](https://github.com/mxposed/funkyheatmap-js/commit/3d18eeb111e4e73cb6a7c878b68a191ca7cd00dc))
+* swap sort indicating arrows ([839f405](https://github.com/mxposed/funkyheatmap-js/commit/839f405c755b699baf5074e0196a13a9ecd0ed0c))
+
+
+### Misc
+
+* simplify release branches ([f942765](https://github.com/mxposed/funkyheatmap-js/commit/f942765c405fe62fb2af9e1e7fec919941ffb0af))
+
 ## [0.1.6](https://github.com/mxposed/funkyheatmap-js/compare/v0.1.5...v0.1.6) (2023-03-08)
 
 
