@@ -433,9 +433,9 @@ class FHeatmap {
                 .attr('fill', '#1385cb');
         }
         if (column.sortState === "asc") {
-            this.sortIndicator.text('↓');
-        } else {
             this.sortIndicator.text('↑');
+        } else {
+            this.sortIndicator.text('↓');
         }
         this.sortIndicator
             .attr('text-anchor', 'right')
