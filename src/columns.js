@@ -65,12 +65,12 @@ export class Column {
     }
 
     sort() {
-        if (this.sortState === "asc") {
-            this.sortState = "desc";
-            return d3.descending;
+        if (this.sortState === "desc") {
+            this.sortState = "asc";
+            return d3.ascending;
         }
-        this.sortState = "asc";
-        return d3.ascending;
+        this.sortState = "desc";
+        return d3.descending;
     }
 }
 
