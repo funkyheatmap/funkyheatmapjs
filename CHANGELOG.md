@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.8](https://github.com/mxposed/funkyheatmap-js/compare/v0.1.7...v0.1.8) (2023-04-10)
+
+
+### Features
+
+* allow text/background customization ([946d5cd](https://github.com/mxposed/funkyheatmap-js/commit/946d5cd197cd0df43d98a54a71316eb68e71897f))
+
 ## [0.1.7](https://github.com/mxposed/funkyheatmap-js/compare/v0.1.6...v0.1.7) (2023-03-09)
 
 
