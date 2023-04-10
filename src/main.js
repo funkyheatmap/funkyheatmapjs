@@ -7,16 +7,22 @@ import { assignPalettes } from './palettes';
 
 const DEFAULT_OPTIONS = {
     rowHeight: 24,
-    rowAlternatingBackground: '#eee',
     padding: 5,
     geomPadding: 1.5,
-    geomStroke: '#555',
     columnRotate: 30,
     midpoint: 0.8,
     legendFontSize: 12,
     legendTicks: [0, 0.2, 0.4, 0.6, 0.8, 1],
     labelGroupsAbc: false,
-    colorByRank: false
+    colorByRank: false,
+    theme: {
+        oddRowBackground: 'white',
+        evenRowBackground: '#eee',
+        textColor: 'black',
+        strokeColor: '#555',
+        headerColor: 'white',
+        hoverColor: '#1385cb'
+    }
 };
 
 const GEOMS = {
@@ -24,6 +30,7 @@ const GEOMS = {
         const el = d3.create('svg:text')
             .attr('dominant-baseline', 'middle')
             .attr('y', O.rowHeight / 2)
+            .style('fill', O.theme.textColor)
             .text(value);
         if (O.fontSize) {
             el.attr('font-size', O.fontSize);
@@ -40,7 +47,7 @@ const GEOMS = {
             .attr('y', O.geomPadding)
             .attr('width', width)
             .attr('height', O.geomSize)
-            .style('stroke', O.geomStroke)
+            .style('stroke', O.theme.strokeColor)
             .style('stroke-width', 1)
             .style('fill', fill);
     },
@@ -49,7 +56,7 @@ const GEOMS = {
         const fill = column.palette(colorValue);
         value = column.scale(value);
         return d3.create('svg:circle')
-            .style('stroke', O.geomStroke)
+            .style('stroke', O.theme.strokeColor)
             .style('stroke-width', 1)
             .style('fill', fill)
             .attr('cx', O.rowHeight / 2)
@@ -67,7 +74,7 @@ const GEOMS = {
                 .domain([column.min, column.min + column.range * O.midpoint])(value);
             const radius = (value * 0.9 + 0.12) * O.geomSize - O.geomPadding; // 0.5 for stroke
             return d3.create('svg:circle')
-                .style('stroke', O.geomStroke)
+                .style('stroke', O.theme.strokeColor)
                 .style('stroke-width', 1)
                 .style('fill', fill)
                 .attr('cx', O.rowHeight / 2)
@@ -81,7 +88,7 @@ const GEOMS = {
             .domain([column.min + column.range * O.midpoint, column.max])(value);
         const cornerSize = (0.9 - 0.8 * value) * O.geomSize;
         return d3.create('svg:rect')
-            .style('stroke', O.geomStroke)
+            .style('stroke', O.theme.strokeColor)
             .style('stroke-width', 1)
             .style('fill', fill)
             .attr('x', O.geomPadding)
@@ -99,7 +106,7 @@ class FHeatmap {
         this.columnInfo = columnInfo;
         this.columnGroups = d3.index(columnGroups, group => group.group);
         this.palettes = palettes;
-        this.options = {...DEFAULT_OPTIONS, ...options};
+        this.options = _.merge(DEFAULT_OPTIONS, options);
         this.calculateOptions();
         this.svg = svg;
     }
@@ -116,7 +123,7 @@ class FHeatmap {
                 .attr('height', O.rowHeight)
                 .attr('x', 0)
                 .attr('y', i * O.rowHeight)
-                .attr('fill', i % 2 === 0 ? O.rowAlternatingBackground : 'white');
+                .attr('fill', i % 2 === 0 ? O.theme.evenRowBackground : O.theme.oddRowBackground);
         });
     }
 
@@ -169,7 +176,7 @@ class FHeatmap {
                     .attr('x2', offset + maxWidth)
                     .attr('y1', 0)
                     .attr('y2', O.bodyHeight)
-                    .attr('stroke', O.geomStroke)
+                    .attr('stroke', O.theme.strokeColor)
                     .attr('stroke-dasharray', '5 5')
                     .attr('opacity', 0.5);
             }
@@ -222,7 +229,7 @@ class FHeatmap {
                 .attr('y', O.rowHeight / 2)
                 .attr('text-anchor', 'middle')
                 .attr('dominant-baseline', 'central')
-                .attr('fill', 'white')
+                .attr('fill', O.theme.headerColor)
                 .text(groupInfo.name);
             if (O.fontSize) {
                 text.attr('font-size', O.fontSize);
@@ -233,7 +240,7 @@ class FHeatmap {
                     .attr('x', groupStart + O.padding)
                     .attr('y', O.rowHeight / 2)
                     .attr('dominant-baseline', 'central')
-                    .attr('fill', 'white')
+                    .attr('fill', O.theme.headerColor)
                     .text(`${letter})`);
                 if (O.fontSize) {
                     text.attr('font-size', O.fontSize);
@@ -243,20 +250,24 @@ class FHeatmap {
         });
 
         this.columnInfo.forEach(column => {
-            const el = labels.append("g")
-                .attr("transform", `rotate(${-O.columnRotate})`)
+            const el = labels.append('g')
+                .attr('transform', `rotate(${-O.columnRotate})`)
                 .classed(`column-${column.id}`, true);
-            el.append("text")
-                .attr("x", 0)
-                .attr("y", 0)
+            el.append('text')
+                .attr('x', 0)
+                .attr('y', 0)
                 .attr('font-size', O.fontSize)
+                .style('fill', O.theme.textColor)
                 .style('cursor', 'pointer')
                 .datum(column)
                 .on('click', this.onColumnClick.bind(this))
                 .on('mouseenter', () => {
-                    el.style('text-decoration', 'underline dashed').style('fill', '#1385cb')
+                    el.style('text-decoration', 'underline dashed')
+                        .style('fill', O.theme.hoverColor)
                 })
-                .on('mouseleave', () => el.style('text-decoration', '').style('fill', ''))
+                .on('mouseleave', () => {
+                    el.style('text-decoration', '').style('fill', O.theme.textColor)
+                })
                 .text(column.name);
             const nativeWidth = el.node().getBBox().width;
             if (!nonZeroRotate && nativeWidth < column.width - 2 * O.padding) {
@@ -290,7 +301,7 @@ class FHeatmap {
                     .attr('x2', center)
                     .attr('y1', headerHeight - 2)
                     .attr('y2', headerHeight - 2 - O.padding)
-                    .attr('stroke', O.geomStroke);
+                    .attr('stroke', O.theme.strokeColor);
             }
         });
         this.options.width = bodyWidth;
@@ -314,6 +325,7 @@ class FHeatmap {
                 .attr('x', offset + O.geomSize / 2)
                 .attr('y', O.rowHeight + O.padding)
                 .attr('font-size', O.legendFontSize)
+                .style('fill', O.theme.textColor)
                 .text('Score:');
 
             const column = new Column({
@@ -332,7 +344,7 @@ class FHeatmap {
                     `translate(${offset}, ${1.5 * O.rowHeight - height / 2})`
                 );
                 if (O.colorByRank) {
-                    el.style('fill', 'white');
+                    el.style('fill', O.theme.oddRowBackground);
                 }
                 let tick = parseFloat(i.toFixed(3));
                 if (O.legendTicks.indexOf(tick) > -1) {
@@ -349,6 +361,7 @@ class FHeatmap {
                         .attr('font-size', O.legendFontSize)
                         .attr('text-anchor', 'middle')
                         .attr('dominant-baseline', 'text-top')
+                        .style('fill', O.theme.textColor)
                         .text(tick);
                 }
                 offset += width + 4 * O.geomPadding;
@@ -381,7 +394,7 @@ class FHeatmap {
                     .style("border", "solid")
                     .style("border-width", "1px")
                     .style("border-radius", "5px")
-                    .style("padding", "10px")
+                    .style("padding", "8px 5px")
                     .style("display", "none");
         }
 
@@ -430,7 +443,7 @@ class FHeatmap {
         if (this.sortIndicator === undefined) {
             this.sortIndicator = this.header.append("text")
                 .attr('font-size', 12)
-                .attr('fill', '#1385cb');
+                .attr('fill', O.theme.hoverColor);
         }
         if (column.sortState === "asc") {
             this.sortIndicator.text('↑');
@@ -506,7 +519,7 @@ function funkyheatmap(
     colAnnotOffset,
     addAbc,
     scaleColumn = true,
-    options
+    options = {}
 ) {
     [data, columnInfo, columnGroups] = maybeConvertDataframe(data, columnInfo, columnGroups);
     columnInfo = buildColumnInfo(data, columns, columnInfo, scaleColumn, options.colorByRank);
