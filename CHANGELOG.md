@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.9](https://github.com/mxposed/funkyheatmap-js/compare/v0.1.8...v0.1.9) (2023-04-19)
+
+
+### Misc
+
+* add css class to svg & geom ([7f96e32](https://github.com/mxposed/funkyheatmap-js/commit/7f96e324ff585d4b01b986fa347c1385f5394f09))
+
 ## [0.1.8](https://github.com/mxposed/funkyheatmap-js/compare/v0.1.7...v0.1.8) (2023-04-10)
 
 
