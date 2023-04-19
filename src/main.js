@@ -43,6 +43,7 @@ const GEOMS = {
         value = column.scale(value);
         const width = value * column.widthUnits * O.geomSize;
         return d3.create('svg:rect')
+            .classed('fh-geom', true)
             .attr('x', O.geomPadding)
             .attr('y', O.geomPadding)
             .attr('width', width)
@@ -56,6 +57,7 @@ const GEOMS = {
         const fill = column.palette(colorValue);
         value = column.scale(value);
         return d3.create('svg:circle')
+            .classed('fh-geom', true)
             .style('stroke', O.theme.strokeColor)
             .style('stroke-width', 1)
             .style('fill', fill)
@@ -74,6 +76,7 @@ const GEOMS = {
                 .domain([column.min, column.min + column.range * O.midpoint])(value);
             const radius = (value * 0.9 + 0.12) * O.geomSize - O.geomPadding; // 0.5 for stroke
             return d3.create('svg:circle')
+                .classed('fh-geom', true)
                 .style('stroke', O.theme.strokeColor)
                 .style('stroke-width', 1)
                 .style('fill', fill)
@@ -88,6 +91,7 @@ const GEOMS = {
             .domain([column.min + column.range * O.midpoint, column.max])(value);
         const cornerSize = (0.9 - 0.8 * value) * O.geomSize;
         return d3.create('svg:rect')
+            .classed('fh-geom', true)
             .style('stroke', O.theme.strokeColor)
             .style('stroke-width', 1)
             .style('fill', fill)
@@ -528,6 +532,7 @@ function funkyheatmap(
 
     const svg = d3.select('body')
         .append('svg')
+            .classed('funkyheatmap', true)
             .style('visibility', 'hidden')
             .style('position', 'absolute')
             .style('left', '-2000px');
