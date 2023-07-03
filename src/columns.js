@@ -7,8 +7,11 @@ export class Column {
             id: this.id,
             name: this.name,
             geom: this.geom,
-            palette: this.palette,
             group: this.group,
+            palette: this.palette,
+            width: this.width,
+            label: this.label,
+            overlay: this.overlay,
             options: this.options
         } = info);
 
@@ -29,17 +32,7 @@ export class Column {
                 this.geom = 'text';
             }
         }
-        if (this.options === undefined) {
-            this.options = {};
-        }
-        if (this.options.width) {
-            this.widthUnits = this.options.width;
-        }
-        if (this.widthUnits === undefined) {
-            if (this.geom === 'bar') {
-                this.widthUnits = 4;
-            }
-        }
+
         if (this.palette === undefined) {
             if (this.geom === 'pie') {
                 this.palette = 'categorical';
@@ -48,6 +41,17 @@ export class Column {
                 this.palette = 'numerical';
             }
         }
+
+        if (this.width === undefined) {
+            if (this.geom === 'bar') {
+                this.width = 4;
+            }
+        }
+
+        if (this.options === undefined) {
+            this.options = {};
+        }
+
         this.sortState = null;
     }
 
