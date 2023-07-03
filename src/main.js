@@ -320,10 +320,10 @@ class FHeatmap {
             abcCounter += 1;
         });
 
-        this.columnInfo.forEach(column => {
+        this.columnInfo.forEach((column, i) => {
             const el = labels.append('g')
                 .attr('transform', `rotate(${-O.columnRotate})`)
-                .classed(`column-${column.id}`, true);
+                .classed(`column-${i}`, true);
             el.append('text')
                 .attr('x', 0)
                 .attr('y', 0)
@@ -355,16 +355,16 @@ class FHeatmap {
                 bodyWidth = column.offset + width + O.padding;
             }
         });
-        this.columnInfo.forEach(column => {
+        this.columnInfo.forEach((column, i) => {
             let center = column.offset + column.widthPx / 2;
             let rotate = column.rotate ? -O.columnRotate : 0;
-            this.header.select(`.column-${column.id}`)
+            this.header.select(`.column-${i}`)
                 .attr(
                     'transform',
                     `translate(${center}, ${headerHeight - 2 * O.padding}) rotate(${rotate})`
                 );
             if (!column.rotate) {
-                labels.select(`.column-${column.id} text`)
+                labels.select(`.column-${i} text`)
                     .attr('text-anchor', 'middle');
             } else {
                 labels.append('line')
