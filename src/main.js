@@ -167,28 +167,41 @@ const GEOMS = {
 };
 
 class FHeatmap {
-    constructor(data, columnInfo, columnGroups, palettes, options, svg) {
+    constructor(data, columnInfo, columnGroups, rowInfo, rowGroups, palettes, options, svg) {
         this.data = data;
         this.columnInfo = columnInfo;
         this.columnGroups = d3.index(columnGroups, group => group.group);
+        this.rowInfo = rowInfo;
+        this.rowGroups = d3.index(rowGroups, group => group.group);
         this.palettes = palettes;
         this.options = _.merge(DEFAULT_OPTIONS, options);
+        this.renderGroups = false;
         this.calculateOptions();
         this.svg = svg;
     }
 
     calculateOptions() {
         this.options.geomSize = this.options.rowHeight - 2 * this.options.geomPadding;
+        const group = this.rowInfo[0].group
+        const groupInfo = this.rowGroups.get(group);
+        if (group !== undefined && groupInfo !== undefined && groupInfo.Group !== undefined) {
+            this.renderGroups = true;
+        }
     }
 
     stripedRows() {
         const O = this.options;
+        let rowGroup, nGroups = 0;
         this.data.forEach((_, i) => {
+            if (this.renderGroups && this.rowInfo[i].group !== rowGroup) {
+                nGroups += 1;
+            }
+            rowGroup = this.rowInfo[i].group;
             this.body.append('rect')
                 .classed('row', true)
                 .attr('height', O.rowHeight)
                 .attr('x', 0)
-                .attr('y', i * O.rowHeight)
+                .attr('y', (i + nGroups) * O.rowHeight)
                 .attr('fill', i % 2 === 0 ? O.theme.evenRowBackground : O.theme.oddRowBackground);
         });
     }
@@ -197,12 +210,16 @@ class FHeatmap {
         const O = this.options;
         let offset = 0;
         O.bodyHeight = this.data.length * O.rowHeight;
+        if (this.renderGroups) {
+            O.bodyHeight += this.rowGroups.size * O.rowHeight;
+        }
         let group;
 
-        this.columnInfo.forEach(column => {
+        this.columnInfo.forEach((column, i) => {
             let maxWidth = 0;
             let padding = 0;
-            if (column.geom === "text" || column.geom === 'bar') {
+            let firstColumn = i === 0;
+            if (column.geom === 'text' || column.geom === 'bar') {
                 padding = O.padding;
             }
             offset += padding;
@@ -213,7 +230,27 @@ class FHeatmap {
             if (O.colorByRank && column.numeric) {
                 rankedData = d3.rank(this.data, item => +item[column.id]);
             }
+            let rowGroup, nGroups = 0;
             this.data.forEach((item, j) => {
+                let width = 0;
+                if (this.renderGroups && this.rowInfo[j].group !== rowGroup) {
+                    nGroups += 1;
+                }
+                if (this.renderGroups && firstColumn && this.rowInfo[j].group !== rowGroup) {
+                    let groupName = GEOMS.text(
+                        this.rowGroups.get(this.rowInfo[j].group).Group,
+                        null,
+                        column,
+                        O
+                    );
+                    groupName
+                        .attr('transform', `translate(${offset - padding}, ${(j + nGroups - 1) * O.rowHeight})`)
+                        .attr('font-weight', 'bold')
+                        .attr('dominant-baseline', 'hanging');
+                    this.body.append(() => groupName.node());
+                    width = groupName.node().getBBox().width;
+                }
+                rowGroup = this.rowInfo[j].group;
                 let value = item[column.id];
                 let colorValue = value;
                 if (column.numeric) {
@@ -226,14 +263,17 @@ class FHeatmap {
                     throw `Geom ${column.geom} not implements. Use one of ${Object.keys(GEOMS).join(', ')}.`;
                 }
                 let el = GEOMS[column.geom](value, colorValue, column, O);
-                el.attr('transform', `translate(${offset}, ${j * O.rowHeight})`);
+                el.attr('transform', `translate(${offset}, ${(j + nGroups) * O.rowHeight})`);
                 if (column.numeric) {
                     let tooltip = (+value).toFixed(4);
                     tooltip = tooltip.replace(/\.?0+$/, '');
                     el.datum({tooltip: tooltip});
                 }
                 this.body.append(() => el.node());
-                const width = el.node().getBBox().width;
+                const elWidth = el.node().getBBox().width
+                if (elWidth > width) {
+                    width = elWidth;
+                }
                 if (width > maxWidth) {
                     maxWidth = width;
                 }
@@ -243,7 +283,7 @@ class FHeatmap {
                 this.body.append('line')
                     .attr('x1', offset + maxWidth)
                     .attr('x2', offset + maxWidth)
-                    .attr('y1', 0)
+                    .attr('y1', this.renderGroups ? O.rowHeight : 0)
                     .attr('y2', O.bodyHeight)
                     .attr('stroke', O.theme.strokeColor)
                     .attr('stroke-dasharray', '5 5')
@@ -385,9 +425,7 @@ class FHeatmap {
         const legend = this.footer.append('g');
         let offset = 0;
         if (d3.some(this.columnInfo, column => column.geom === "funkyrect")) {
-            const legend = this.footer.append('g');
             // Locate first funkyrect column for legend position
-            let offset = 0;
             for (let column of this.columnInfo) {
                 if (column.geom === "funkyrect") {
                     offset = column.offset;
@@ -504,13 +542,13 @@ class FHeatmap {
                 offset += O.geomSize / 2 + g.node().getBoundingClientRect().width + 4 * O.geomPadding;
             });
         }
-            const { height } = legend.node().getBBox();
-            if (height > footerHeight) {
-                footerHeight = height;
-            }
-            if (offset > O.width) {
-                O.width = offset;
-            }
+        const { height } = legend.node().getBBox();
+        if (height > footerHeight) {
+            footerHeight = height;
+        }
+        if (offset > O.width) {
+            O.width = offset;
+        }
         this.options.footerHeight = footerHeight + O.rowHeight;
     }
 
@@ -557,6 +595,9 @@ class FHeatmap {
     }
 
     onColumnClick(e) {
+        // Order of rows is now by sort, no row groups
+        this.renderGroups = false;
+
         const el = d3.select(e.target);
         const column = el.datum();
         const comparator = column.sort();
@@ -567,21 +608,17 @@ class FHeatmap {
             }
             return comparator(a, b);
         });
-        this.body.selectChildren().remove();
-        this.stripedRows();
-        this.body.selectAll('.row').attr('width', this.options.bodyWidth);
-        this.renderColumns();
+        this.svg.selectChildren().remove();
+        this.render();
 
         this.indicateSort(column, el);
     }
 
     indicateSort(column, label) {
         const O = this.options;
-        if (this.sortIndicator === undefined) {
-            this.sortIndicator = this.header.append("text")
-                .attr('font-size', 12)
-                .attr('fill', O.theme.hoverColor);
-        }
+        this.sortIndicator = this.header.append("text")
+            .attr('font-size', 12)
+            .attr('fill', O.theme.hoverColor);
         if (column.sortState === "asc") {
             this.sortIndicator.text('↑');
         } else {
@@ -613,11 +650,12 @@ class FHeatmap {
         this.renderHeader();
         this.renderLegend();
 
-        this.svg.on("mousemove", this.onMouseMove.bind(this));
-
         const O = this.options;
         this.svg.attr('width', O.width);
         this.svg.attr('height', O.bodyHeight + O.headerHeight + O.footerHeight);
+        if (this.renderGroups) {
+            this.header.attr('transform', `translate(0, ${O.rowHeight})`);
+        }
         this.body.selectAll('.row').attr('width', O.bodyWidth);
         this.body.attr("transform", `translate(0, ${O.headerHeight})`);
         this.footer.attr('transform', `translate(0, ${O.headerHeight + O.bodyHeight})`);
@@ -626,6 +664,10 @@ class FHeatmap {
             this.svg.attr('style', this.options.rootStyle);
         }
     }
+
+    listen() {
+        this.svg.on("mousemove", this.onMouseMove.bind(this));
+    }
 };
 
 
@@ -633,8 +675,6 @@ class FHeatmap {
  *
  * @param {Object|Object[]} data - data to plot, usually d3-fetch output.
  *      It should be an Array of Objects, each object has the same properties.
- * @param {string[]} columns - columns of the data, in order.
- *      First column is the id column.
  * @param {Object|Object[]} columnInfo - information about how the columns should be displayed
  * @param {Object|Object[]} columnGroups - information about how to group columns
  * @param {Object} palettes - mapping of names to palette colors
@@ -648,9 +688,10 @@ class FHeatmap {
  */
 function funkyheatmap(
     data,
-    columns,
     columnInfo,
-    columnGroups = [],
+    columnGroups,
+    rowInfo,
+    rowGroups,
     palettes,
     expand,
     colAnnotOffset,
@@ -658,10 +699,15 @@ function funkyheatmap(
     scaleColumn = true,
     options = {}
 ) {
-    [data, columnInfo, columnGroups] = maybeConvertDataframe(data, columnInfo, columnGroups);
+    [data, columnInfo, columnGroups, rowInfo, rowGroups] = maybeConvertDataframe(
+        data, columnInfo, columnGroups, rowInfo, rowGroups
+    );
+    const columns = columnInfo.map(column => column.id);
     columnInfo = buildColumnInfo(data, columns, columnInfo, scaleColumn, options.colorByRank);
     assignPalettes(columnInfo, palettes);
-    // TODO: redo palettes or group palettes
+
+    // TODO: figure out what to do https://github.com/funkyheatmap/funkyheatmap-js/issues/6
+    columnInfo = d3.filter(columnInfo, info => !info.overlay);
 
     const svg = d3.select('body')
         .append('svg')
@@ -669,8 +715,18 @@ function funkyheatmap(
             .style('visibility', 'hidden')
             .style('position', 'absolute')
             .style('left', '-2000px');
-    const heatmap = new FHeatmap(data, columnInfo, columnGroups, palettes, options, svg);
+    const heatmap = new FHeatmap(
+        data,
+        columnInfo,
+        columnGroups,
+        rowInfo,
+        rowGroups,
+        palettes,
+        options,
+        svg
+    );
     heatmap.render();
+    heatmap.listen();
     heatmap.svg.remove();
 
     return heatmap.svg.node();
