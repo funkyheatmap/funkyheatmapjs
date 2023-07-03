@@ -131,6 +131,14 @@ class FHeatmap {
                     tooltip = tooltip.replace(/\.?0+$/, '');
                     el.datum({tooltip: tooltip});
                 }
+                if (column.geom === 'pie') {
+                    const s = 'margin: 5px; border-top: 1px solid #aaa; border-left: 1px solid #aaa; font-size: 80%';
+                    const s2 = 'padding: 2px 4px; border-bottom: 1px solid #aaa; border-right: 1px solid #aaa';
+                    let tooltip = `<table style="${s}">${column.palette.colorNames.map((colorName, i) => {
+                        return `<tr><td style="${s2}">${colorName}:</td><td style="${s2}">${value[i]}</td></tr>`;
+                    }).join('')}</table>`;
+                    el.datum({tooltip: tooltip});
+                }
                 this.body.append(() => el.node());
                 const elWidth = el.node().getBBox().width
                 if (elWidth > width) {
@@ -431,7 +439,7 @@ class FHeatmap {
                     .style("border", "solid")
                     .style("border-width", "1px")
                     .style("border-radius", "5px")
-                    .style("padding", "8px 5px")
+                    .style("padding", "3px 5px")
                     .style("display", "none");
         }
 
@@ -445,8 +453,11 @@ class FHeatmap {
 
     onMouseMove(e) {
         if (e.target) {
-            const el = e.target;
-            const d = d3.select(el).datum();
+            let el = d3.select(e.target);
+            while (el.classed('fh-geom') === false && el.node() != this.svg.node()) {
+                el = d3.select(el.node().parentNode);
+            }
+            const d = el.datum();
             if (d && d.tooltip) {
                 const mouse = d3.pointer(e, document.body);
                 this.showTooltip(mouse, d.tooltip);

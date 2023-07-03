@@ -126,6 +126,7 @@ export const GEOMS = {
 
         const arcs = d3.pie().sortValues(null)(value);
         const g = d3.create('svg:g');
+        g.classed('fh-geom', true);
         g.selectAll('arcs')
             .data(arcs)
             .enter()
