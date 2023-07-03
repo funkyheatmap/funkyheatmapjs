@@ -102,6 +102,43 @@ const GEOMS = {
             .attr('rx', cornerSize.toFixed(2))
             .attr('ry', cornerSize.toFixed(2));
     },
+
+    pie: (value, colorValue, column, O) => {
+        let nonZero = 0;
+        let nonZeroIdx = 0;
+        value.forEach((x, i) => {
+            if (x > 0) {
+                nonZero += 1;
+                nonZeroIdx = i;
+            }
+        });
+        if (nonZero === 1) {
+            const fill = column.palette(nonZeroIdx);
+            return d3.create('svg:circle')
+                .classed('fh-geom', true)
+                .style('stroke', O.theme.strokeColor)
+                .style('stroke-width', 1)
+                .style('fill', fill)
+                .attr('cx', O.rowHeight / 2)
+                .attr('cy', O.rowHeight / 2)
+                .attr('r', O.geomSize / 2);
+        }
+
+        const arcs = d3.pie().sortValues(null)(value);
+        const g = d3.create('svg:g');
+        g.selectAll('arcs')
+            .data(arcs)
+            .enter()
+            .append('path')
+                .attr('d', d3.arc().innerRadius(0).outerRadius(O.geomSize / 2))
+                .attr('fill', (_, i) => {
+                    return column.palette(i);
+                })
+                .style('stroke', O.theme.strokeColor)
+                .style('stroke-width', 1)
+                .attr('transform', `translate(${O.rowHeight / 2}, ${O.rowHeight / 2})`);
+        return g;
+    }
 };
 
 class FHeatmap {
