@@ -382,6 +382,8 @@ class FHeatmap {
     renderLegend() {
         const O = this.options;
         let footerHeight = 0;
+        const legend = this.footer.append('g');
+        let offset = 0;
         if (d3.some(this.columnInfo, column => column.geom === "funkyrect")) {
             const legend = this.footer.append('g');
             // Locate first funkyrect column for legend position
@@ -437,6 +439,71 @@ class FHeatmap {
                 }
                 offset += width + 4 * O.geomPadding;
             }
+        }
+        if (d3.some(this.columnInfo, column => column.geom === 'pie')) {
+            const rendered = [];
+            this.columnInfo.forEach(column => {
+                if (column.geom != 'pie' || column.palette.colorNames === undefined) {
+                    return;
+                }
+                const key = JSON.stringify({
+                    colors: column.palette.colors,
+                    colorNames: column.palette.colorNames
+                });
+                if (rendered.indexOf(key) > -1) {
+                    return;
+                }
+                rendered.push(key);
+
+                if (offset < column.offset) {
+                    offset = column.offset;
+                }
+
+                const arcs = d3.pie().endAngle(Math.PI)(Array(column.palette.colorNames.length).fill(1));
+                const g = legend.append('g');
+                g.attr('transform', `translate(${offset}, ${1.5 * O.rowHeight + O.geomPadding})`);
+                g.selectAll('arcs')
+                    .data(arcs)
+                    .enter()
+                    .append('path')
+                        .attr('d', d3.arc().innerRadius(0).outerRadius(O.geomSize / 2))
+                        .attr('fill', (_, i) => {
+                            return column.palette(i);
+                        })
+                        .style('stroke', O.theme.strokeColor)
+                        .style('stroke-width', 1)
+                        .attr('transform', `translate(${O.geomSize / 2 + O.geomPadding - 0.5}, 0)`);
+
+                g.selectAll('text')
+                    .data(arcs)
+                    .enter()
+                    .append('text')
+                    .text((_, i) => column.palette.colorNames[i])
+                    .attr('font-size', O.legendFontSize)
+                    .attr('dominant-baseline', 'central')
+                    .attr('transform', d => {
+                        const p = d3.arc().innerRadius(O.geomSize / 2).outerRadius(O.geomSize).centroid(d);
+                        p[0] += O.geomSize / 2 + 4 * O.geomPadding;
+                        return `translate(${p})`;
+                    });
+
+                g.selectAll('lines')
+                    .data(arcs)
+                    .enter()
+                    .append('path')
+                        .attr('d', d => {
+                            const p1 = d3.arc().innerRadius(O.geomSize / 2).outerRadius(O.geomSize / 2 + 5).centroid(d);
+                            const p2 = d3.arc().innerRadius(O.geomSize / 2).outerRadius(O.geomSize - 5).centroid(d);
+                            p1[0] += O.geomSize / 2 + O.geomPadding;
+                            p2[0] += O.geomSize / 2 + 3 * O.geomPadding;
+                            return d3.line()([p1, p2]);
+                        })
+                        .style('stroke', O.theme.strokeColor)
+                        .style('stroke-width', 0.5);
+
+                offset += O.geomSize / 2 + g.node().getBoundingClientRect().width + 4 * O.geomPadding;
+            });
+        }
             const { height } = legend.node().getBBox();
             if (height > footerHeight) {
                 footerHeight = height;
@@ -444,7 +511,6 @@ class FHeatmap {
             if (offset > O.width) {
                 O.width = offset;
             }
-        }
         this.options.footerHeight = footerHeight + O.rowHeight;
     }
 
