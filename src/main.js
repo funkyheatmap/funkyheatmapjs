@@ -222,6 +222,9 @@ class FHeatmap {
                 if (O.colorByRank && column.numeric) {
                     colorValue = rankedData[j];
                 }
+                if (GEOMS[column.geom] === undefined) {
+                    throw `Geom ${column.geom} not implements. Use one of ${Object.keys(GEOMS).join(', ')}.`;
+                }
                 let el = GEOMS[column.geom](value, colorValue, column, O);
                 el.attr('transform', `translate(${offset}, ${j * O.rowHeight})`);
                 if (column.numeric) {
