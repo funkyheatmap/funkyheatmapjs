@@ -66,6 +66,20 @@ const GEOMS = {
             .attr('r', value * O.geomSize / 2);
     },
 
+    rect: (value, colorValue, column, O) => {
+        const fill = column.palette(colorValue);
+        value = column.scale(value);
+        return d3.create('svg:rect')
+            .classed('fh-geom', true)
+            .style('stroke', O.theme.strokeColor)
+            .style('stroke-width', 1)
+            .style('fill', fill)
+            .attr('x', O.geomPadding)
+            .attr('y', O.geomPadding)
+            .attr('width', O.geomSize)
+            .attr('height', O.geomSize);
+    },
+
     funkyrect: (value, colorValue, column, O) => {
         let scaled = column.scale(value);
         const fill = column.palette(colorValue);
