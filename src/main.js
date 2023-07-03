@@ -236,7 +236,7 @@ class FHeatmap {
                 }
             });
             if (column.geom === 'bar') {
-                maxWidth = O.geomSize * column.widthUnits + O.geomPadding;
+                maxWidth = O.geomSize * column.width + O.geomPadding;
                 this.body.append('line')
                     .attr('x1', offset + maxWidth)
                     .attr('x2', offset + maxWidth)
@@ -246,9 +246,10 @@ class FHeatmap {
                     .attr('stroke-dasharray', '5 5')
                     .attr('opacity', 0.5);
             }
-            column.width = Math.max(maxWidth, O.rowHeight);
+            column.widthPx = Math.max(maxWidth, O.rowHeight);
+            column.widthPx = Math.round(column.widthPx);
             column.offset = offset;
-            offset += column.width + padding;
+            offset += column.widthPx + padding;
             group = column.group;
         });
         O.bodyWidth = offset + O.padding;
@@ -282,7 +283,7 @@ class FHeatmap {
             assignPalettes([column], this.palettes);
             const lastCol = group[group.length - 1];
             const groupStart = group[0].offset;
-            const groupEnd = lastCol.offset + lastCol.width;
+            const groupEnd = lastCol.offset + lastCol.widthPx + O.geomPadding;
             const fill = column.palette(0.5);
             groups.append('rect')
                 .attr('x', groupStart)
@@ -336,7 +337,7 @@ class FHeatmap {
                 })
                 .text(column.name);
             const nativeWidth = el.node().getBBox().width;
-            if (!nonZeroRotate && nativeWidth < column.width - 2 * O.padding) {
+            if (!nonZeroRotate && nativeWidth < column.widthPx - 2 * O.padding) {
                 column.rotate = false;
             } else {
                 column.rotate = true;
@@ -351,7 +352,7 @@ class FHeatmap {
             }
         });
         this.columnInfo.forEach(column => {
-            let center = column.offset + column.width / 2;
+            let center = column.offset + column.widthPx / 2;
             let rotate = column.rotate ? -O.columnRotate : 0;
             this.header.select(`.column-${column.id}`)
                 .attr(
@@ -519,7 +520,7 @@ class FHeatmap {
         this.sortIndicator
             .attr('text-anchor', 'right')
             .attr('dominant-baseline', 'text-bottom');
-        let x = column.offset + column.width / 2 - 2 * O.padding;
+        let x = column.offset + column.widthPx / 2 - 2 * O.padding;
         let y = O.headerHeight - O.padding;
         if (!column.rotate) {
             const box = label.node().getBBox();
