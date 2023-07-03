@@ -46,8 +46,8 @@ const defaultPalettes = {
  * @param {Object} palettes - mapping of names to palette colors
  *      possible options for the palette colors are:
  *       * name of a built-in palette (e.g. Blues, Set1…)
- *       * array of colors as strings
- *       * array of pairs `[color, colorName]` - important for categorical data
+ *       * `Array` of colors as strings
+ *       * `Object` with keys `colors` and `names` - important for categorical data
  */
 export function assignPalettes(columnInfo, palettes) {
     palettes = { numerical: "Blues", categorical: "Set1", ...palettes };
@@ -67,12 +67,12 @@ export function assignPalettes(columnInfo, palettes) {
                 const item = name[0];
                 if (typeof item === 'string' || item instanceof String) {
                     colors = name;
-                } else if (Array.isArray(item)) {
-                    colors = name.map(i => i[0]);
-                    colorNames = name.map(i => i[1]);
                 } else {
                     throw `Palette definition ${name} is not recognized. Expected are: array of colors, array of color-name pairs.`;
                 }
+            } else if (Array.isArray(name.colors) && Array.isArray(name.names)) {
+                colors = name.colors;
+                colorNames = name.names;
             } else {
                 const names = [
                     ...Object.getOwnPropertyNames(defaultPalettes.numerical),
