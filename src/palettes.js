@@ -1,22 +1,6 @@
 import * as d3 from 'd3';
 
-/*
- default_palettes <- list(
-  numerical = list(
-    "Blues" = RColorBrewer::brewer.pal(9, "Blues") %>% c("#011636") %>% rev %>% smear,
-    "Reds" = RColorBrewer::brewer.pal(9, "Reds")[-8:-9] %>% rev %>% smear,
-    "YlOrBr" = RColorBrewer::brewer.pal(9, "YlOrBr")[-7:-9] %>% rev %>% smear,
-    "Greens" = RColorBrewer::brewer.pal(9, "Greens")[-1] %>% c("#00250f") %>% rev %>% smear,
-    "Greys" = RColorBrewer::brewer.pal(9, "Greys")[-1] %>% rev %>% smear
-  ),
-  categorical = list(
-    "Set3" = RColorBrewer::brewer.pal(12, "Set3"),
-    "Set1" = RColorBrewer::brewer.pal(9, "Set1"),
-    "Set2" = RColorBrewer::brewer.pal(8, "Set2"),
-    "Dark2" = RColorBrewer::brewer.pal(8, "Dark2")
-  )
-)
- */
+
 
 const defaultPalettes = {
     numerical: {
@@ -56,6 +40,15 @@ const defaultPalettes = {
     }
 };
 
+/**
+ *
+ * @param {Object|Object[]} columnInfo - information about how the columns should be displayed
+ * @param {Object} palettes - mapping of names to palette colors
+ *      possible options for the palette colors are:
+ *       * name of a built-in palette (e.g. Blues, Set1…)
+ *       * array of colors as strings
+ *       * array of pairs `[color, colorName]` - important for categorical data
+ */
 export function assignPalettes(columnInfo, palettes) {
     palettes = { numerical: "Blues", categorical: "Set1", ...palettes };
     columnInfo.forEach(column => {
@@ -65,10 +58,21 @@ export function assignPalettes(columnInfo, palettes) {
                 name = column.palette;
             }
             let colors;
+            let colorNames;
             if (defaultPalettes.numerical[name]) {
                 colors = defaultPalettes.numerical[name];
             } else if (defaultPalettes.categorical[name]) {
                 colors = defaultPalettes.categorical[name];
+            } else if (Array.isArray(name)) {
+                const item = name[0];
+                if (typeof item === 'string' || item instanceof String) {
+                    colors = name;
+                } else if (Array.isArray(item)) {
+                    colors = name.map(i => i[0]);
+                    colorNames = name.map(i => i[1]);
+                } else {
+                    throw `Palette definition ${name} is not recognized. Expected are: array of colors, array of color-name pairs.`;
+                }
             } else {
                 const names = [
                     ...Object.getOwnPropertyNames(defaultPalettes.numerical),
@@ -86,6 +90,13 @@ export function assignPalettes(columnInfo, palettes) {
                 const step = (max - min) / (colors.length - 1);
                 const domain = [...d3.range(min, max, step), max];
                 column.palette = d3.scaleLinear().domain(domain).range(colors);
+            }
+            // TODO: replace with categorical
+            if (column.geom === 'pie') {
+                const domain = d3.range(colors.length);
+                column.palette = d3.scaleOrdinal().domain(domain).range(colors);
+                column.palette.colors = colors;
+                column.palette.colorNames = colorNames;
             }
         }
     });
