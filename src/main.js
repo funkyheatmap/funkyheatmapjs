@@ -274,7 +274,7 @@ class FHeatmap {
                 return;
             }
             const groupInfo = this.columnGroups.get(groupName);
-            if (!groupInfo.name || !groupInfo.palette) {
+            if (!groupInfo.level1 || !groupInfo.palette) {
                 return;
             }
 
@@ -293,14 +293,15 @@ class FHeatmap {
                 .attr('y', 0)
                 .attr('width', groupEnd - groupStart)
                 .attr('height', O.rowHeight)
-                .attr('fill', fill);
+                .attr('fill', fill)
+                .attr('opacity', 0.25);
             const text = groups.append('text')
                 .attr('x', groupStart + (groupEnd - groupStart) / 2)
                 .attr('y', O.rowHeight / 2)
                 .attr('text-anchor', 'middle')
                 .attr('dominant-baseline', 'central')
                 .attr('fill', O.theme.headerColor)
-                .text(groupInfo.name);
+                .text(groupInfo.level1);
             if (O.fontSize) {
                 text.attr('font-size', O.fontSize);
             }
