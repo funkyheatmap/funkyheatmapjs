@@ -15,6 +15,7 @@ const DEFAULT_OPTIONS = {
     legendTicks: [0, 0.2, 0.4, 0.6, 0.8, 1],
     labelGroupsAbc: false,
     colorByRank: false,
+    minGeomSize: 0.25,
     theme: {
         oddRowBackground: 'white',
         evenRowBackground: '#eee',
@@ -41,12 +42,15 @@ const GEOMS = {
     bar: (value, colorValue, column, O) => {
         const fill = column.palette(colorValue);
         value = column.scale(value);
-        const width = value * column.widthUnits * O.geomSize;
+        let width = value * column.width * O.geomSize;
+        if (width === 0) {
+            width = O.minGeomSize;
+        }
         return d3.create('svg:rect')
             .classed('fh-geom', true)
             .attr('x', O.geomPadding)
             .attr('y', O.geomPadding)
-            .attr('width', width)
+            .attr('width', width.toFixed(2))
             .attr('height', O.geomSize)
             .style('stroke', O.theme.strokeColor)
             .style('stroke-width', 1)
@@ -56,6 +60,10 @@ const GEOMS = {
     circle: (value, colorValue, column, O) => {
         const fill = column.palette(colorValue);
         value = column.scale(value);
+        let radius = value * O.geomSize / 2;
+        if (radius === 0) {
+            radius = O.minGeomSize;
+        }
         return d3.create('svg:circle')
             .classed('fh-geom', true)
             .style('stroke', O.theme.strokeColor)
@@ -63,7 +71,7 @@ const GEOMS = {
             .style('fill', fill)
             .attr('cx', O.rowHeight / 2)
             .attr('cy', O.rowHeight / 2)
-            .attr('r', value * O.geomSize / 2);
+            .attr('r', radius.toFixed(2));
     },
 
     rect: (value, colorValue, column, O) => {
@@ -88,7 +96,10 @@ const GEOMS = {
             value = column.scale.copy()
                 .range([0, 0.5])
                 .domain([column.min, column.min + column.range * O.midpoint])(value);
-            const radius = (value * 0.9 + 0.12) * O.geomSize - O.geomPadding; // 0.5 for stroke
+            let radius = (value * 0.9 + 0.1) * O.geomSize - O.geomPadding; // 0.5 for stroke
+            if (radius <= 0) {
+                radius = O.minGeomSize;
+            }
             return d3.create('svg:circle')
                 .classed('fh-geom', true)
                 .style('stroke', O.theme.strokeColor)
