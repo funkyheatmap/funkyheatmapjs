@@ -31,11 +31,14 @@ const DEFAULT_OPTIONS = {
 
 class FHeatmap {
     constructor(data, columnInfo, columnGroups, rowInfo, rowGroups, palettes, options, svg) {
+        this.rowGroupKey = '__group';
+
         this.data = data;
         this.columnInfo = columnInfo;
+        // TODO: we can have no column groups
         this.columnGroups = d3.index(columnGroups, group => group.group);
         this.rowInfo = rowInfo;
-        this.rowGroups = d3.index(rowGroups, group => group.group);
+        this.rowGroups = rowGroups;
         this.palettes = palettes;
         this.options = _.merge(DEFAULT_OPTIONS, options);
         this.renderGroups = false;
@@ -45,6 +48,18 @@ class FHeatmap {
 
     calculateOptions() {
         this.options.geomSize = this.options.rowHeight - 2 * this.options.geomPadding;
+
+        // TODO: revise
+        this.rowGroupOrder = [];
+        this.data.forEach((d, i) => {
+            const group = this.rowInfo[i].group;
+            d[this.rowGroupKey] = group;
+            if (this.rowGroupOrder.indexOf(group) === -1) {
+                this.rowGroupOrder.push(group);
+            }
+        });
+        this.rowGroups = d3.index(this.rowGroups, group => group.group);
+
         const group = this.rowInfo[0].group
         const groupInfo = this.rowGroups.get(group);
         if (group !== undefined && groupInfo !== undefined && groupInfo.Group !== undefined) {
@@ -52,24 +67,28 @@ class FHeatmap {
         }
     }
 
-    stripedRows() {
+    renderStripedRows() {
         const O = this.options;
-        let rowGroup, nGroups = 0;
-        this.data.forEach((_, i) => {
-            if (this.renderGroups && this.rowInfo[i].group !== rowGroup) {
+        let rowGroup, nGroups = 0, colorCounter = 0;
+        this.data.forEach((d, i) => {
+            if (this.renderGroups && d[this.rowGroupKey] !== rowGroup) {
                 nGroups += 1;
+                colorCounter = 0;
             }
-            rowGroup = this.rowInfo[i].group;
+            rowGroup = d[this.rowGroupKey];
             this.body.append('rect')
                 .classed('row', true)
                 .attr('height', O.rowHeight)
                 .attr('x', 0)
                 .attr('y', (i + nGroups) * O.rowHeight)
-                .attr('fill', i % 2 === 0 ? O.theme.evenRowBackground : O.theme.oddRowBackground);
+                .attr('fill', colorCounter % 2 === 0
+                                ? O.theme.evenRowBackground
+                                : O.theme.oddRowBackground);
+            colorCounter += 1;
         });
     }
 
-    renderColumns() {
+    renderData() {
         const O = this.options;
         let offset = 0;
         O.bodyHeight = this.data.length * O.rowHeight;
@@ -96,12 +115,12 @@ class FHeatmap {
             let rowGroup, nGroups = 0;
             this.data.forEach((item, j) => {
                 let width = 0;
-                if (this.renderGroups && this.rowInfo[j].group !== rowGroup) {
+                if (this.renderGroups && item[this.rowGroupKey] !== rowGroup) {
                     nGroups += 1;
                 }
-                if (this.renderGroups && firstColumn && this.rowInfo[j].group !== rowGroup) {
+                if (this.renderGroups && firstColumn && item[this.rowGroupKey] !== rowGroup) {
                     let groupName = GEOMS.text(
-                        this.rowGroups.get(this.rowInfo[j].group).Group,
+                        this.rowGroups.get(item[this.rowGroupKey]).Group,
                         null,
                         column,
                         O
@@ -113,7 +132,7 @@ class FHeatmap {
                     this.body.append(() => groupName.node());
                     width = groupName.node().getBBox().width;
                 }
-                rowGroup = this.rowInfo[j].group;
+                rowGroup = item[this.rowGroupKey];
                 let value = item[column.id];
                 let colorValue = value;
                 if (column.numeric) {
@@ -469,19 +488,18 @@ class FHeatmap {
     }
 
     onColumnClick(e) {
-        // Order of rows is now by sort, no row groups
-        this.renderGroups = false;
-
         const el = d3.select(e.target);
         const column = el.datum();
         const comparator = column.sort();
-        this.data = d3.sort(this.data, (a, b) => {
+        let data = d3.group(this.data, d => d[this.rowGroupKey]);
+        data = [].concat(...this.rowGroupOrder.map(group => d3.sort(data.get(group), (a, b) => {
             [a, b] = [a[column.id], b[column.id]];
             if (column.numeric) {
                 [a, b] = [+a, +b];
             }
             return comparator(a, b);
-        });
+        })));
+        this.data = data;
         this.svg.selectChildren().remove();
         this.render();
 
@@ -519,8 +537,8 @@ class FHeatmap {
         this.body = this.svg.append("g");
         this.footer = this.svg.append("g");
 
-        this.stripedRows();
-        this.renderColumns();
+        this.renderStripedRows();
+        this.renderData();
         this.renderHeader();
         this.renderLegend();
 
