@@ -8,6 +8,9 @@
     "browser": {
         "d3": {
             "global": "d3"
+        },
+        "lodash": {
+            "global": "_"
         }
     },
     "scripts": {
@@ -49,7 +52,7 @@
             "distDir": "./dist",
             "context": "browser",
             "outputFormat": "esmodule",
-            "optimize": true
+            "optimize": false
         },
         "module": {
             "distDir": "./dist",

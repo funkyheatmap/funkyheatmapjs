@@ -1,7 +1,6 @@
 import * as d3 from 'd3';
 
 
-
 const defaultPalettes = {
     numerical: {
         Blues: [

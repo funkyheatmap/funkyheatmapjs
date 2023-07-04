@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import * as _ from 'lodash';
 
 import { maybeConvertDataframe } from './input_util';
 import { buildColumnInfo, Column } from './columns';
