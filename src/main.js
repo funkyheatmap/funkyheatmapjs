@@ -568,30 +568,24 @@ class FHeatmap {
  * @param {Object|Object[]} data - data to plot, usually d3-fetch output.
  *      It should be an Array of Objects, each object has the same properties.
  * @param {Object|Object[]} columnInfo - information about how the columns should be displayed
- * @param {Object|Object[]} columnGroups - information about how to group columns
  * @param {Object|Object[]} rowInfo - information about how the rows should be displayed
+ * @param {Object|Object[]} columnGroups - information about how to group columns
  * @param {Object|Object[]} rowGroups - information about how to group rows
  * @param {Object} palettes - mapping of names to palette colors
- * @param {int} expand -
- * @param {int} colAnnotOffset -
- * @param {boolean} addAbc - deprecated, moved to options.labelGroupsAbc
- * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
- *      columns. Defaults to true
  * @param {Object} options - options for the heatmap
  * @param {int} options.fontSize - font size for all text
+ * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
+ *      columns. Defaults to true
  */
 function funkyheatmap(
     data,
     columnInfo,
-    columnGroups,
     rowInfo,
+    columnGroups,
     rowGroups,
     palettes,
-    expand,
-    colAnnotOffset,
-    addAbc,
-    scaleColumn = true,
-    options = {}
+    options,
+    scaleColumn = true
 ) {
     [data, columnInfo, columnGroups, rowInfo, rowGroups] = maybeConvertDataframe(
         data, columnInfo, columnGroups, rowInfo, rowGroups
