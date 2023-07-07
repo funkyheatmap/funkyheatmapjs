@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.2...v0.2.3) (2023-07-07)
+
+
+### Misc
+
+* optimize browser build ([7ae2151](https://github.com/funkyheatmap/funkyheatmapjs/commit/7ae2151e0493f471c2d322cac25e213f87814a52))
+
 ## [0.2.2](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.1...v0.2.2) (2023-07-07)
 
 
