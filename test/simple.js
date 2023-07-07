@@ -12,5 +12,7 @@ d3.csv('mtcars.csv').then((data) => {
     const { columns } = data;
     data = d3.sort(data, (a, b) => d3.ascending(+b.mpg, +a.mpg));
     data = data.slice(0, 20);
-    d3.select("#app").node().appendChild(funkyheatmap(data, columns));
+    d3.select("#app").node().appendChild(funkyheatmap(data, columns.map(c => {
+        return {id: c}
+    })));
 });
