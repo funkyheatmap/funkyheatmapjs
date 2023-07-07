@@ -3,6 +3,7 @@
     "version": "0.1.9",
     "description": "JS version of funkyheatmap",
     "source": "./src/main.js",
+    "type": "module",
     "module": "./dist/funkyheatmap.js",
     "unpkg": "./dist/funkyheatmap.min.js",
     "browser": {
@@ -16,7 +17,8 @@
     "scripts": {
         "start": "parcel test/*.html test/mtcars.csv",
         "build": "parcel build && cp ./dist/browser/main.js ./dist/funkyheatmap.min.js",
-        "lint": "node ./node_modules/eslint/bin/eslint . --ext .js --fix"
+        "lint": "node ./node_modules/eslint/bin/eslint . --ext .js --fix",
+        "test": "mocha --es-module-specifier-resolution=node tests"
     },
     "repository": {
         "type": "git",
@@ -45,6 +47,7 @@
         "eslint": "^8.35.0",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-plugin-import": "^2.27.5",
+        "mocha": "^10.2.0",
         "parcel": "^2.8.3"
     },
     "targets": {
