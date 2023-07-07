@@ -136,18 +136,38 @@ class FHeatmap {
                 rowGroup = item[this.rowGroupKey];
                 let value = item[column.id];
                 let colorValue = value;
+                let label;
                 if (column.numeric) {
                     value = +value;
                 }
                 if (O.colorByRank && column.numeric) {
                     colorValue = rankedData[j];
                 }
+                if (column.label) {
+                    label = item[column.label];
+                }
                 if (GEOMS[column.geom] === undefined) {
                     throw `Geom ${column.geom} not implements. Use one of ${Object.keys(GEOMS).join(', ')}.`;
                 }
                 let el = GEOMS[column.geom](value, colorValue, column, O);
+                if (label) {
+                    const labelColor = d3.hsl(column.palette(colorValue)).l > 0.5
+                        ? 'black'
+                        : 'white';
+                    const g = d3.create('svg:g')
+                        .classed('fh-geom', true);
+                    g.append(() => el.classed('fh-geom', false).node());
+                    g.append('text')
+                        .attr('x', O.rowHeight / 2)
+                        .attr('y', O.rowHeight / 2)
+                        .attr('text-anchor', 'middle')
+                        .attr('dominant-baseline', 'central')
+                        .attr('fill', labelColor)
+                        .text(label);
+                    el = g;
+                }
                 el.attr('transform', `translate(${offset}, ${(j + nGroups) * O.rowHeight})`);
-                if (column.numeric) {
+                if (column.numeric && !label) {
                     let tooltip = (+value).toFixed(4);
                     tooltip = tooltip.replace(/\.?0+$/, '');
                     el.datum({tooltip: tooltip});
@@ -167,6 +187,19 @@ class FHeatmap {
                 }
                 if (width > maxWidth) {
                     maxWidth = width;
+                }
+                if (label) {
+                    label = el.select('text');
+                    let fontSize = 100;
+                    for (let q = 0; q < 8; q++) {
+                        const { width } = label.node().getBBox();
+                        if (width > O.geomSize - O.geomPadding * 2) {
+                            fontSize -= 5;
+                            label.attr('font-size', `${fontSize}%`);
+                        } else {
+                            break;
+                        }
+                    }
                 }
             });
             if (column.geom === 'bar') {
@@ -594,9 +627,6 @@ function funkyheatmap(
     const columns = columnInfo.map(column => column.id);
     columnInfo = buildColumnInfo(data, columns, columnInfo, scaleColumn, options.colorByRank);
     assignPalettes(columnInfo, palettes);
-
-    // TODO: figure out what to do https://github.com/funkyheatmap/funkyheatmap-js/issues/6
-    columnInfo = d3.filter(columnInfo, info => !info.overlay);
 
     const svg = d3.select('body')
         .append('svg')
