@@ -9,7 +9,7 @@ if (module.hot) {
 }
 
 column_info = [
-    {id: "model", group: null, name: "", geom: "text", palette: null},
+    {id: "model", group: null, name: "Name", geom: "text", palette: null},
     {id: "mpg", group: "overall", name: "Miles / gallon", geom: "bar", palette: "palette1", options: {width: 4, legend: false}},
     {id: "cyl", group: "overall", name: "Number of cylinders", geom: "bar", palette: "palette2", options: {width: 4, legend: false}},
     {id: "disp", group: "group1", name: "Displacement (cu.in.)", geom: "funkyrect", palette: "palette1"},
