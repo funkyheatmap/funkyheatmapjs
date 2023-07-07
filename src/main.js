@@ -48,21 +48,23 @@ class FHeatmap {
         this.options.geomSize = this.options.rowHeight - 2 * this.options.geomPadding;
         this.renderGroups = false;
 
-        // TODO: revise
         this.rowGroupOrder = [];
-        if (this.rowInfo.length > 0 && this.rowInfo[0].group !== undefined) {
-            this.data.forEach((d, i) => {
-                const group = this.rowInfo[i].group;
-                d[this.rowGroupKey] = group;
-                if (this.rowGroupOrder.indexOf(group) === -1) {
-                    this.rowGroupOrder.push(group);
-                }
-            });
-            const group = this.rowInfo[0].group
-            const groupInfo = this.rowGroups.get(group);
-            if (groupInfo !== undefined && groupInfo.Group !== undefined) {
-                this.renderGroups = true;
+        // if we don't have row groups, put all rows in unnamed group
+        if (this.rowInfo.length === 0 || this.rowInfo[0].group === undefined) {
+            this.rowInfo = this.data.map(_ => { return {group: ''} });
+        }
+
+        this.data.forEach((d, i) => {
+            const group = this.rowInfo[i].group;
+            d[this.rowGroupKey] = group;
+            if (this.rowGroupOrder.indexOf(group) === -1) {
+                this.rowGroupOrder.push(group);
             }
+        });
+        const group = this.rowInfo[0].group
+        const groupInfo = this.rowGroups.get(group);
+        if (groupInfo !== undefined && groupInfo.Group !== undefined) {
+            this.renderGroups = true;
         }
     }
 
