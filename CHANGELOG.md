@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.2](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.1...v0.2.2) (2023-07-07)
+
+
+### Bug Fixes
+
+* place sort indicator for non-rotated column ([74890d8](https://github.com/funkyheatmap/funkyheatmapjs/commit/74890d8025bce7659a6304b8cd9e43839b1d08db))
+
+
+### Tests
+
+* add name column to full test ([af9b3e8](https://github.com/funkyheatmap/funkyheatmapjs/commit/af9b3e8416c990047906ef1937bc3289a6b42de4))
+
 ## [0.2.1](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.0...v0.2.1) (2023-07-07)
 
 
