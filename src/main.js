@@ -523,6 +523,7 @@ class FHeatmap {
 
     onColumnClick(e) {
         const el = d3.select(e.target);
+        const elBox = el.node().getBBox();
         const column = el.datum();
         const comparator = column.sort();
         let data = d3.group(this.data, d => d[this.rowGroupKey]);
@@ -537,10 +538,10 @@ class FHeatmap {
         this.svg.selectChildren().remove();
         this.render();
 
-        this.indicateSort(column, el);
+        this.indicateSort(column, elBox);
     }
 
-    indicateSort(column, label) {
+    indicateSort(column, labelBox) {
         const O = this.options;
         this.sortIndicator = this.header.append("text")
             .attr('font-size', 12)
@@ -556,9 +557,8 @@ class FHeatmap {
         let x = column.offset + column.widthPx / 2 - 2 * O.padding;
         let y = O.headerHeight - O.padding;
         if (!column.rotate) {
-            const box = label.node().getBBox();
-            x -= box.width / 2;
-            y -= box.height / 2;
+            x -= labelBox.width / 2;
+            y -= labelBox.height / 2;
             this.sortIndicator.attr('dominant-baseline', 'central');
         }
         this.sortIndicator
