@@ -1,5 +1,5 @@
 {
-    "name": "funkyheatmap-js",
+    "name": "funkyheatmapjs",
     "version": "0.1.9",
     "description": "JS version of funkyheatmap",
     "source": "./src/main.js",
@@ -22,10 +22,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/mxposed/funkyheatmap-js"
+        "url": "https://github.com/funkyheatmap/funkyheatmapjs"
     },
     "bugs": {
-        "url": "https://github.com/mxposed/funkyheatmap-js/issues"
+        "url": "https://github.com/funkyheatmap/funkyheatmapjs/issues"
     },
     "files": [
         "./dist/funkyheatmap.js",
