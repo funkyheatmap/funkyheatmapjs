@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.0...v0.2.1) (2023-07-07)
+
+
+### Misc
+
+* add tests & update changelog ([543a108](https://github.com/funkyheatmap/funkyheatmapjs/commit/543a10831aed4b095057735873904e39831bf1fb))
+
 ## [0.2.0](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.1.9...v0.2.0) (2023-07-07)
 
 ### Breaking changes

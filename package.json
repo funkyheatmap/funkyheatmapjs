@@ -1,6 +1,6 @@
 {
     "name": "funkyheatmapjs",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "JS version of funkyheatmap",
     "source": "./src/main.js",
     "type": "module",
