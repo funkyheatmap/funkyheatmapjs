@@ -31,7 +31,8 @@
         "./dist/funkyheatmap.js",
         "./dist/funkyheatmap.min.js",
         "./src/*",
-        "./test/*"
+        "./test/*",
+        "./tests/*"
     ],
     "keywords": [],
     "author": {

@@ -2,6 +2,8 @@
 
 ## [0.2.0](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.1.9...v0.2.0) (2023-07-07)
 
+### Breaking changes
+`funkyheatmap` arguments have changed and are not compatible with the previous version
 
 ### Features
 
