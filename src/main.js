@@ -35,35 +35,34 @@ class FHeatmap {
 
         this.data = data;
         this.columnInfo = columnInfo;
-        // TODO: we can have no column groups
         this.columnGroups = d3.index(columnGroups, group => group.group);
         this.rowInfo = rowInfo;
-        this.rowGroups = rowGroups;
+        this.rowGroups = d3.index(rowGroups, group => group.group);
         this.palettes = palettes;
         this.options = _.merge(DEFAULT_OPTIONS, options);
-        this.renderGroups = false;
         this.calculateOptions();
         this.svg = svg;
     }
 
     calculateOptions() {
         this.options.geomSize = this.options.rowHeight - 2 * this.options.geomPadding;
+        this.renderGroups = false;
 
         // TODO: revise
         this.rowGroupOrder = [];
-        this.data.forEach((d, i) => {
-            const group = this.rowInfo[i].group;
-            d[this.rowGroupKey] = group;
-            if (this.rowGroupOrder.indexOf(group) === -1) {
-                this.rowGroupOrder.push(group);
+        if (this.rowInfo.length > 0 && this.rowInfo[0].group !== undefined) {
+            this.data.forEach((d, i) => {
+                const group = this.rowInfo[i].group;
+                d[this.rowGroupKey] = group;
+                if (this.rowGroupOrder.indexOf(group) === -1) {
+                    this.rowGroupOrder.push(group);
+                }
+            });
+            const group = this.rowInfo[0].group
+            const groupInfo = this.rowGroups.get(group);
+            if (groupInfo !== undefined && groupInfo.Group !== undefined) {
+                this.renderGroups = true;
             }
-        });
-        this.rowGroups = d3.index(this.rowGroups, group => group.group);
-
-        const group = this.rowInfo[0].group
-        const groupInfo = this.rowGroups.get(group);
-        if (group !== undefined && groupInfo !== undefined && groupInfo.Group !== undefined) {
-            this.renderGroups = true;
         }
     }
 
@@ -580,11 +579,11 @@ class FHeatmap {
 function funkyheatmap(
     data,
     columnInfo,
-    rowInfo,
-    columnGroups,
-    rowGroups,
+    rowInfo = [],
+    columnGroups = [],
+    rowGroups = [],
     palettes,
-    options,
+    options = {},
     scaleColumn = true
 ) {
     [data, columnInfo, columnGroups, rowInfo, rowGroups] = maybeConvertDataframe(
