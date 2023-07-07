@@ -56,7 +56,7 @@
             "distDir": "./dist",
             "context": "browser",
             "outputFormat": "esmodule",
-            "optimize": false
+            "optimize": true
         },
         "module": {
             "distDir": "./dist",
