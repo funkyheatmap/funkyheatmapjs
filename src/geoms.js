@@ -139,5 +139,14 @@ export const GEOMS = {
                 .style('stroke-width', 1)
                 .attr('transform', `translate(${O.rowHeight / 2}, ${O.rowHeight / 2})`);
         return g;
+    },
+
+    image: function(value, _, column, O) {
+        return d3.create('svg:image')
+            .attr('y', O.geomPadding)
+            .attr('href', value)
+            .attr('height', O.geomSize)
+            .attr('width', column.width)
+            .attr('preserveAspectRatio', 'xMidYMid');
     }
 };

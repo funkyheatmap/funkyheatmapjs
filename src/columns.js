@@ -48,6 +48,10 @@ export class Column {
             }
         }
 
+        if (this.geom === 'image' && this.width === undefined) {
+            throw `Please, specify width for column with geom=image`;
+        }
+
         if (this.options === undefined) {
             this.options = {};
         }

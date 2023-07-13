@@ -15,7 +15,7 @@
         }
     },
     "scripts": {
-        "start": "parcel test/*.html test/mtcars.csv",
+        "start": "parcel test/*.html test/mtcars.csv test/*.png",
         "build": "parcel build && cp ./dist/browser/main.js ./dist/funkyheatmap.min.js",
         "lint": "node ./node_modules/eslint/bin/eslint . --ext .js --fix",
         "test": "mocha --es-module-specifier-resolution=node tests"

@@ -20,7 +20,8 @@ column_info = [
     {id: "vs", group: "group2", name: "Engine", geom: "circle", palette: "palette2"},
     {id: "am", group: "group2", name: "Transmission", geom: "circle", palette: "palette2"},
     {id: "gear", group: "group2", name: "# Forward gears", geom: "circle", palette: "palette2"},
-    {id: "carb", group: "group2", name: "# Carburetors", geom: "circle", palette: "palette2"}
+    {id: "carb", group: "group2", name: "# Carburetors", geom: "circle", palette: "palette2"},
+    {id: "schema", group: "group2", name: "Schema", geom: "image", width: 80}
 ];
 
 column_groups = [
@@ -38,6 +39,9 @@ palettes = {
 d3.csv('mtcars.csv').then((data) => {
     data = d3.sort(data, (a, b) => d3.ascending(+b.mpg, +a.mpg));
     data = data.slice(0, 20);
+    data.forEach((d, i) => {
+        d.schema = i % 2 ? "image1.png" : "image2.png"
+    });
     d3.select("#app").node().appendChild(funkyheatmap(
         data,
         column_info,

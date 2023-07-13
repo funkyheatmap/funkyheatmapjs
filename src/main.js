@@ -147,7 +147,7 @@ class FHeatmap {
                     label = item[column.label];
                 }
                 if (GEOMS[column.geom] === undefined) {
-                    throw `Geom ${column.geom} not implements. Use one of ${Object.keys(GEOMS).join(', ')}.`;
+                    throw `Geom ${column.geom} not implemented. Use one of ${Object.keys(GEOMS).join(', ')}.`;
                 }
                 let el = GEOMS[column.geom](value, colorValue, column, O);
                 if (label) {
@@ -181,7 +181,10 @@ class FHeatmap {
                     el.datum({tooltip: tooltip});
                 }
                 this.body.append(() => el.node());
-                const elWidth = el.node().getBBox().width
+                let elWidth = el.node().getBBox().width;
+                if (column.geom === 'image') {
+                    elWidth = column.width;
+                }
                 if (elWidth > width) {
                     width = elWidth;
                 }
@@ -315,8 +318,8 @@ class FHeatmap {
             if (height > headerHeight) {
                 headerHeight = height;
             }
-            if (column.offset + width > bodyWidth) {
-                bodyWidth = column.offset + width + O.padding;
+            if (column.offset + column.widthPx / 2 + width > bodyWidth) {
+                bodyWidth = column.offset + column.widthPx / 2 + width + O.padding;
             }
         });
         this.columnInfo.forEach((column, i) => {
