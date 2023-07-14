@@ -30,7 +30,17 @@ const DEFAULT_OPTIONS = {
 
 
 class FHeatmap {
-    constructor(data, columnInfo, columnGroups, rowInfo, rowGroups, palettes, options, svg) {
+    constructor(
+        data,
+        columnInfo,
+        columnGroups,
+        rowInfo,
+        rowGroups,
+        palettes,
+        removedEntries,
+        options,
+        svg
+    ) {
         this.rowGroupKey = '__group';
 
         this.data = data;
@@ -39,6 +49,7 @@ class FHeatmap {
         this.rowInfo = rowInfo;
         this.rowGroups = d3.index(rowGroups, group => group.group);
         this.palettes = palettes;
+        this.removedEntries = removedEntries;
         this.options = _.merge(DEFAULT_OPTIONS, options);
         this.calculateOptions();
         this.svg = svg;
@@ -350,12 +361,15 @@ class FHeatmap {
         const O = this.options;
         let footerHeight = 0;
         const legend = this.footer.append('g');
+        let legendXOffset = 0;
         let offset = 0;
+        let funkyrectPresent = false;
         if (d3.some(this.columnInfo, column => column.geom === "funkyrect")) {
+            funkyrectPresent = true;
             // Locate first funkyrect column for legend position
             for (let column of this.columnInfo) {
                 if (column.geom === "funkyrect") {
-                    offset = column.offset;
+                    legendXOffset = column.offset;
                     break;
                 }
             }
@@ -466,16 +480,55 @@ class FHeatmap {
                         .style('stroke', O.theme.strokeColor)
                         .style('stroke-width', 0.5);
 
-                offset += O.geomSize / 2 + g.node().getBoundingClientRect().width + 4 * O.geomPadding;
+                offset += O.geomSize / 2 + g.node().getBoundingClientRect().width + O.padding;
             });
+        }
+        if (this.removedEntries.length > 0) {
+            const nCols = 2;
+            const nRows = Math.ceil(this.removedEntries.length / nCols);
+            const g = legend.append('g')
+                .attr('transform', `translate(${offset + O.padding}, ${O.rowHeight + O.padding})`);
+
+            g.append('text')
+                .attr('font-size', O.legendFontSize)
+                .style('fill', O.theme.textColor)
+                .text('Not shown, insufficient data points:');
+
+            let x = 0;
+            d3.range(nCols).forEach(i => {
+                const slice = this.removedEntries.slice(i * nRows, (i + 1) * nRows);
+                const text = g.append('text')
+                    .attr('y', O.padding)
+                    .attr('font-size', O.legendFontSize)
+                    .style('fill', O.theme.textColor);
+                text.selectAll('texts')
+                    .data(slice)
+                    .enter()
+                    .append('tspan')
+                        .text(d => d)
+                        .attr('x', x)
+                        .attr('dy', '1.3em');
+                x += text.node().getBBox().width + O.padding;
+            });
+            offset += g.node().getBBox().width + 2 * O.padding;
         }
         const { height } = legend.node().getBBox();
         if (height > footerHeight) {
             footerHeight = height;
         }
-        if (offset > O.width) {
-            O.width = offset;
+        let legendWidth = offset - O.padding;
+        if (funkyrectPresent) {
+            legendWidth += O.geomSize;
         }
+        if (legendXOffset + legendWidth > O.width) {
+            if (legendWidth <= O.width) { // try to right-justify the legend
+                legendXOffset = O.width - legendWidth;
+            } else {
+                legendXOffset = 0;
+                O.width = offset;
+            }
+        }
+        this.options.footerOffset = legendXOffset;
         this.options.footerHeight = footerHeight + O.rowHeight;
     }
 
@@ -587,7 +640,7 @@ class FHeatmap {
         }
         this.body.selectAll('.row').attr('width', O.bodyWidth);
         this.body.attr("transform", `translate(0, ${O.headerHeight})`);
-        this.footer.attr('transform', `translate(0, ${O.headerHeight + O.bodyHeight})`);
+        this.footer.attr('transform', `translate(${O.footerOffset}, ${O.headerHeight + O.bodyHeight})`);
         this.svg.attr('style', '');
         if (this.options.rootStyle) {
             this.svg.attr('style', this.options.rootStyle);
@@ -613,6 +666,7 @@ class FHeatmap {
  * @param {int} options.fontSize - font size for all text
  * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
  *      columns. Defaults to true
+ * @param {String[]} removedEntries - list of entries to display as removed in the legend space
  */
 function funkyheatmap(
     data,
@@ -622,7 +676,8 @@ function funkyheatmap(
     rowGroups = [],
     palettes,
     options = {},
-    scaleColumn = true
+    scaleColumn = true,
+    removedEntries = []
 ) {
     [data, columnInfo, columnGroups, rowInfo, rowGroups] = maybeConvertDataframe(
         data, columnInfo, columnGroups, rowInfo, rowGroups
@@ -644,6 +699,7 @@ function funkyheatmap(
         rowInfo,
         rowGroups,
         palettes,
+        removedEntries,
         options,
         svg
     );
