@@ -434,8 +434,8 @@ class FHeatmap {
                 }
                 rendered.push(key);
 
-                if (offset < column.offset) {
-                    offset = column.offset;
+                if (legendXOffset + offset < column.offset) {
+                    offset += column.offset - legendXOffset;
                 }
 
                 const arcs = d3.pie().endAngle(Math.PI)(Array(column.palette.colorNames.length).fill(1));
