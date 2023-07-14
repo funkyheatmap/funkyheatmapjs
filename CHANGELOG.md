@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.4](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.3...v0.2.4) (2023-07-14)
+
+
+### Features
+
+* display removed entries in legend ([acb86f9](https://github.com/funkyheatmap/funkyheatmapjs/commit/acb86f9fd06969dc46ef002ec16de294cfb77110))
+* image geom ([1930a31](https://github.com/funkyheatmap/funkyheatmapjs/commit/1930a319b69267d07a00682d9c002a5f9fb87e6f))
+
+
+### Bug Fixes
+
+* column size for geom with label ([8d5612c](https://github.com/funkyheatmap/funkyheatmapjs/commit/8d5612c9ea2d21e7ae4bcae3c68880327b5567d4))
+* legend positioning for funkyrect + pie ([92c45e1](https://github.com/funkyheatmap/funkyheatmapjs/commit/92c45e12af1d0cd843c60cabb82d8730321e9d63))
+
 ## [0.2.3](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.2...v0.2.3) (2023-07-07)
 
 
