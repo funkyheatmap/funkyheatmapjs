@@ -167,7 +167,7 @@ class FHeatmap {
                         : 'white';
                     const g = d3.create('svg:g')
                         .classed('fh-geom', true);
-                    g.append(() => el.classed('fh-geom', false).node());
+                    g.append(() => el.classed('fh-geom', false).classed('fh-orig-geom', true).node());
                     g.append('text')
                         .attr('x', O.rowHeight / 2)
                         .attr('y', O.rowHeight / 2)
@@ -192,7 +192,12 @@ class FHeatmap {
                     el.datum({tooltip: tooltip});
                 }
                 this.body.append(() => el.node());
-                let elWidth = el.node().getBBox().width;
+                let elWidth;
+                if (label) {
+                    elWidth = el.select('.fh-orig-geom').node().getBBox().width;
+                } else {
+                    elWidth = el.node().getBBox().width;
+                }
                 if (column.geom === 'image') {
                     elWidth = column.width;
                 }
