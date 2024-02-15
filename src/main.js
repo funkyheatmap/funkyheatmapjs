@@ -465,6 +465,7 @@ class FHeatmap {
                     .text((_, i) => column.palette.colorNames[i])
                     .attr('font-size', O.legendFontSize)
                     .attr('dominant-baseline', 'central')
+                    .style('fill', O.theme.textColor)
                     .attr('transform', d => {
                         const p = d3.arc().innerRadius(O.geomSize / 2).outerRadius(O.geomSize).centroid(d);
                         p[0] += O.geomSize / 2 + 4 * O.geomPadding;
