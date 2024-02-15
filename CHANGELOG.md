@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.5](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.4...v0.2.5) (2024-02-15)
+
+### Bug Fixes
+
+* Add text fill option to legend @rcannood ([c5f0bc0](https://github.com/funkyheatmap/funkyheatmapjs/commit/c5f0bc0a65b01ddf04f87f35dea5705a01e36eb1))
+
+### Misc
+
+* release 0.2.5 ([675082f](https://github.com/funkyheatmap/funkyheatmapjs/commit/675082fa02495b3076469ae360a00c4717f5c480))
+
 ## [0.2.4](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.3...v0.2.4) (2023-07-14)
 
 
