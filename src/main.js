@@ -37,7 +37,6 @@ class FHeatmap {
         rowInfo,
         rowGroups,
         palettes,
-        removedEntries,
         options,
         svg
     ) {
@@ -49,7 +48,6 @@ class FHeatmap {
         this.rowInfo = rowInfo;
         this.rowGroups = d3.index(rowGroups, group => group.group);
         this.palettes = palettes;
-        this.removedEntries = removedEntries;
         this.options = _.merge(DEFAULT_OPTIONS, options);
         this.calculateOptions();
         this.svg = svg;
@@ -489,35 +487,6 @@ class FHeatmap {
                 offset += O.geomSize / 2 + g.node().getBoundingClientRect().width + O.padding;
             });
         }
-        if (this.removedEntries.length > 0) {
-            const nCols = 2;
-            const nRows = Math.ceil(this.removedEntries.length / nCols);
-            const g = legend.append('g')
-                .attr('transform', `translate(${offset + O.padding}, ${O.rowHeight + O.padding})`);
-
-            g.append('text')
-                .attr('font-size', O.legendFontSize)
-                .style('fill', O.theme.textColor)
-                .text('Not shown, insufficient data points:');
-
-            let x = 0;
-            d3.range(nCols).forEach(i => {
-                const slice = this.removedEntries.slice(i * nRows, (i + 1) * nRows);
-                const text = g.append('text')
-                    .attr('y', O.padding)
-                    .attr('font-size', O.legendFontSize)
-                    .style('fill', O.theme.textColor);
-                text.selectAll('texts')
-                    .data(slice)
-                    .enter()
-                    .append('tspan')
-                        .text(d => d)
-                        .attr('x', x)
-                        .attr('dy', '1.3em');
-                x += text.node().getBBox().width + O.padding;
-            });
-            offset += g.node().getBBox().width + 2 * O.padding;
-        }
         const { height } = legend.node().getBBox();
         if (height > footerHeight) {
             footerHeight = height;
@@ -672,7 +641,6 @@ class FHeatmap {
  * @param {int} options.fontSize - font size for all text
  * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
  *      columns. Defaults to true
- * @param {String[]} removedEntries - list of entries to display as removed in the legend space
  */
 function funkyheatmap(
     data,
@@ -682,8 +650,7 @@ function funkyheatmap(
     rowGroups = [],
     palettes,
     options = {},
-    scaleColumn = true,
-    removedEntries = []
+    scaleColumn = true
 ) {
     [data, columnInfo, columnGroups, rowInfo, rowGroups] = maybeConvertDataframe(
         data, columnInfo, columnGroups, rowInfo, rowGroups
@@ -705,7 +672,6 @@ function funkyheatmap(
         rowInfo,
         rowGroups,
         palettes,
-        removedEntries,
         options,
         svg
     );

@@ -54,7 +54,6 @@ d3.csv('mtcars.csv').then((data) => {
             labelGroupsAbc: true,
             colorByRank: true
         },
-        true,
-        ['This row', 'This other row', 'This third row']
+        true
     ));
 });
