@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.6](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.5...v0.2.6) (2024-12-02)
+
+
+### Features
+
+* drop display of removed entries ([33786a9](https://github.com/funkyheatmap/funkyheatmapjs/commit/33786a9a8feead3e82ce833dfec833ce93920ba5))
+
 ## [0.2.5](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.4...v0.2.5) (2024-02-15)
 
 ### Bug Fixes
