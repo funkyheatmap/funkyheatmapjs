@@ -25,9 +25,9 @@ column_info = [
 ];
 
 column_groups = [
-    {name: "Overall", group: "overall", palette: "overall"},
-    {name: "Group 1", group: "group1", palette: "palette1"},
-    {name: "Group 2", group: "group2", palette: "palette2"}
+    {level1: "Overall", group: "overall", palette: "overall"},
+    {level1: "Group 1", group: "group1", palette: "palette1"},
+    {level1: "Group 2", group: "group2", palette: "palette2"}
 ];
 
 palettes = {
@@ -46,11 +46,12 @@ d3.csv('mtcars.csv').then((data) => {
         data,
         column_info,
         undefined, // row info
-        column_groups,
+        undefined,
+        // column_groups,
         undefined, // row groups
         palettes,
+        {rowHeight: 28, expand_ymax: 20},
         {
-            rowHeight: 28,
             labelGroupsAbc: true,
             colorByRank: true
         },

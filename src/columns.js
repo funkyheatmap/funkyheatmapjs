@@ -102,6 +102,60 @@ export function buildColumnInfo(data, columns, columnInfo, scaleColumn, colorByR
     });
 };
 
+/**
+ * Check and prepare column group information
+ *
+ * @param {Object[]} columnGroups - information about column groups, empty array if not specified
+ * @param {Object[]} columnInfo - information about columns, to crosscheck
+ * @returns {Object[]} - column groups with defaults filled in, if necessary
+ */
+export function buildColumnGroups(columnGroups, columnInfo) {
+    if (columnGroups.length === 0 && columnInfo.some(i => i.group)) {
+        console.info("No column groups specified, but some columns have group, building automatically");
+        columnGroups = columnInfo
+            .filter(i => i.group)
+            .map(i => i.group);
+        columnGroups = [...new Set(columnGroups)];
+        columnGroups = columnGroups.map(group => {
+            return {group: group}
+        });
+    }
+    if (!columnGroups.length === 0) {
+        return [];
+    }
+    columnInfo.forEach(i => {
+        if (i.group && !columnGroups.some(g => g.group === i.group)) {
+            throw `Column group ${i.group} is not specified in columnGroups`;
+        }
+    });
+    let allGroups = columnInfo.filter(i => i.group).map(i => i.group);
+    let unused = columnGroups.filter(i => !allGroups.includes(i.group));
+    if (unused.length > 0) {
+        console.warn(`Unused column groups: ${unused.map(i => i.group).join(', ')}`);
+    }
+
+    if (columnGroups[0].palette === undefined) {
+        console.info("Column groups did not specify `palette`. Assuming no colours")
+        columnGroups.forEach(i => {
+            i.palette = 'none';
+        });
+    }
+    columnGroups.forEach(i => {
+        if (i.palette === undefined) {
+            throw `Column group ${i.group} did not specify palette`;
+        }
+    });
+
+    if (columnGroups[0].level1 === undefined) {
+        console.info("Column groups did not specify `level1`. Using group id as level1")
+        columnGroups.forEach(i => {
+            i.level1 = i.group.charAt(0).toUpperCase() + i.group.slice(1);
+        });
+    }
+
+    return columnGroups;
+};
+
 function isNumeric(str) {
     if (typeof str === 'number') return true;
     if (typeof str !== 'string') return false;

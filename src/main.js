@@ -2,33 +2,142 @@ import * as d3 from 'd3';
 import * as _ from 'lodash';
 
 import { maybeConvertDataframe } from './input_util';
-import { buildColumnInfo, Column } from './columns';
+import { buildColumnInfo, buildColumnGroups, Column } from './columns';
 import { assignPalettes } from './palettes';
 import { GEOMS } from './geoms';
 
 
 const DEFAULT_OPTIONS = {
-    rowHeight: 24,
-    padding: 5,
-    geomPadding: 1.5,
-    columnRotate: 30,
-    midpoint: 0.8,
     legendFontSize: 12,
     legendTicks: [0, 0.2, 0.4, 0.6, 0.8, 1],
     labelGroupsAbc: false,
     colorByRank: false,
-    minGeomSize: 0.25,
     theme: {
         oddRowBackground: 'white',
         evenRowBackground: '#eee',
         textColor: 'black',
         strokeColor: '#555',
-        headerColor: 'white',
+        headerColor: 'black',
         hoverColor: '#1385cb'
     }
 };
 
+const DEFAULT_POSITION_ARGS = {
+    rowHeight: 24,
+    rowSpace: 0.1,
+    rowBigspace: 1,
+    colWidth: 24,
+    colSpace: 0.1,
+    colBigspace: 1,
+    colAnnotOffset: 10,
+    colAnnotAngle: 30,
+    padding: 5,
+    minGeomSize: 0.25,
+    funkyMidpoint: 0.8
+}
 
+/**
+ * Positional options for the heatmap.
+ *
+ * Configurable options:
+ * @property {number} rowHeight - height of a heatmap row, in pixels.
+ * @property {number} rowSpace - space between rows, as a fraction of rowHeight. Twice the padding.
+ * @property {number} rowBigspace - space between groups of rows, as a fraction of rowHeight.
+ * @property {number} colSpace - space between columns, as a fraction of rowHeight. Twice the
+ *      padding.
+ * @property {number} colAnnotOffset - offset of column groups from column labels, in pixels.
+ * @property {number} colAnnotAngle - angle of column labels, in degrees.
+ * @property {number} padding - padding used in certain places. TODO: document.
+ * @property {number} minGeomSize - minimum size of a heatmap element, in pixels.
+ * @property {number} funkyMidpoint - midpoint for funkyrect geom.
+ *
+ * Calculated options:
+ * @property {number} rowSpacePx - space between rows, in pixels.
+ * @property {number} rowBigspacePx - space between groups of rows, in pixels.
+ * @property {number} colSpacePx - space between columns, in pixels.
+ * @property {number} geomSize - size of a heatmap element, in pixels.
+ * @property {number} geomPadding - padding around heatmap elements, in pixels.
+ * @property {number} geomPaddingX - padding around heatmap elements in the x direction, in pixels.
+ * @property {number} bodyHeight - height of the heatmap body, in pixels.
+ * @property {number} bodyWidth - width of the heatmap body, in pixels.
+ * @property {number} width - width of the heatmap, in pixels, including header and footer.
+ * @property {number} headerHeight - height of the header, in pixels.
+ * @property {number} footerHeight - height of the footer, in pixels.
+ * @property {number} footerOffset - offset of the footer from the left edge of the heatmap, in pixels.
+ */
+class PositionArgs {
+    /**
+     * @param {Object} args - object with positional options
+     * @param {number} [args.rowHeight=24] - height of a heatmap row, in pixels.
+     * @param {number} [args.rowSpace=0.1] - space between rows, as a fraction of rowHeight.
+     *      Twice the padding.
+     * @param {number} [args.rowBigspace=1] - space between groups of rows, as a fraction of
+     *      rowHeight.
+     * @param {number} [args.colWidth=24] - width of a heatmap column, in pixels.
+     *      Deprecated, has no effect.
+     * @param {number} [args.colSpace=0.1] - space between columns, as a fraction of rowHeight.
+     *      Twice the padding.
+     * @param {number} [args.colBigspace=1] - space between groups of columns, as a fraction of
+     *      rowHeight. Currently not used.
+     * @param {number} [args.colAnnotOffset=3] - offset of column groups from column labels,
+     *      in pixels.
+     * @param {number} [args.colAnnotAngle=30] - angle of column labels, in degrees.
+     * @param {number} [args.padding=5] - padding around heatmap elements, in pixels.
+     * @param {number} [args.minGeomSize=0.25] - minimum size of a heatmap element, in pixels.
+     * @param {number} [args.funkyMidpoint=0.8] - midpoint for funkyrect geom.
+     */
+    constructor(args) {
+        _.extend(this, DEFAULT_POSITION_ARGS);
+        _.extend(this, args);
+        let underscoreDeprecatedArgs = [];
+        let deprecatedArgs = [];
+        for (let key of Object.getOwnPropertyNames(args)) {
+            let underscore = key.indexOf('_');
+            if (underscore > -1) {
+                let newKey;
+                while (underscore > -1) {
+                    newKey = key.slice(0, underscore) + key[underscore + 1].toUpperCase() + key.slice(underscore + 2);
+                    underscore = key.indexOf('_', underscore + 1);
+                }
+                this[newKey] = args[key];
+                underscoreDeprecatedArgs.push(key);
+                key = newKey;
+            }
+            if (key.startsWith('expand') || key == 'colWidth') {
+                deprecatedArgs.push(key);
+            }
+        }
+        if (underscoreDeprecatedArgs.length > 0) {
+            let msg = 'Position arguments with underscores were accepted, but are deprecated. Use camelCase instead.';
+            msg += ` Found: ${underscoreDeprecatedArgs.join(', ')}`;
+            console.warn(msg);
+        }
+        if (deprecatedArgs.length > 0) {
+            let msg = 'The following position arguments are deprecated and have no effect: ';
+            msg += deprecatedArgs.join(', ');
+            console.warn(msg);
+        }
+        this.calculate();
+    }
+
+    /**
+     * Pre-calculate needed values based on the options.
+     */
+    calculate() {
+        this.rowSpacePx = this.rowHeight * this.rowSpace;
+        this.rowBigspacePx = this.rowHeight * this.rowBigspace;
+        this.colSpacePx = this.rowHeight * this.colSpace;
+        // assuming square
+        this.geomSize = this.rowHeight - this.rowSpacePx;
+        this.geomPadding = this.rowSpacePx / 2;
+        this.geomPaddingX = this.colSpacePx / 2;
+    }
+}
+
+/**
+ * Heatmap class
+ * @property {PositionArgs} positionArgs
+ */
 class FHeatmap {
     constructor(
         data,
@@ -37,6 +146,7 @@ class FHeatmap {
         rowInfo,
         rowGroups,
         palettes,
+        positionArgs,
         options,
         svg
     ) {
@@ -48,13 +158,13 @@ class FHeatmap {
         this.rowInfo = rowInfo;
         this.rowGroups = d3.index(rowGroups, group => group.group);
         this.palettes = palettes;
+        this.positionArgs = new PositionArgs(positionArgs);
         this.options = _.merge(DEFAULT_OPTIONS, options);
         this.calculateOptions();
         this.svg = svg;
     }
 
     calculateOptions() {
-        this.options.geomSize = this.options.rowHeight - 2 * this.options.geomPadding;
         this.renderGroups = false;
 
         this.rowGroupOrder = [];
@@ -79,6 +189,8 @@ class FHeatmap {
 
     renderStripedRows() {
         const O = this.options;
+        const P = this.positionArgs;
+
         let rowGroup, nGroups = 0, colorCounter = 0;
         this.data.forEach((d, i) => {
             if (this.renderGroups && d[this.rowGroupKey] !== rowGroup) {
@@ -88,9 +200,9 @@ class FHeatmap {
             rowGroup = d[this.rowGroupKey];
             this.body.append('rect')
                 .classed('row', true)
-                .attr('height', O.rowHeight)
+                .attr('height', P.rowHeight)
                 .attr('x', 0)
-                .attr('y', (i + nGroups) * O.rowHeight)
+                .attr('y', (i + nGroups) * P.rowHeight)
                 .attr('fill', colorCounter % 2 === 0
                                 ? O.theme.evenRowBackground
                                 : O.theme.oddRowBackground);
@@ -100,23 +212,25 @@ class FHeatmap {
 
     renderData() {
         const O = this.options;
+        const P = this.positionArgs;
+
         let offset = 0;
-        O.bodyHeight = this.data.length * O.rowHeight;
+        P.bodyHeight = this.data.length * P.rowHeight;
         if (this.renderGroups) {
-            O.bodyHeight += this.rowGroups.size * O.rowHeight;
+            P.bodyHeight += this.rowGroups.size * P.rowHeight;
         }
-        let group;
+        let prevColGroup;
 
         this.columnInfo.forEach((column, i) => {
             let maxWidth = 0;
-            let padding = 0;
+            let padding = P.geomPaddingX;
             let firstColumn = i === 0;
             if (column.geom === 'text' || column.geom === 'bar') {
-                padding = O.padding;
+                padding = P.padding;
             }
             offset += padding;
-            if (group && column.group && group !== column.group) {
-                offset += 2 * O.padding;
+            if (prevColGroup && column.group && prevColGroup !== column.group) {
+                offset += 2 * P.padding;
             }
             let rankedData;
             if (O.colorByRank && column.numeric) {
@@ -133,10 +247,11 @@ class FHeatmap {
                         this.rowGroups.get(item[this.rowGroupKey]).Group,
                         null,
                         column,
-                        O
+                        O,
+                        P
                     );
                     groupName
-                        .attr('transform', `translate(${offset - padding}, ${(j + nGroups - 1) * O.rowHeight})`)
+                        .attr('transform', `translate(${offset - padding}, ${(j + nGroups - 1) * P.rowHeight})`)
                         .attr('font-weight', 'bold')
                         .attr('dominant-baseline', 'hanging');
                     this.body.append(() => groupName.node());
@@ -158,7 +273,7 @@ class FHeatmap {
                 if (GEOMS[column.geom] === undefined) {
                     throw `Geom ${column.geom} not implemented. Use one of ${Object.keys(GEOMS).join(', ')}.`;
                 }
-                let el = GEOMS[column.geom](value, colorValue, column, O);
+                let el = GEOMS[column.geom](value, colorValue, column, O, P);
                 if (label) {
                     const labelColor = d3.hsl(column.palette(colorValue)).l > 0.5
                         ? 'black'
@@ -167,15 +282,15 @@ class FHeatmap {
                         .classed('fh-geom', true);
                     g.append(() => el.classed('fh-geom', false).classed('fh-orig-geom', true).node());
                     g.append('text')
-                        .attr('x', O.rowHeight / 2)
-                        .attr('y', O.rowHeight / 2)
+                        .attr('x', P.rowHeight / 2)
+                        .attr('y', P.rowHeight / 2)
                         .attr('text-anchor', 'middle')
                         .attr('dominant-baseline', 'central')
                         .attr('fill', labelColor)
                         .text(label);
                     el = g;
                 }
-                el.attr('transform', `translate(${offset}, ${(j + nGroups) * O.rowHeight})`);
+                el.attr('transform', `translate(${offset}, ${(j + nGroups) * P.rowHeight})`);
                 if (column.numeric && !label) {
                     let tooltip = (+value).toFixed(4);
                     tooltip = tooltip.replace(/\.?0+$/, '');
@@ -210,7 +325,7 @@ class FHeatmap {
                     let fontSize = 100;
                     for (let q = 0; q < 8; q++) {
                         const { width } = label.node().getBBox();
-                        if (width > O.geomSize - O.geomPadding * 2) {
+                        if (width > P.geomSize - P.geomPaddingX * 2) {
                             fontSize -= 5;
                             label.attr('font-size', `${fontSize}%`);
                         } else {
@@ -220,33 +335,35 @@ class FHeatmap {
                 }
             });
             if (column.geom === 'bar') {
-                maxWidth = O.geomSize * column.width + O.geomPadding;
+                maxWidth = P.geomSize * column.width + P.geomPadding;
                 this.body.append('line')
                     .attr('x1', offset + maxWidth)
                     .attr('x2', offset + maxWidth)
-                    .attr('y1', this.renderGroups ? O.rowHeight : 0)
-                    .attr('y2', O.bodyHeight)
+                    .attr('y1', this.renderGroups ? P.rowHeight : 0)
+                    .attr('y2', P.bodyHeight)
                     .attr('stroke', O.theme.strokeColor)
                     .attr('stroke-dasharray', '5 5')
                     .attr('opacity', 0.5);
             }
-            column.widthPx = Math.max(maxWidth, O.rowHeight);
+            column.widthPx = Math.max(maxWidth, P.rowHeight);
             column.widthPx = Math.round(column.widthPx);
             column.offset = offset;
             offset += column.widthPx + padding;
-            group = column.group;
+            prevColGroup = column.group;
         });
-        O.bodyWidth = offset + O.padding;
+        P.bodyWidth = offset + P.colSpacePx;
     }
 
     renderHeader() {
         const O = this.options;
+        const P = this.positionArgs;
+
         let headerHeight = 0;
         let bodyWidth = 0;
         let nonZeroRotate = false;
         const groups = this.header.append('g');
         const labels = this.header.append('g')
-            .attr('transform', `translate(0, ${O.rowHeight + O.padding})`);
+            .attr('transform', `translate(0, ${P.rowHeight + P.colAnnotOffset})`);
 
         const columnGroups = d3.group(this.columnInfo, column => column.group);
         let abcCounter = 0;
@@ -255,10 +372,6 @@ class FHeatmap {
                 return;
             }
             const groupInfo = this.columnGroups.get(groupName);
-            if (!groupInfo.level1 || !groupInfo.palette) {
-                return;
-            }
-
             const column = new Column({
                 id: '_group',
                 palette: groupInfo.palette
@@ -267,18 +380,18 @@ class FHeatmap {
             assignPalettes([column], this.palettes);
             const lastCol = group[group.length - 1];
             const groupStart = group[0].offset;
-            const groupEnd = lastCol.offset + lastCol.widthPx + O.geomPadding;
-            const fill = column.palette(0.5);
+            const groupEnd = lastCol.offset + lastCol.widthPx + P.geomPadding;
+            const fill = column.palette == 'none' && 'transparent' || column.palette(0.5);
             groups.append('rect')
                 .attr('x', groupStart)
                 .attr('y', 0)
                 .attr('width', groupEnd - groupStart)
-                .attr('height', O.rowHeight)
+                .attr('height', P.rowHeight)
                 .attr('fill', fill)
                 .attr('opacity', 0.25);
             const text = groups.append('text')
                 .attr('x', groupStart + (groupEnd - groupStart) / 2)
-                .attr('y', O.rowHeight / 2)
+                .attr('y', P.rowHeight / 2)
                 .attr('text-anchor', 'middle')
                 .attr('dominant-baseline', 'central')
                 .attr('fill', O.theme.headerColor)
@@ -289,8 +402,8 @@ class FHeatmap {
             if (O.labelGroupsAbc) {
                 const letter = String.fromCharCode("a".charCodeAt(0) + abcCounter);
                 const text = groups.append('text')
-                    .attr('x', groupStart + O.padding)
-                    .attr('y', O.rowHeight / 2)
+                    .attr('x', groupStart + P.padding)
+                    .attr('y', P.rowHeight / 2)
                     .attr('dominant-baseline', 'central')
                     .attr('fill', O.theme.headerColor)
                     .text(`${letter})`);
@@ -303,7 +416,7 @@ class FHeatmap {
 
         this.columnInfo.forEach((column, i) => {
             const el = labels.append('g')
-                .attr('transform', `rotate(${-O.columnRotate})`)
+                .attr('transform', `rotate(${-P.colAnnotAngle})`)
                 .classed(`column-${i}`, true);
             el.append('text')
                 .attr('x', 0)
@@ -322,7 +435,7 @@ class FHeatmap {
                 })
                 .text(column.name);
             const nativeWidth = el.node().getBBox().width;
-            if (!nonZeroRotate && nativeWidth < column.widthPx - 2 * O.padding) {
+            if (!nonZeroRotate && nativeWidth < column.widthPx - 2 * P.padding) {
                 column.rotate = false;
             } else {
                 column.rotate = true;
@@ -333,16 +446,16 @@ class FHeatmap {
                 headerHeight = height;
             }
             if (column.offset + column.widthPx / 2 + width > bodyWidth) {
-                bodyWidth = column.offset + column.widthPx / 2 + width + O.padding;
+                bodyWidth = column.offset + column.widthPx / 2 + width + P.padding;
             }
         });
         this.columnInfo.forEach((column, i) => {
             let center = column.offset + column.widthPx / 2;
-            let rotate = column.rotate ? -O.columnRotate : 0;
+            let rotate = column.rotate ? -P.colAnnotAngle : 0;
             this.header.select(`.column-${i}`)
                 .attr(
                     'transform',
-                    `translate(${center}, ${headerHeight - 2 * O.padding}) rotate(${rotate})`
+                    `translate(${center}, ${headerHeight - 2 * P.padding}) rotate(${rotate})`
                 );
             if (!column.rotate) {
                 labels.select(`.column-${i} text`)
@@ -352,16 +465,18 @@ class FHeatmap {
                     .attr('x1', center)
                     .attr('x2', center)
                     .attr('y1', headerHeight - 2)
-                    .attr('y2', headerHeight - 2 - O.padding)
+                    .attr('y2', headerHeight - 2 - P.padding)
                     .attr('stroke', O.theme.strokeColor);
             }
         });
-        this.options.width = bodyWidth;
-        this.options.headerHeight = headerHeight + O.rowHeight + O.padding;
+        P.width = bodyWidth;
+        P.headerHeight = headerHeight + P.rowHeight + P.colAnnotOffset;
     }
 
     renderLegend() {
         const O = this.options;
+        const P = this.positionArgs;
+
         let footerHeight = 0;
         const legend = this.footer.append('g');
         let legendXOffset = 0;
@@ -377,8 +492,8 @@ class FHeatmap {
                 }
             }
             legend.append('text')
-                .attr('x', offset + O.geomSize / 2)
-                .attr('y', O.rowHeight + O.padding)
+                .attr('x', offset + P.geomSize / 2)
+                .attr('y', P.rowHeight + P.padding)
                 .attr('font-size', O.legendFontSize)
                 .style('fill', O.theme.textColor)
                 .text('Score:');
@@ -391,12 +506,12 @@ class FHeatmap {
             assignPalettes([column]);
             const range = [...d3.range(0, 1, 0.1), 1];
             for (let i of range) {
-                let el = GEOMS.funkyrect(i, i, column, O);
+                let el = GEOMS.funkyrect(i, i, column, O, P);
                 legend.append(() => el.node());
                 const { width, height } = el.node().getBBox();
                 el.attr(
                     'transform',
-                    `translate(${offset}, ${1.5 * O.rowHeight - height / 2})`
+                    `translate(${offset}, ${1.5 * P.rowHeight - height / 2})`
                 );
                 if (O.colorByRank) {
                     el.style('fill', O.theme.oddRowBackground);
@@ -411,15 +526,15 @@ class FHeatmap {
                         tick = '1';
                     }
                     legend.append('text')
-                        .attr('x', offset + O.geomSize / 2 + O.geomPadding)
-                        .attr('y', 2.5 * O.rowHeight + O.padding)
+                        .attr('x', offset + P.geomSize / 2 + P.geomPadding)
+                        .attr('y', 2.5 * P.rowHeight + P.padding)
                         .attr('font-size', O.legendFontSize)
                         .attr('text-anchor', 'middle')
                         .attr('dominant-baseline', 'text-top')
                         .style('fill', O.theme.textColor)
                         .text(tick);
                 }
-                offset += width + 4 * O.geomPadding;
+                offset += width + P.padding;
             }
         }
         if (d3.some(this.columnInfo, column => column.geom === 'pie')) {
@@ -443,18 +558,18 @@ class FHeatmap {
 
                 const arcs = d3.pie().endAngle(Math.PI)(Array(column.palette.colorNames.length).fill(1));
                 const g = legend.append('g');
-                g.attr('transform', `translate(${offset}, ${1.5 * O.rowHeight + O.geomPadding})`);
+                g.attr('transform', `translate(${offset}, ${1.5 * P.rowHeight + P.geomPadding})`);
                 g.selectAll('arcs')
                     .data(arcs)
                     .enter()
                     .append('path')
-                        .attr('d', d3.arc().innerRadius(0).outerRadius(O.geomSize / 2))
+                        .attr('d', d3.arc().innerRadius(0).outerRadius(P.geomSize / 2))
                         .attr('fill', (_, i) => {
                             return column.palette(i);
                         })
                         .style('stroke', O.theme.strokeColor)
                         .style('stroke-width', 1)
-                        .attr('transform', `translate(${O.geomSize / 2 + O.geomPadding - 0.5}, 0)`);
+                        .attr('transform', `translate(${P.geomSize / 2 + P.geomPadding - 0.5}, 0)`);
 
                 g.selectAll('text')
                     .data(arcs)
@@ -465,8 +580,8 @@ class FHeatmap {
                     .attr('dominant-baseline', 'central')
                     .style('fill', O.theme.textColor)
                     .attr('transform', d => {
-                        const p = d3.arc().innerRadius(O.geomSize / 2).outerRadius(O.geomSize).centroid(d);
-                        p[0] += O.geomSize / 2 + 4 * O.geomPadding;
+                        const p = d3.arc().innerRadius(P.geomSize / 2).outerRadius(P.geomSize).centroid(d);
+                        p[0] += P.geomSize / 2 + 4 * P.geomPadding;
                         return `translate(${p})`;
                     });
 
@@ -475,36 +590,36 @@ class FHeatmap {
                     .enter()
                     .append('path')
                         .attr('d', d => {
-                            const p1 = d3.arc().innerRadius(O.geomSize / 2).outerRadius(O.geomSize / 2 + 5).centroid(d);
-                            const p2 = d3.arc().innerRadius(O.geomSize / 2).outerRadius(O.geomSize - 5).centroid(d);
-                            p1[0] += O.geomSize / 2 + O.geomPadding;
-                            p2[0] += O.geomSize / 2 + 3 * O.geomPadding;
+                            const p1 = d3.arc().innerRadius(P.geomSize / 2).outerRadius(P.geomSize / 2 + 5).centroid(d);
+                            const p2 = d3.arc().innerRadius(P.geomSize / 2).outerRadius(P.geomSize - 5).centroid(d);
+                            p1[0] += P.geomSize / 2 + P.geomPadding;
+                            p2[0] += P.geomSize / 2 + 3 * P.geomPadding;
                             return d3.line()([p1, p2]);
                         })
                         .style('stroke', O.theme.strokeColor)
                         .style('stroke-width', 0.5);
 
-                offset += O.geomSize / 2 + g.node().getBoundingClientRect().width + O.padding;
+                offset += P.geomSize / 2 + g.node().getBoundingClientRect().width + P.padding;
             });
         }
         const { height } = legend.node().getBBox();
         if (height > footerHeight) {
             footerHeight = height;
         }
-        let legendWidth = offset - O.padding;
+        let legendWidth = offset - P.padding;
         if (funkyrectPresent) {
-            legendWidth += O.geomSize;
+            legendWidth += P.geomSize;
         }
-        if (legendXOffset + legendWidth > O.width) {
-            if (legendWidth <= O.width) { // try to right-justify the legend
-                legendXOffset = O.width - legendWidth;
+        if (legendXOffset + legendWidth > P.width) {
+            if (legendWidth <= P.width) { // try to right-justify the legend
+                legendXOffset = P.width - legendWidth;
             } else {
                 legendXOffset = 0;
-                O.width = offset;
+                P.width = offset;
             }
         }
-        this.options.footerOffset = legendXOffset;
-        this.options.footerHeight = footerHeight + O.rowHeight;
+        P.footerOffset = legendXOffset;
+        P.footerHeight = footerHeight + P.rowHeight;
     }
 
     hideTooltip() {
@@ -574,6 +689,8 @@ class FHeatmap {
 
     indicateSort(column, labelBox) {
         const O = this.options;
+        const P = this.positionArgs;
+
         this.sortIndicator = this.header.append("text")
             .attr('font-size', 12)
             .attr('fill', O.theme.hoverColor);
@@ -585,8 +702,8 @@ class FHeatmap {
         this.sortIndicator
             .attr('text-anchor', 'right')
             .attr('dominant-baseline', 'text-bottom');
-        let x = column.offset + column.widthPx / 2 - 2 * O.padding;
-        let y = O.headerHeight - O.padding;
+        let x = column.offset + column.widthPx / 2 - 2 * P.padding;
+        let y = P.headerHeight - P.padding;
         if (!column.rotate) {
             x -= labelBox.width / 2;
             y -= labelBox.height / 2;
@@ -608,17 +725,19 @@ class FHeatmap {
         this.renderLegend();
 
         const O = this.options;
-        this.svg.attr('width', O.width);
-        this.svg.attr('height', O.bodyHeight + O.headerHeight + O.footerHeight);
+        const P = this.positionArgs;
+
+        this.svg.attr('width', P.width);
+        this.svg.attr('height', P.bodyHeight + P.headerHeight + P.footerHeight);
         if (this.renderGroups) {
-            this.header.attr('transform', `translate(0, ${O.rowHeight})`);
+            this.header.attr('transform', `translate(0, ${P.rowHeight})`);
         }
-        this.body.selectAll('.row').attr('width', O.bodyWidth);
-        this.body.attr("transform", `translate(0, ${O.headerHeight})`);
-        this.footer.attr('transform', `translate(${O.footerOffset}, ${O.headerHeight + O.bodyHeight})`);
+        this.body.selectAll('.row').attr('width', P.bodyWidth);
+        this.body.attr("transform", `translate(0, ${P.headerHeight})`);
+        this.footer.attr('transform', `translate(${P.footerOffset}, ${P.headerHeight + P.bodyHeight})`);
         this.svg.attr('style', '');
-        if (this.options.rootStyle) {
-            this.svg.attr('style', this.options.rootStyle);
+        if (O.rootStyle) {
+            this.svg.attr('style', O.rootStyle);
         }
     }
 
@@ -637,6 +756,7 @@ class FHeatmap {
  * @param {Object|Object[]} columnGroups - information about how to group columns
  * @param {Object|Object[]} rowGroups - information about how to group rows
  * @param {Object} palettes - mapping of names to palette colors
+ * @param {Object} positionArgs - positioning arguments
  * @param {Object} options - options for the heatmap
  * @param {int} options.fontSize - font size for all text
  * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
@@ -649,6 +769,7 @@ function funkyheatmap(
     columnGroups = [],
     rowGroups = [],
     palettes,
+    positionArgs = {},
     options = {},
     scaleColumn = true
 ) {
@@ -658,6 +779,7 @@ function funkyheatmap(
     const columns = columnInfo.map(column => column.id);
     columnInfo = buildColumnInfo(data, columns, columnInfo, scaleColumn, options.colorByRank);
     assignPalettes(columnInfo, palettes);
+    columnGroups = buildColumnGroups(columnGroups, columnInfo);
 
     const svg = d3.select('body')
         .append('svg')
@@ -672,6 +794,7 @@ function funkyheatmap(
         rowInfo,
         rowGroups,
         palettes,
+        positionArgs,
         options,
         svg
     );
