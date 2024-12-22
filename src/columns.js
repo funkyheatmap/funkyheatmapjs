@@ -120,7 +120,7 @@ export function buildColumnGroups(columnGroups, columnInfo) {
             return {group: group}
         });
     }
-    if (!columnGroups.length === 0) {
+    if (columnGroups.length === 0) {
         return [];
     }
     columnInfo.forEach(i => {
