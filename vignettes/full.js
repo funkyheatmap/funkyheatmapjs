@@ -46,10 +46,10 @@ d3.csv('mtcars.csv').then((data) => {
         data,
         column_info,
         undefined, // row info
-        undefined,
-        // column_groups,
+        undefined, // column_groups,
         undefined, // row groups
         palettes,
+        undefined, // legends
         {rowHeight: 28, expand_ymax: 20},
         {
             labelGroupsAbc: true,
