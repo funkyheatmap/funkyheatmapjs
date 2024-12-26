@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.2.6](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.5...v0.2.6) (2024-12-26)
+
+
+### Features
+
+* drop display of removed entries ([33786a9](https://github.com/funkyheatmap/funkyheatmapjs/commit/33786a9a8feead3e82ce833dfec833ce93920ba5))
+* positional options ([41b38ef](https://github.com/funkyheatmap/funkyheatmapjs/commit/41b38ef789e22c6d9d4a54561d3201fc7bffee96))
+* positional options ([f8a2c06](https://github.com/funkyheatmap/funkyheatmapjs/commit/f8a2c063c09047529426f8c9a73d3f3c9a8c42e0))
+
+
+### Bug Fixes
+
+* empty column groups bug ([71ce06f](https://github.com/funkyheatmap/funkyheatmapjs/commit/71ce06f9a9e72a0933e98f1519790f6e8ec47fb9))
+
+
+### Misc
+
+* Merge pull request [#20](https://github.com/funkyheatmap/funkyheatmapjs/issues/20) from funkyheatmap/position-args ([41b38ef](https://github.com/funkyheatmap/funkyheatmapjs/commit/41b38ef789e22c6d9d4a54561d3201fc7bffee96))
+
+
+### Tests
+
+* add scIB vignette ([3e6bd92](https://github.com/funkyheatmap/funkyheatmapjs/commit/3e6bd92ca660bcf219ab124e6dc4eae352acda9c))
+
 ## [0.2.5](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.4...v0.2.5) (2024-02-15)
 
 ### Bug Fixes
