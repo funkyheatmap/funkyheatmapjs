@@ -259,6 +259,9 @@ class FHeatmap {
                 }
                 rowGroup = item[this.rowGroupKey];
                 let value = item[column.id];
+if (value === undefined || value === null || (isNaN(value) && column.numeric)) {
+                    return;
+                }
                 let colorValue = value;
                 let label;
                 if (column.numeric) {
