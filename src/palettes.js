@@ -91,7 +91,7 @@ export function assignPalettes(columnInfo, palettes) {
                 column.palette = d3.scaleLinear().domain(domain).range(colors);
             }
             // TODO: replace with categorical
-            if (column.geom === 'pie') {
+            if (column.geom === 'pie' || column.geom === 'text') {
                 const domain = d3.range(colors.length);
                 column.palette = d3.scaleOrdinal().domain(domain).range(colors);
                 column.palette.colors = colors;

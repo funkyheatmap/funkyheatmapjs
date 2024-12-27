@@ -2,11 +2,15 @@ import * as d3 from 'd3';
 
 
 export const GEOMS = {
-    text: (value, _, __, O, P) => {
+    text: (value, _, column, O, P) => {
+        let fill = O.theme.textColor;
+        if (column.palette) {
+            fill = column.palette(value);
+        }
         const el = d3.create('svg:text')
             .attr('dominant-baseline', 'middle')
             .attr('y', P.rowHeight / 2)
-            .style('fill', O.theme.textColor)
+            .style('fill', fill)
             .text(value);
         if (O.fontSize) {
             el.attr('font-size', O.fontSize);
