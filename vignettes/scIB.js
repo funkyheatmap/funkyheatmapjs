@@ -68,11 +68,11 @@ function prepareData(data) {
 }
 
 const column_info = [
-    {id: "id", name: "Rank", geom: "text", group: "Method", options: {hjust: 0}},
+    {id: "id", name: "Rank", geom: "text", group: "Method", options: {align: "right"}},
     {id: "method", name: "Method", geom: "text", group: "Method", options: {hjust: 0}},
     {id: "output_img", name: "Output", geom: "image", group: "Method", options: {width: 20}},
     {id: "features", id_color: "features", name: "Features", geom: "text", group: "Method", options: {palette: "features"}},
-    {id: "scaling", name: "Scaling", geom: "text", group: "Method", options: {fontface: "bold"}},
+    {id: "scaling", name: "Scaling", geom: "text", group: "Method", options: {fontSize: 18, align: "center"}},
     {id: "overall_pancreas", id_color: "rank_pancreas", name: "Pancreas", geom: "bar", group: "RNA", id_label: "label_pancreas", options: {palette: "blues", width: 1.5, draw_outline: false}},
     {id: "overall_lung_atlas", id_color: "rank_lung_atlas", name: "Lung", geom: "bar", group: "RNA", id_label: "label_lung_atlas", options: {palette: "blues", width: 1.5, draw_outline: false}},
     {id: "overall_immune_cell_hum", id_color: "rank_immune_cell_hum", name: "Immune (human)", geom: "bar", group: "RNA", id_label: "label_immune_cell_hum", options: {palette: "blues", width: 1.5, draw_outline: false}},
@@ -109,34 +109,33 @@ const legends = [
         geom: "text",
         values: ["Scaled", "Unscaled"],
         labels: ["+", "–"],
-        label_width: .5
     },
     {
         title: "RNA rank",
         palette: "blues",
         geom: "rect",
-        labels: ["20", " ", "10", " ", "1"],
+        labels: ["20", "", "10", "", "1"],
         size: [1, 1, 1, 1, 1]
     },
     {
         title: "Simulations rank",
         palette: "greens",
         geom: "rect",
-        labels: ["20", " ", "10", " ", "1"],
+        labels: ["20", "", "10", "", "1"],
         size: [1, 1, 1, 1, 1]
     },
     {
         title: "Usability rank",
         palette: "oranges",
         geom: "rect",
-        labels: ["20", " ", "10", " ", "1"],
+        labels: ["20", "", "10", "", "1"],
         size: [1, 1, 1, 1, 1]
     },
     {
         title: "Scalability rank",
         palette: "greys",
         geom: "rect",
-        labels: ["20", " ", "10", " ", "1"],
+        labels: ["20", "", "10", "", "1"],
         size: [1, 1, 1, 1, 1]
     }
 ];
