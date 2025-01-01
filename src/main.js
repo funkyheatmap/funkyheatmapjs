@@ -581,6 +581,70 @@ class FHeatmap {
                     myOffset += geomWidth + P.padding;
                 });
             }
+            if (legend.geom === 'bar') {
+                const column = new Column({
+                    id: '_legend',
+                    palette: legend.palette
+                }, 1);
+                column.maybeCalculateStats(null, false);
+                assignPalettes([column], this.palettes);
+                const colors = column.palette.range();
+
+                const grad = this.svg.append('defs')
+                    .append('linearGradient')
+                    .attr('id', `grad_${legend.palette}`)
+                    .attr('x1', '0%')
+                    .attr('x2', '100%')
+                    .attr('y1', '0%')
+                    .attr('y2', '0%');
+
+                grad.selectAll('stop')
+                    .data(colors)
+                    .enter()
+                    .append('stop')
+                    .style('stop-color', function(d) { return d; })
+                    .attr('offset', function(d, i) {
+                        return 100 * (i / (colors.length - 1)) + '%';
+                    });
+
+                // A bit ugly to get the width of the column mapped to this legend
+                const col = this.columnInfo.filter((column) =>
+                    column.geom === 'bar' && column.paletteName === legend.palette
+                )[0];
+
+                el.append('rect')
+                    .attr('x', P.padding)
+                    .attr('y', offsetY + P.padding)
+                    .attr('width', col.widthPx)
+                    .attr('height', P.rowHeight)
+                    .style('fill', `url(#grad_${legend.palette})`)
+                    .attr('stroke', 'black')
+                    .attr('stroke-width', 0.5);
+
+                legend.labels.forEach((label, i) => {
+                    if (label === '') {
+                        return;
+                    }
+                    const value = legend.values[i];
+                    const xPos = P.padding + col.widthPx * value;
+                    if (value > 0 && value < 1) {
+                        el.append('line')
+                            .attr('x1', xPos)
+                            .attr('x2', xPos)
+                            .attr('y1', offsetY + P.rowHeight + P.padding)
+                            .attr('y2', offsetY + P.rowHeight)
+                            .attr('stroke', 'black')
+                            .attr('stroke-width', 0.5);
+                    }
+                    el.append('text')
+                        .attr('x', xPos)
+                        .attr('y', offsetY + P.rowHeight + rowHeight + P.padding)
+                        .attr('font-size', O.legendFontSize)
+                        .attr('text-anchor', 'middle')
+                        .style('fill', O.theme.textColor)
+                        .text(label);
+                });
+            }
 
             const { width } = el.node().getBBox();
             offset += width + P.padding * 2;

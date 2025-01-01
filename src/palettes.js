@@ -52,6 +52,7 @@ export function assignPalettes(columnInfo, palettes) {
     palettes = { numerical: "Blues", categorical: "Set1", ...palettes };
     columnInfo.forEach(column => {
         if (column.palette && column.palette != 'none') {
+            column.paletteName = column.palette;
             let name = palettes[column.palette];
             if (name === undefined) { // fallback
                 name = column.palette;
