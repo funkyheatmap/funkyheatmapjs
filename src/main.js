@@ -537,8 +537,8 @@ class FHeatmap {
                 column.maybeCalculateStats(null, false);
                 assignPalettes([column], this.palettes);
                 let myOffset = 0;
-                legend.labels.forEach((label, i) => {
-                    const colorValue = legend.values[i];
+                legend.values.forEach((colorValue, i) => {
+                    const label = legend.labels[i];
                     const size = legend.size[i];
                     const geom = GEOMS.rect(size, colorValue, column, O, P);
                     geom.attr('transform', `translate(${myOffset}, ${offsetY + P.padding})`);
@@ -551,6 +551,34 @@ class FHeatmap {
                         .style('fill', O.theme.textColor)
                         .text(label);
                     myOffset += size * P.geomSize + P.padding;
+                });
+            }
+            if (legend.geom === 'funkyrect') {
+                const column = new Column({
+                    id: '_legend',
+                    palette: legend.palette
+                }, 1);
+                column.maybeCalculateStats(null, false);
+                assignPalettes([column], this.palettes);
+                let myOffset = 0;
+                legend.labels.forEach((label, i) => {
+                    const colorValue = legend.values[i];
+                    const size = legend.size[i];
+                    const geom = GEOMS.funkyrect(size, colorValue, column, O, P);
+                    el.append(() => geom.node());
+                    const { width: geomWidth, height: geomHeight } = geom.node().getBBox();
+                    geom.attr(
+                        'transform',
+                        `translate(${myOffset}, ${offsetY + P.rowHeight / 2 - geomHeight / 2})`
+                    );
+                    el.append('text')
+                        .attr('x', myOffset + P.rowHeight / 2)
+                        .attr('y', offsetY + P.rowHeight + rowHeight + P.padding)
+                        .attr('font-size', O.legendFontSize)
+                        .attr('text-anchor', 'middle')
+                        .style('fill', O.theme.textColor)
+                        .text(label);
+                    myOffset += geomWidth + P.padding;
                 });
             }
 

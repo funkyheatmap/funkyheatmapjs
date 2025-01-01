@@ -71,7 +71,9 @@ export function prepareLegends(legends, palettes, columnInfo) {
         if (legend.size === undefined) {
             console.info(`Legend ${legend.title} did not specify size, inferring from column info`);
             if (legend.geom === 'circle' || legend.geom === 'funkyrect') {
-                legend.size = d3.range(0, 10).map((i) => i / 10);
+                legend.size = [...d3.range(0, legend.labels.length - 1).map(
+                    (i) => i / (legend.labels.length - 1)
+                ), 1];
             } else if (legend.geom === 'rect' || legend.geom === 'bar') {
                 legend.size = 1;
             } else if (legend.geom === 'image') {
