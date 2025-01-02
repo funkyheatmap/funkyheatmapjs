@@ -899,8 +899,6 @@ function funkyheatmap(
     assignPalettes(columnInfo, palettes);
     assignPalettes(legends, palettes);
 
-    console.log(columnInfo);
-
     const svg = d3.select('body')
         .append('svg')
             .classed('funkyheatmap', true)
