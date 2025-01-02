@@ -48,6 +48,11 @@ const legends = [
         size: 25,
         labels: ['Electric', 'Gas'],
         values: ['electric.png', 'ice.png']
+    },
+    {
+        title: "Oranges",
+        palette: "palette2",
+        geom: "circle"
     }
 ];
 

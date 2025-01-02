@@ -569,6 +569,28 @@ class FHeatmap {
                     myOffset += geomWidth + P.padding;
                 });
             }
+            if (legend.geom === 'circle') {
+                let myOffset = 0;
+                legend.labels.forEach((label, i) => {
+                    const colorValue = legend.values[i];
+                    const size = legend.size[i];
+                    const geom = GEOMS.circle(size, colorValue, legend, O, P);
+                    el.append(() => geom.node());
+                    const { width: geomWidth, height: geomHeight } = geom.node().getBBox();
+                    geom.attr(
+                        'transform',
+                        `translate(${myOffset}, ${offsetY + P.rowHeight / 2 - geomHeight / 2})`
+                    );
+                    el.append('text')
+                        .attr('x', myOffset + P.rowHeight / 2)
+                        .attr('y', offsetY + P.rowHeight + rowHeight + P.padding)
+                        .attr('font-size', O.legendFontSize)
+                        .attr('text-anchor', 'middle')
+                        .style('fill', O.theme.textColor)
+                        .text(label);
+                    myOffset += geomWidth + P.padding;
+                });
+            }
             if (legend.geom === 'bar') {
                 const colors = legend.palette.range();
 
@@ -877,7 +899,7 @@ function funkyheatmap(
     assignPalettes(columnInfo, palettes);
     assignPalettes(legends, palettes);
 
-    console.log(legends);
+    console.log(columnInfo);
 
     const svg = d3.select('body')
         .append('svg')
