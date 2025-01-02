@@ -21,7 +21,8 @@ const column_info = [
     {id: "am", group: "group2", name: "Transmission", geom: "circle", palette: "palette2"},
     {id: "gear", group: "group2", name: "# Forward gears", geom: "circle", palette: "palette2"},
     {id: "carb", group: "group2", name: "# Carburetors", geom: "circle", palette: "palette2"},
-    {id: "schema", group: "group2", name: "Schema", geom: "image", width: 25}
+    {id: "schema", group: "group2", name: "Schema", geom: "image", width: 25},
+    {id: "load", group: "group2", name: "Load", geom: "pie", palette: "load"}
 ];
 
 const column_groups = [
@@ -33,7 +34,11 @@ const column_groups = [
 const palettes = {
     overall: "Greys",
     palette1: "Blues",
-    palette2: "Reds"
+    palette2: "Reds",
+    load: {
+        colors: ["#82daf2", "#ba4e79", "#ffffff"],
+        names: ['A', 'B', 'C']
+    }
 };
 
 const legends = [
@@ -50,7 +55,9 @@ d3.csv('mtcars.csv').then((data) => {
     data = d3.sort(data, (a, b) => d3.ascending(+b.mpg, +a.mpg));
     data = data.slice(0, 20);
     data.forEach((d, i) => {
-        d.schema = i % 2 ? "electric.png" : "ice.png"
+        d.schema = i % 2 ? "electric.png" : "ice.png";
+        d.load = [(i % 3) / 6, ((i + 1) % 3) / 6, 0];
+        d.load[2] = 1 - d.load[0] - d.load[1];
     });
     d3.select("#app").node().appendChild(funkyheatmap(
         data,

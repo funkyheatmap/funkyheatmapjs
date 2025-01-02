@@ -90,6 +90,13 @@ export function prepareLegends(legends, palettes, columnInfo) {
         if (_.isNumber(legend.size)) {
             legend.size = Array(legend.labels.length).fill(legend.size);
         }
+        if (['circle', 'rect', 'funkyrect', 'bar'].includes(legend.geom)) {
+            legend.numeric = true;
+            let extent = [0, 1];
+            [legend.min, legend.max] = extent;
+            legend.range = legend.max - legend.min;
+            legend.scale = d3.scaleLinear().domain(extent);
+        }
     });
     return legends;
 }
