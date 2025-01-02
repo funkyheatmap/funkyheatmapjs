@@ -8,7 +8,7 @@ if (module.hot) {
     });
 }
 
-column_info = [
+const column_info = [
     {id: "model", group: null, name: "Name", geom: "text", palette: null},
     {id: "mpg", group: "overall", name: "Miles / gallon", geom: "bar", palette: "palette1", options: {width: 4, legend: false}},
     {id: "cyl", group: "overall", name: "Number of cylinders", geom: "bar", palette: "palette2", options: {width: 4, legend: false}},
@@ -24,17 +24,27 @@ column_info = [
     {id: "schema", group: "group2", name: "Schema", geom: "image", width: 25}
 ];
 
-column_groups = [
+const column_groups = [
     {level1: "Overall", group: "overall", palette: "overall"},
     {level1: "Group 1", group: "group1", palette: "palette1"},
     {level1: "Group 2", group: "group2", palette: "palette2"}
 ];
 
-palettes = {
+const palettes = {
     overall: "Greys",
     palette1: "Blues",
     palette2: "Reds"
-}
+};
+
+const legends = [
+    {
+        title: "Type",
+        geom: "image",
+        size: 25,
+        labels: ['Electric', 'Gas'],
+        values: ['electric.png', 'ice.png']
+    }
+];
 
 d3.csv('mtcars.csv').then((data) => {
     data = d3.sort(data, (a, b) => d3.ascending(+b.mpg, +a.mpg));
@@ -49,7 +59,7 @@ d3.csv('mtcars.csv').then((data) => {
         undefined, // column_groups,
         undefined, // row groups
         palettes,
-        undefined, // legends
+        legends, // legends
         {rowHeight: 28, expand_ymax: 20},
         {
             labelGroupsAbc: true,

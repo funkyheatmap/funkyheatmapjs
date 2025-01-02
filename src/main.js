@@ -645,6 +645,24 @@ class FHeatmap {
                         .text(label);
                 });
             }
+            if (legend.geom === 'image') {
+                legend.values.forEach((value, i) => {
+                    const label = legend.labels[i];
+                    const img = GEOMS.image(value, null, {width: legend.size[i]}, O, P);
+                    img.attr('transform', `translate(0, ${offsetY + P.padding})`);
+                    el.append(() => img.node());
+                    const { width: imgWidth, height: imgHeight } = img.node().getBBox();
+                    el.append('text')
+                        .attr('x', imgWidth + P.padding)
+                        .attr('y', offsetY + P.padding + imgHeight / 2)
+                        .attr('font-size', O.legendFontSize)
+                        .attr('text-anchor', 'left')
+                        .attr('dominant-baseline', 'central')
+                        .style('fill', O.theme.textColor)
+                        .text(label);
+                    offsetY += imgHeight + P.padding;
+                });
+            }
 
             const { width } = el.node().getBBox();
             offset += width + P.padding * 2;
