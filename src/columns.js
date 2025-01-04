@@ -16,13 +16,29 @@ export class Column {
         } = info);
 
         let type = typeof value;
-        if (isNumeric(value)) {
+        // geom text is always categorical
+        if (isNumeric(value) && this.geom !== 'text') {
             type = 'number';
             this.numeric = true;
+            this.categorical = false;
+        } else {
+            this.numeric = false;
+            this.categorical = true;
         }
 
         if (this.name === undefined) {
             this.name = this.id;
+        }
+
+        if (this.options === undefined) {
+            this.options = {};
+        }
+
+        if (this.options.width !== undefined && this.width === undefined) {
+            this.width = this.options.width;
+        }
+        if (this.options.palette !== undefined && this.palette === undefined) {
+            this.palette = this.options.palette;
         }
 
         if (this.geom === undefined) {
@@ -50,10 +66,6 @@ export class Column {
 
         if (this.geom === 'image' && this.width === undefined) {
             throw `Please, specify width for column with geom=image`;
-        }
-
-        if (this.options === undefined) {
-            this.options = {};
         }
 
         this.sortState = null;

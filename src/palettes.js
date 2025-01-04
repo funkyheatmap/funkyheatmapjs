@@ -52,6 +52,7 @@ export function assignPalettes(columnInfo, palettes) {
     palettes = { numerical: "Blues", categorical: "Set1", ...palettes };
     columnInfo.forEach(column => {
         if (column.palette && column.palette != 'none') {
+            column.paletteName = column.palette;
             let name = palettes[column.palette];
             if (name === undefined) { // fallback
                 name = column.palette;
@@ -91,7 +92,7 @@ export function assignPalettes(columnInfo, palettes) {
                 column.palette = d3.scaleLinear().domain(domain).range(colors);
             }
             // TODO: replace with categorical
-            if (column.geom === 'pie') {
+            if (column.geom === 'pie' || column.geom === 'text') {
                 const domain = d3.range(colors.length);
                 column.palette = d3.scaleOrdinal().domain(domain).range(colors);
                 column.palette.colors = colors;

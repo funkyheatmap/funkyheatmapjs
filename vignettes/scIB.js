@@ -67,12 +67,12 @@ function prepareData(data) {
     return data;
 }
 
-column_info = [
-    {id: "id", name: "Rank", geom: "text", group: "Method", options: {hjust: 0}},
+const column_info = [
+    {id: "id", name: "Rank", geom: "text", group: "Method", options: {align: "right"}},
     {id: "method", name: "Method", geom: "text", group: "Method", options: {hjust: 0}},
     {id: "output_img", name: "Output", geom: "image", group: "Method", options: {width: 20}},
     {id: "features", id_color: "features", name: "Features", geom: "text", group: "Method", options: {palette: "features"}},
-    {id: "scaling", name: "Scaling", geom: "text", group: "Method", options: {fontface: "bold"}},
+    {id: "scaling", name: "Scaling", geom: "text", group: "Method", options: {fontSize: 18, align: "center"}},
     {id: "overall_pancreas", id_color: "rank_pancreas", name: "Pancreas", geom: "bar", group: "RNA", id_label: "label_pancreas", options: {palette: "blues", width: 1.5, draw_outline: false}},
     {id: "overall_lung_atlas", id_color: "rank_lung_atlas", name: "Lung", geom: "bar", group: "RNA", id_label: "label_lung_atlas", options: {palette: "blues", width: 1.5, draw_outline: false}},
     {id: "overall_immune_cell_hum", id_color: "rank_immune_cell_hum", name: "Immune (human)", geom: "bar", group: "RNA", id_label: "label_immune_cell_hum", options: {palette: "blues", width: 1.5, draw_outline: false}},
@@ -86,7 +86,7 @@ column_info = [
     {id: "memory_score", id_color: "memory_rank", name: "Memory", geom: "bar", group: "Scalability", id_label: "memory_label", options: {palette: "greys", width: 1.5, draw_outline: false}}
 ];
 
-column_groups = [
+const column_groups = [
     {level1: "Method", group: "Method", palette: "black"},
     {level1: "RNA", group: "RNA", palette: "blues"},
     {level1: "Simulations", group: "Simulations", palette: "greens"},
@@ -94,15 +94,51 @@ column_groups = [
     {level1: "Scalability", group: "Scalability", palette: "greys"}
 ];
 
-palettes = {
+const palettes = {
     features: {colors: ["#4c4c4c", "#006300"], names: ['FULL', 'HVG']},
     blues: "Blues",
     greens: "Greens",
     oranges: ["#7F2704", "#A63603", "#D94801", "#F16913", "#FD8D3C", "#FDAE6B", "#FDD0A2", "#FEE6CE", "#FFF5EB"],
     greys: "Greys",
     black: ["black", "black"]
+};
 
-}
+const legends = [
+    {
+        title: "Scaling",
+        geom: "text",
+        values: ["Scaled", "Unscaled"],
+        labels: ["+", "–"],
+    },
+    {
+        title: "RNA rank",
+        palette: "blues",
+        geom: "rect",
+        labels: ["20", "", "10", "", "1"],
+        size: [1, 1, 1, 1, 1]
+    },
+    {
+        title: "Simulations rank",
+        palette: "greens",
+        geom: "rect",
+        labels: ["20", "", "10", "", "1"],
+        size: [1, 1, 1, 1, 1]
+    },
+    {
+        title: "Usability rank",
+        palette: "oranges",
+        geom: "rect",
+        labels: ["20", "", "10", "", "1"],
+        size: [1, 1, 1, 1, 1]
+    },
+    {
+        title: "Scalability rank",
+        palette: "greys",
+        geom: "rect",
+        labels: ["20", "", "10", "", "1"],
+        size: [1, 1, 1, 1, 1]
+    }
+];
 
 d3.csv('scib_summary.csv').then((data) => {
     data = prepareData(data);
@@ -114,7 +150,7 @@ d3.csv('scib_summary.csv').then((data) => {
         column_groups, // column_groups,
         undefined, // row groups
         palettes,
-        undefined, // legends
+        legends, // legends
         {rowHeight: 28, expand_ymax: 20},
         {
             labelGroupsAbc: false,

@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import { maybeConvertDataframe } from './input_util';
 import { buildColumnInfo, buildColumnGroups, Column } from './columns';
 import { assignPalettes } from './palettes';
+import { prepareLegends } from './legends';
 import { GEOMS } from './geoms';
 
 
@@ -146,6 +147,7 @@ class FHeatmap {
         rowInfo,
         rowGroups,
         palettes,
+        legends,
         positionArgs,
         options,
         svg
@@ -158,6 +160,7 @@ class FHeatmap {
         this.rowInfo = rowInfo;
         this.rowGroups = d3.index(rowGroups, group => group.group);
         this.palettes = palettes;
+        this.legends = legends;
         this.positionArgs = new PositionArgs(positionArgs);
         this.options = _.merge(DEFAULT_OPTIONS, options);
         this.calculateOptions();
@@ -259,6 +262,9 @@ class FHeatmap {
                 }
                 rowGroup = item[this.rowGroupKey];
                 let value = item[column.id];
+                if (value === undefined || value === null || (isNaN(value) && column.numeric)) {
+                    return;
+                }
                 let colorValue = value;
                 let label;
                 if (column.numeric) {
@@ -473,99 +479,205 @@ class FHeatmap {
         P.headerHeight = headerHeight + P.rowHeight + P.colAnnotOffset;
     }
 
-    renderLegend() {
+    renderLegends() {
         const O = this.options;
         const P = this.positionArgs;
 
+        // go through this.legends and render them sequentially
+
         let footerHeight = 0;
-        const legend = this.footer.append('g');
+        const legendEl = this.footer.append('g');
         let legendXOffset = 0;
         let offset = 0;
         let funkyrectPresent = false;
-        if (d3.some(this.columnInfo, column => column.geom === "funkyrect")) {
-            funkyrectPresent = true;
-            // Locate first funkyrect column for legend position
-            for (let column of this.columnInfo) {
-                if (column.geom === "funkyrect") {
-                    legendXOffset = column.offset;
-                    break;
-                }
+
+        this.legends.forEach(legend => {
+            if (!legend.enabled) {
+                return;
             }
-            legend.append('text')
-                .attr('x', offset + P.geomSize / 2)
-                .attr('y', P.rowHeight + P.padding)
+            const rowHeight = O.legendFontSize;
+            let offsetY = rowHeight * 2 + P.padding;
+            const el = legendEl.append('g');
+            el.attr('transform', `translate(${offset}, 0)`);
+            el.append('text')
+                .attr('x', 0)
+                .attr('y', offsetY)
                 .attr('font-size', O.legendFontSize)
                 .style('fill', O.theme.textColor)
-                .text('Score:');
+                .text(legend.title);
 
-            const column = new Column({
-                id: '_legend',
-                palette: 'Greys'
-            }, 1);
-            column.maybeCalculateStats(null, false);
-            assignPalettes([column]);
-            const range = [...d3.range(0, 1, 0.1), 1];
-            for (let i of range) {
-                let el = GEOMS.funkyrect(i, i, column, O, P);
-                legend.append(() => el.node());
-                const { width, height } = el.node().getBBox();
-                el.attr(
-                    'transform',
-                    `translate(${offset}, ${1.5 * P.rowHeight - height / 2})`
-                );
-                if (O.colorByRank) {
-                    el.style('fill', O.theme.oddRowBackground);
-                }
-                let tick = parseFloat(i.toFixed(3));
-                if (O.legendTicks.indexOf(tick) > -1) {
-                    tick = tick.toFixed(1);
-                    if (tick === '0.0') {
-                        tick = '0';
+            if (legend.geom === 'text') {
+                let labelsWidth = 0;
+                legend.labels.forEach((label, i) => {
+                    const txt = el.append('text')
+                        .attr('x', P.padding)
+                        .attr('y', offsetY + (i + 1) * (rowHeight + P.padding))
+                        .attr('font-size', O.legendFontSize)
+                        .style('fill', O.theme.textColor)
+                        .text(label);
+                    const { width } = txt.node().getBBox();
+                    if (width > labelsWidth) {
+                        labelsWidth = width;
                     }
-                    if (tick === '1.0') {
-                        tick = '1';
-                    }
-                    legend.append('text')
-                        .attr('x', offset + P.geomSize / 2 + P.geomPadding)
-                        .attr('y', 2.5 * P.rowHeight + P.padding)
+                });
+                legend.values.forEach((value, i) => {
+                    el.append('text')
+                        .attr('x', P.padding * 2 + labelsWidth)
+                        .attr('y', offsetY + (i + 1) * (rowHeight + P.padding))
+                        .attr('font-size', O.legendFontSize)
+                        .style('fill', O.theme.textColor)
+                        .text(value);
+                });
+            }
+            if (legend.geom === 'rect') {
+                let myOffset = 0;
+                legend.values.forEach((colorValue, i) => {
+                    const label = legend.labels[i];
+                    const size = legend.size[i];
+                    const geom = GEOMS.rect(size, colorValue, legend, O, P);
+                    geom.attr('transform', `translate(${myOffset}, ${offsetY + P.padding})`);
+                    el.append(() => geom.node());
+                    el.append('text')
+                        .attr('x', myOffset + P.rowHeight / 2)
+                        .attr('y', offsetY + P.rowHeight + rowHeight + P.padding)
                         .attr('font-size', O.legendFontSize)
                         .attr('text-anchor', 'middle')
-                        .attr('dominant-baseline', 'text-top')
                         .style('fill', O.theme.textColor)
-                        .text(tick);
-                }
-                offset += width + P.padding;
-            }
-        }
-        if (d3.some(this.columnInfo, column => column.geom === 'pie')) {
-            const rendered = [];
-            this.columnInfo.forEach(column => {
-                if (column.geom != 'pie' || column.palette.colorNames === undefined) {
-                    return;
-                }
-                const key = JSON.stringify({
-                    colors: column.palette.colors,
-                    colorNames: column.palette.colorNames
+                        .text(label);
+                    myOffset += size * P.geomSize + P.padding;
                 });
-                if (rendered.indexOf(key) > -1) {
-                    return;
-                }
-                rendered.push(key);
+            }
+            if (legend.geom === 'funkyrect') {
+                let myOffset = 0;
+                legend.labels.forEach((label, i) => {
+                    const colorValue = legend.values[i];
+                    const size = legend.size[i];
+                    const geom = GEOMS.funkyrect(size, colorValue, legend, O, P);
+                    el.append(() => geom.node());
+                    const { width: geomWidth, height: geomHeight } = geom.node().getBBox();
+                    geom.attr(
+                        'transform',
+                        `translate(${myOffset}, ${offsetY + P.rowHeight / 2 - geomHeight / 2})`
+                    );
+                    el.append('text')
+                        .attr('x', myOffset + P.rowHeight / 2)
+                        .attr('y', offsetY + P.rowHeight + rowHeight + P.padding)
+                        .attr('font-size', O.legendFontSize)
+                        .attr('text-anchor', 'middle')
+                        .style('fill', O.theme.textColor)
+                        .text(label);
+                    myOffset += geomWidth + P.padding;
+                });
+            }
+            if (legend.geom === 'circle') {
+                let myOffset = 0;
+                legend.labels.forEach((label, i) => {
+                    const colorValue = legend.values[i];
+                    const size = legend.size[i];
+                    const geom = GEOMS.circle(size, colorValue, legend, O, P);
+                    el.append(() => geom.node());
+                    const { width: geomWidth, height: geomHeight } = geom.node().getBBox();
+                    geom.attr(
+                        'transform',
+                        `translate(${myOffset}, ${offsetY + P.rowHeight / 2 - geomHeight / 2})`
+                    );
+                    el.append('text')
+                        .attr('x', myOffset + P.rowHeight / 2)
+                        .attr('y', offsetY + P.rowHeight + rowHeight + P.padding)
+                        .attr('font-size', O.legendFontSize)
+                        .attr('text-anchor', 'middle')
+                        .style('fill', O.theme.textColor)
+                        .text(label);
+                    myOffset += geomWidth + P.padding;
+                });
+            }
+            if (legend.geom === 'bar') {
+                const colors = legend.palette.range();
 
-                if (legendXOffset + offset < column.offset) {
-                    offset += column.offset - legendXOffset;
-                }
+                const grad = this.svg.append('defs')
+                    .append('linearGradient')
+                    .attr('id', `grad_${legend.paletteName}`)
+                    .attr('x1', '0%')
+                    .attr('x2', '100%')
+                    .attr('y1', '0%')
+                    .attr('y2', '0%');
 
-                const arcs = d3.pie().endAngle(Math.PI)(Array(column.palette.colorNames.length).fill(1));
-                const g = legend.append('g');
-                g.attr('transform', `translate(${offset}, ${1.5 * P.rowHeight + P.geomPadding})`);
+                grad.selectAll('stop')
+                    .data(colors)
+                    .enter()
+                    .append('stop')
+                    .style('stop-color', function(d) { return d; })
+                    .attr('offset', function(d, i) {
+                        return 100 * (i / (colors.length - 1)) + '%';
+                    });
+
+                // A bit ugly to get the width of the column mapped to this legend
+                const col = this.columnInfo.filter((column) =>
+                    column.geom === 'bar' && column.paletteName === legend.paletteName
+                )[0];
+
+                el.append('rect')
+                    .attr('x', P.padding)
+                    .attr('y', offsetY + P.padding)
+                    .attr('width', col.widthPx)
+                    .attr('height', P.rowHeight)
+                    .style('fill', `url(#grad_${legend.paletteName})`)
+                    .attr('stroke', 'black')
+                    .attr('stroke-width', 0.5);
+
+                legend.labels.forEach((label, i) => {
+                    if (label === '') {
+                        return;
+                    }
+                    const value = legend.values[i];
+                    const xPos = P.padding + col.widthPx * value;
+                    if (value > 0 && value < 1) {
+                        el.append('line')
+                            .attr('x1', xPos)
+                            .attr('x2', xPos)
+                            .attr('y1', offsetY + P.rowHeight + P.padding)
+                            .attr('y2', offsetY + P.rowHeight)
+                            .attr('stroke', 'black')
+                            .attr('stroke-width', 0.5);
+                    }
+                    el.append('text')
+                        .attr('x', xPos)
+                        .attr('y', offsetY + P.rowHeight + rowHeight + P.padding)
+                        .attr('font-size', O.legendFontSize)
+                        .attr('text-anchor', 'middle')
+                        .style('fill', O.theme.textColor)
+                        .text(label);
+                });
+            }
+            if (legend.geom === 'image') {
+                legend.values.forEach((value, i) => {
+                    const label = legend.labels[i];
+                    const img = GEOMS.image(value, null, {width: legend.size[i]}, O, P);
+                    img.attr('transform', `translate(0, ${offsetY + P.padding})`);
+                    el.append(() => img.node());
+                    const { width: imgWidth, height: imgHeight } = img.node().getBBox();
+                    el.append('text')
+                        .attr('x', imgWidth + P.padding)
+                        .attr('y', offsetY + P.padding + imgHeight / 2)
+                        .attr('font-size', O.legendFontSize)
+                        .attr('text-anchor', 'left')
+                        .attr('dominant-baseline', 'central')
+                        .style('fill', O.theme.textColor)
+                        .text(label);
+                    offsetY += imgHeight + P.padding;
+                });
+            }
+            if (legend.geom === 'pie') {
+                const arcs = d3.pie().endAngle(Math.PI)(Array(legend.palette.colorNames.length).fill(1));
+                const g = el.append('g');
+                g.attr('transform', `translate(0, ${offsetY + P.padding + P.rowHeight})`);
                 g.selectAll('arcs')
                     .data(arcs)
                     .enter()
                     .append('path')
                         .attr('d', d3.arc().innerRadius(0).outerRadius(P.geomSize / 2))
                         .attr('fill', (_, i) => {
-                            return column.palette(i);
+                            return legend.palette(i);
                         })
                         .style('stroke', O.theme.strokeColor)
                         .style('stroke-width', 1)
@@ -575,7 +687,7 @@ class FHeatmap {
                     .data(arcs)
                     .enter()
                     .append('text')
-                    .text((_, i) => column.palette.colorNames[i])
+                    .text((_, i) => legend.palette.colorNames[i])
                     .attr('font-size', O.legendFontSize)
                     .attr('dominant-baseline', 'central')
                     .style('fill', O.theme.textColor)
@@ -598,11 +710,13 @@ class FHeatmap {
                         })
                         .style('stroke', O.theme.strokeColor)
                         .style('stroke-width', 0.5);
+            }
 
-                offset += P.geomSize / 2 + g.node().getBoundingClientRect().width + P.padding;
-            });
-        }
-        const { height } = legend.node().getBBox();
+            const { width } = el.node().getBBox();
+            offset += width + P.padding * 2;
+        });
+
+        const { height } = legendEl.node().getBBox();
         if (height > footerHeight) {
             footerHeight = height;
         }
@@ -722,7 +836,7 @@ class FHeatmap {
         this.renderStripedRows();
         this.renderData();
         this.renderHeader();
-        this.renderLegend();
+        this.renderLegends();
 
         const O = this.options;
         const P = this.positionArgs;
@@ -756,6 +870,7 @@ class FHeatmap {
  * @param {Object|Object[]} columnGroups - information about how to group columns
  * @param {Object|Object[]} rowGroups - information about how to group rows
  * @param {Object} palettes - mapping of names to palette colors
+ * @param {Object|Object[]} legends - a list of legends to add to the plot
  * @param {Object} positionArgs - positioning arguments
  * @param {Object} options - options for the heatmap
  * @param {int} options.fontSize - font size for all text
@@ -768,18 +883,21 @@ function funkyheatmap(
     rowInfo = [],
     columnGroups = [],
     rowGroups = [],
-    palettes,
+    palettes = {},
+    legends = [],
     positionArgs = {},
     options = {},
     scaleColumn = true
 ) {
-    [data, columnInfo, columnGroups, rowInfo, rowGroups] = maybeConvertDataframe(
-        data, columnInfo, columnGroups, rowInfo, rowGroups
+    [data, columnInfo, columnGroups, rowInfo, rowGroups, legends] = maybeConvertDataframe(
+        data, columnInfo, columnGroups, rowInfo, rowGroups, legends
     );
     const columns = columnInfo.map(column => column.id);
     columnInfo = buildColumnInfo(data, columns, columnInfo, scaleColumn, options.colorByRank);
-    assignPalettes(columnInfo, palettes);
     columnGroups = buildColumnGroups(columnGroups, columnInfo);
+    legends = prepareLegends(legends, palettes, columnInfo);
+    assignPalettes(columnInfo, palettes);
+    assignPalettes(legends, palettes);
 
     const svg = d3.select('body')
         .append('svg')
@@ -794,6 +912,7 @@ function funkyheatmap(
         rowInfo,
         rowGroups,
         palettes,
+        legends,
         positionArgs,
         options,
         svg

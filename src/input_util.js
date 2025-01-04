@@ -28,3 +28,19 @@ export function maybeConvertDataframe(...objects) {
         return obj;
     });
 };
+
+/**
+ * Converts array-based dataframe to object-based dataframe
+ *
+ * @param {Object[]} data - an object with each property representing
+ *      dataframe column as array of equal length
+ * @returns {Object} - array of objects with same properties
+ */
+export function convertToDataframe(data) {
+    const result = {};
+    const columns = Object.getOwnPropertyNames(data[0]);
+    for (let column of columns) {
+        result[column] = data.map(item => item[column]);
+    }
+    return result;
+}
