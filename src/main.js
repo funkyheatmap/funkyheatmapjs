@@ -862,7 +862,13 @@ class FHeatmap {
 
 
 /**
+ * @namespace funkyheatmap
+ */
+
+
+/**
  *
+ * @memberof funkyheatmap
  * @param {Object|Object[]} data - data to plot, usually d3-fetch output.
  *      It should be an Array of Objects, each object has the same properties.
  * @param {Object|Object[]} columnInfo - information about how the columns should be displayed
@@ -876,6 +882,7 @@ class FHeatmap {
  * @param {int} options.fontSize - font size for all text
  * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
  *      columns. Defaults to true
+ *
  */
 function funkyheatmap(
     data,
