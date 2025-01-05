@@ -6,17 +6,10 @@
     "type": "module",
     "module": "./dist/funkyheatmap.js",
     "unpkg": "./dist/funkyheatmap.min.js",
-    "browser": {
-        "d3": {
-            "global": "d3"
-        },
-        "lodash": {
-            "global": "_"
-        }
-    },
+    "browser": "./dist/funkyheatmap.min.js",
     "scripts": {
         "start": "parcel vignettes/*.html vignettes/*.csv vignettes/*.png",
-        "build": "parcel build && cp ./dist/browser/main.js ./dist/funkyheatmap.min.js",
+        "build": "parcel build --no-cache",
         "build-vignettes": "parcel build --target vignettes && cp ./vignettes/*.csv ./vignettes/*.png ./vignettes/tutorials.json ./dist/vignettes/",
         "docs": "npm run build && npm run build-vignettes && find docs -name static -prune -o -type f -exec rm {} \\; && jsdoc -r -c jsdoc.json",
         "lint": "node ./node_modules/eslint/bin/eslint . --ext .js --fix",
@@ -39,7 +32,7 @@
     "keywords": [],
     "author": {
         "name": "Nick Markov",
-        "url": "https://c.im/@nsmarkov"
+        "url": "https://mxposed.github.io"
     },
     "license": "MIT",
     "peerDependencies": {
@@ -54,11 +47,17 @@
         "mocha": "^10.2.0",
         "parcel": "^2.8.3"
     },
+    "alias": {
+        "d3": {
+            "global": "d3"
+        },
+        "lodash": {
+            "global": "_"
+        }
+    },
     "targets": {
         "browser": {
             "distDir": "./dist",
-            "context": "browser",
-            "outputFormat": "esmodule",
             "optimize": true
         },
         "module": {
