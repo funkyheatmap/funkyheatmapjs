@@ -15,7 +15,7 @@ If you want to add {funkyheatmap} to your website, you can include `d3.js`, `lod
 ```html
 <script type="text/javascript" src="https://unpkg.com/d3@7"></script>
 <script type="text/javascript" src="https://unpkg.com/lodash@4/lodash.min.js"></script>
-<script type="text/javascript" src="https://unpkg.com/funkyheatmapjs"></script>
+<script type="module" src="https://unpkg.com/funkyheatmapjs"></script>
 ```
 
 If you have an npm project, you can install npm package `funkyheatmapjs` with npm or yarn.
