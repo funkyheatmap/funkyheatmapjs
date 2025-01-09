@@ -11,7 +11,9 @@ on:
       - closed
 
 permissions: 
-  pull-requests: write 
+  contents: write
+  pull-requests: write
+  issues: write
 
 jobs:
   deploy-preview:
