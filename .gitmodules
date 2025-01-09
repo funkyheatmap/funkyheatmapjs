@@ -1,0 +1,3 @@
+[submodule "better-docs"]
+	path = better-docs
+	url = git@github.com:mxposed/better-docs.git

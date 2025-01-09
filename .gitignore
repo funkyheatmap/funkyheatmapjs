@@ -8,6 +8,17 @@ yarn-error.log*
 .parcel-cache/
 dist/
 
+# Docs except
+docs/*.html
+docs/*.js
+docs/*.css
+docs/*.csv
+docs/*.png
+docs/*.map
+docs/*.json
+docs/scripts/
+docs/styles/
+
 # Runtime data
 pids
 *.pid

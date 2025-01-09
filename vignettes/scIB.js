@@ -10,15 +10,15 @@ if (module.hot) {
 }
 
 function prepareData(data) {
-    SCALING_LABELS = {
+    const SCALING_LABELS = {
         'Unscaled': '–',
         'Scaled': '+'
     };
-    FEATURES_LABELS = {
+    const FEATURES_LABELS = {
         'Full': 'FULL',
         'HVG': 'HVG'
     };
-    OUTPUT_IMG = {
+    const OUTPUT_IMG = {
         'Features': 'matrix.png',
         'Embedding': 'embedding.png',
         'Graph': 'graph.png'
@@ -33,7 +33,7 @@ function prepareData(data) {
 
     data = convertToDataframe(data);
 
-    RANKS = {
+    const RANKS = {
         'rank_pancreas': 'label_pancreas',
         'rank_lung_atlas': 'label_lung_atlas',
         'rank_immune_cell_hum': 'label_immune_cell_hum',

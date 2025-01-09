@@ -1,3 +1,4 @@
+/** @module */
 
 /**
  * Converts object-based dataframe to array-based dataframe

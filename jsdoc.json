@@ -1,0 +1,67 @@
+{
+    "source": {
+        "include": [
+            "./src/"
+        ]
+    },
+    "opts": {
+        "template": "./better-docs",
+        "encoding": "utf8",
+        "destination": "./docs/",
+        "recurse": true,
+        "tutorials": "./dist/vignettes",
+        "readme": "./README.md",
+        "debug": true,
+        "package": "./package.json"
+    },
+    "tags": {
+        "allowUnknownTags": ["category"]
+    },
+    "plugins": [
+        "plugins/markdown",
+        "better-docs/category"
+    ],
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "search": true,
+        "default": {
+            "staticFiles": {
+                "include": [
+                    "./dist/vignettes",
+                    "./docs/static/"
+                ]
+            }
+        },
+        "better-docs": {
+            "name": "FunkyHeatmap.js",
+            "logo": "https://raw.githubusercontent.com/funkyheatmap/logo/refs/heads/main/src/funkyheatmap_edited.svg",
+            "title": "FunkyHeatmap.js",
+            "css": "/static/main.css",
+            "head": "<script src='/static/main.js'></script>",
+            "hideGenerator": true,
+            "navLinks": [
+                {
+                    "label": "Github",
+                    "href": "https://github.com/funkyheatmap/funkyheatmapjs"
+                },
+                {
+                    "label": "Changelog",
+                    "href": "https://github.com/funkyheatmap/funkyheatmapjs/blob/main/CHANGELOG.md"
+                },
+                {
+                    "label": "NPM package",
+                    "href": "https://www.npmjs.com/package/funkyheatmapjs"
+                },
+                {
+                    "label": "R version",
+                    "href": "https://funkyheatmap.github.io/funkyheatmap"
+                },
+                {
+                    "label": "Python version",
+                    "href": "https://funkyheatmap.github.io/funkyheatmappy"
+                }
+            ]
+        }
+    }
+}
