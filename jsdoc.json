@@ -37,8 +37,8 @@
             "name": "FunkyHeatmap.js",
             "logo": "https://raw.githubusercontent.com/funkyheatmap/logo/refs/heads/main/src/funkyheatmap_edited.svg",
             "title": "FunkyHeatmap.js",
-            "css": "/static/main.css",
-            "head": "<script src='/static/main.js'></script>",
+            "css": "static/main.css",
+            "head": "<script src='static/main.js'></script>",
             "hideGenerator": true,
             "navLinks": [
                 {
