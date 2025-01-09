@@ -1,4 +1,4 @@
-# {funkyheatmap}
+# FunkyHeatmap.js
 {funkyheatmap} allows generating heatmap-like visualisations for data frames.
 Funky heatmaps can be fine-tuned by providing annotations of the columns and rows,
 which allow assigning multiple palettes or geometries or grouping rows and columns together in
@@ -21,7 +21,7 @@ If you want to add {funkyheatmap} to your website, you can include `d3.js`, `lod
 If you have an npm project, you can install npm package `funkyheatmapjs` with npm or yarn.
 
 ## Usage
-{funkyheatmap} is meant to be used in browser, please see [tutorials]{@tutorial simple}
+`funkyheatmapjs` is meant to be used in browser, please see [tutorials]{@tutorial simple}
 and [documentation]{@link funkyheatmap}.
 
 If you want to use it with npm and have trouble, please
