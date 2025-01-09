@@ -1,4 +1,5 @@
 {
+  "last-release-sha": "391d5f55a4f316d0e24c6a995adb71fafe0d5a1c",
   "release-type": "node",
   "bump-patch-for-minor-pre-major": true,
   "changelog-sections": [
