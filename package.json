@@ -74,7 +74,8 @@
                 "./vignettes/scIB.html"
             ],
             "outputFormat": "global",
-            "isLibrary": false
+            "isLibrary": false,
+            "publicUrl": "./"
         }
     }
 }
