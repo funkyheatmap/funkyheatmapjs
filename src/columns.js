@@ -2,7 +2,9 @@
 
 import * as d3 from 'd3';
 
-
+/**
+ * @class
+ */
 export class Column {
     constructor(info, value) {
         ({

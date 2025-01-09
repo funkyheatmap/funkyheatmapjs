@@ -50,6 +50,10 @@
                     "href": "https://github.com/funkyheatmap/funkyheatmapjs/blob/main/CHANGELOG.md"
                 },
                 {
+                    "label": "NPM package",
+                    "href": "https://www.npmjs.com/package/funkyheatmapjs"
+                },
+                {
                     "label": "R version",
                     "href": "https://funkyheatmap.github.io/funkyheatmap"
                 },

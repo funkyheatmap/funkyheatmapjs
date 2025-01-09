@@ -2,7 +2,12 @@
 
 import * as d3 from 'd3';
 
-
+/**
+ * Default palettes for numerical and categorical data. See source for the colors.
+ * @constant {Object}
+ * @property {Object} numerical - palettes for numerical data. Default is Blues.
+ * @property {Object} categorical - palettes for categorical data. Default is Set1.
+ */
 const defaultPalettes = {
     numerical: {
         Blues: [
@@ -43,12 +48,12 @@ const defaultPalettes = {
 
 /**
  *
- * @param {Object|Object[]} columnInfo - information about how the columns should be displayed
+ * @param {module:columns.Column[]} columnInfo - list of Column objects with information
  * @param {Object} palettes - mapping of names to palette colors
- *      possible options for the palette colors are:
- *       * name of a built-in palette (e.g. Blues, Set1…)
- *       * `Array` of colors as strings
- *       * `Object` with keys `colors` and `names` - important for categorical data
+ *   possible options for the palette colors are:
+ *   - name of a built-in palette (e.g. Blues, Set1…)
+ *   - `Array` of colors as strings
+ *   - `Object` with keys `colors` and `names` - important for categorical data
  */
 export function assignPalettes(columnInfo, palettes) {
     palettes = { numerical: "Blues", categorical: "Set1", ...palettes };
