@@ -13,5 +13,8 @@
   "include-component-in-tag": false,
   "include-v-in-tag": true,
   "pull-request-title-pattern": "ci: release${component} ${version}",
-  "pull-request-header": "New release"
+  "pull-request-header": "New release",
+  "packages": {
+    ".": {}
+  }
 }
