@@ -10,6 +10,9 @@ on:
       - synchronize
       - closed
 
+permissions: 
+  pull-requests: write 
+
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
