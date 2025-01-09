@@ -1,5 +1,52 @@
 # Changelog
 
+## [0.2.6](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.5...v0.2.6) (2025-01-09)
+
+
+### Features
+
+* bar legend ([694c15c](https://github.com/funkyheatmap/funkyheatmapjs/commit/694c15cb3213b1b2a0d4a58ac5328ab6ecd552f3))
+* circle legend ([39a716c](https://github.com/funkyheatmap/funkyheatmapjs/commit/39a716cf5e2bd3347179197504d1b8cc91823628))
+* drop display of removed entries ([33786a9](https://github.com/funkyheatmap/funkyheatmapjs/commit/33786a9a8feead3e82ce833dfec833ce93920ba5))
+* funkyrect legend ([2e216ba](https://github.com/funkyheatmap/funkyheatmapjs/commit/2e216ba4512871df5340146c2f0a9a549b68165a))
+* image geom legend ([6a09b4c](https://github.com/funkyheatmap/funkyheatmapjs/commit/6a09b4cf02ee0d2dffdd5dcb38af2df4f3178471))
+* pie legend ([eca269c](https://github.com/funkyheatmap/funkyheatmapjs/commit/eca269cb4ccba4d6a560fc66be575ec0212727d8))
+* positional options ([41b38ef](https://github.com/funkyheatmap/funkyheatmapjs/commit/41b38ef789e22c6d9d4a54561d3201fc7bffee96))
+* positional options ([f8a2c06](https://github.com/funkyheatmap/funkyheatmapjs/commit/f8a2c063c09047529426f8c9a73d3f3c9a8c42e0))
+* text and rect legends ([fd91008](https://github.com/funkyheatmap/funkyheatmapjs/commit/fd91008e8db1ac185a767d6ec4fac7979b009acd))
+
+
+### Bug Fixes
+
+* allow text geom colors ([b745cb0](https://github.com/funkyheatmap/funkyheatmapjs/commit/b745cb0592b41209b26dc2fd4ceaf1b2c69e85dd))
+* do not draw geoms for NA values ([ef93fc4](https://github.com/funkyheatmap/funkyheatmapjs/commit/ef93fc4db2eb621ea3f45a0b1575065b86725a68))
+* empty column groups bug ([71ce06f](https://github.com/funkyheatmap/funkyheatmapjs/commit/71ce06f9a9e72a0933e98f1519790f6e8ec47fb9))
+* verify image and text legends have values ([298bc5f](https://github.com/funkyheatmap/funkyheatmapjs/commit/298bc5fd9883feedc93a2834af86570e0d4c51cb))
+
+
+### Misc
+
+* add docs workflow ([0347e9a](https://github.com/funkyheatmap/funkyheatmapjs/commit/0347e9a69e92e12090a79290f2da429fbcd8dd9e))
+* bump node version 16-&gt;18 ([9c9e5c7](https://github.com/funkyheatmap/funkyheatmapjs/commit/9c9e5c7b128b2b6228cb30f15efa15086c7c8879))
+* docs preview pr workflow ([105e883](https://github.com/funkyheatmap/funkyheatmapjs/commit/105e8839584e33eeefff5b8faf256f775edf6cbc))
+* fix docs pr preview permissions ([810d725](https://github.com/funkyheatmap/funkyheatmapjs/commit/810d725dfadaec31b6c1dfbd9f6fd3969c4a2225))
+* fix docs workflow ([8466a48](https://github.com/funkyheatmap/funkyheatmapjs/commit/8466a4890bfa2aa89fe456f1cc8999be151ecc4f))
+* fix static path ([a82e7ba](https://github.com/funkyheatmap/funkyheatmapjs/commit/a82e7ba675a3127ee88c6c81916f83d14b0584ce))
+* fix vignettes build ([334e55e](https://github.com/funkyheatmap/funkyheatmapjs/commit/334e55e3f7090285843be71d63880fc457535ad6))
+* Merge pull request [#20](https://github.com/funkyheatmap/funkyheatmapjs/issues/20) from funkyheatmap/position-args ([41b38ef](https://github.com/funkyheatmap/funkyheatmapjs/commit/41b38ef789e22c6d9d4a54561d3201fc7bffee96))
+* more jsdoc ([713e00a](https://github.com/funkyheatmap/funkyheatmapjs/commit/713e00a94b4f6951c5b1f68bdc49f7c454b1dffa))
+* setup jsdoc ([74a47f1](https://github.com/funkyheatmap/funkyheatmapjs/commit/74a47f1c7325408e14762a86d9f9ae881061b66e))
+* simplify build ([392f181](https://github.com/funkyheatmap/funkyheatmapjs/commit/392f1819a09bc158f102729d942bf60cb8b56752))
+* update readme ([8c036b4](https://github.com/funkyheatmap/funkyheatmapjs/commit/8c036b4eef1b770e27fb47b1464374f7286168dc))
+* write simple tutorial ([769fce5](https://github.com/funkyheatmap/funkyheatmapjs/commit/769fce5a34e1e1d38af309e9f776b9eb9c53ea61))
+
+
+### Tests
+
+* add legends to scIB vignette ([308e6ff](https://github.com/funkyheatmap/funkyheatmapjs/commit/308e6ff35616555f2c551cd6a6c7c13b02d0539b))
+* add scIB vignette ([3e6bd92](https://github.com/funkyheatmap/funkyheatmapjs/commit/3e6bd92ca660bcf219ab124e6dc4eae352acda9c))
+* util function to convert dataframes ([3d13434](https://github.com/funkyheatmap/funkyheatmapjs/commit/3d13434a9019fbb68af9621fe57cf2944b234b60))
+
 ## [0.2.5](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.2.4...v0.2.5) (2024-02-15)
 
 ### Bug Fixes
