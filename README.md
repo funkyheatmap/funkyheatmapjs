@@ -33,3 +33,10 @@ If you want to use it with npm and have trouble, please
 Please, feel free to [open issues](https://github.com/funkyheatmap/funkyheatmapjs/issues) for
 bugs, feature requests and questions, and
 [submit pull requests](https://github.com/funkyheatmap/funkyheatmapjs/pulls).
+
+`main` is the stable release branch. We use `dev` for development and planning future releases.
+Please, open feature pull requests against `dev`. We use
+[release-please](https://github.com/googleapis/release-please-action/) action to create a release
+and update the Changelog after features are merged from `dev` to `main`. We use
+[pr-preview-action](https://github.com/rossjrw/pr-preview-action) to preview features and docs
+on github pages.
