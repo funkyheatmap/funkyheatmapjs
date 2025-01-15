@@ -5,8 +5,8 @@ import * as d3 from 'd3';
 /**
  * Default palettes for numerical and categorical data. See source for the colors.
  * @constant {Object}
- * @property {Object} numerical - palettes for numerical data. Default is Blues.
- * @property {Object} categorical - palettes for categorical data. Default is Set1.
+ * @property {Object} numerical - palettes for numerical data. Default is Blues
+ * @property {Object} categorical - palettes for categorical data. Default is Set1
  */
 const defaultPalettes = {
     numerical: {
