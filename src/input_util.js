@@ -1,11 +1,11 @@
 /** @module */
 
 /**
- * Converts object-based dataframe to array-based dataframe
+ * Converts object-based dataframe to array-based dataframe.
  *
- * @param {Object} data - an object with each property representing
- *      dataframe column as array of equal length
- * @returns {Object[]} - array of objects with same properties
+ * @param {Object} data - an object with each property representing dataframe column as an array.
+ *   Columns are of the same length
+ * @returns {Object[]} - array of objects with properties corresponding to columns
  */
 export function convertDataframe(data) {
     const columns = Object.getOwnPropertyNames(data);
@@ -21,6 +21,13 @@ export function convertDataframe(data) {
     return result;
 };
 
+/**
+ * Convenience function to convert potential column-based dataframes to row-based dataframes.
+ *
+ * @param  {Object[]} objects - potential objects to convert to row-based dataframes. Only converts
+ *   objects, skips arrays
+ * @returns {Object[]} - array of converted objects
+ */
 export function maybeConvertDataframe(...objects) {
     return objects.map(obj => {
         if (obj && !Array.isArray(obj)) {
@@ -31,11 +38,11 @@ export function maybeConvertDataframe(...objects) {
 };
 
 /**
- * Converts array-based dataframe to object-based dataframe
+ * Converts array-based dataframe to object-based dataframe.
  *
- * @param {Object[]} data - an object with each property representing
- *      dataframe column as array of equal length
- * @returns {Object} - array of objects with same properties
+ * @param {Object[]} data - an array of objects with properties
+ * @returns {Object} - object with each property representing dataframe column as an array,
+ *   values are preserved in the same order as in the input array
  */
 export function convertToDataframe(data) {
     const result = {};
