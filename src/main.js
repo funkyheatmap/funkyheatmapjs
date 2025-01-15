@@ -9,6 +9,30 @@ import { GEOMS } from './geoms';
 
 
 /**
+ * @typedef {Object} ColumnData
+ * @description A dataframe in column-based format. Each property is a column, represented as an
+ *   array. All columns are of the same length.
+ * @example
+ * {
+ *   'model: ['Toyota Corolla', 'Fiat 128', 'Honda Civic'],
+ *   'mpg': [33.9, 32.4, 30.4],
+ *   'weight': [1.835, 2.2, 1.615]
+ * }
+ */
+
+/**
+ * @typedef {Object[]} RowData
+ * @description A dataframe in row-based format. Each element is an object with properties. All
+ *   objects have the same properties.
+ * @example
+ * [
+ *   {model: 'Toyota Corolla', mpg: 33.9, weight: 1.835},
+ *   {model: 'Fiat 128', mpg: 32.4, weight: 2.2},
+ *   {model: 'Honda Civic', mpg: 30.4, weight: 1.615}
+ * ]
+ */
+
+/**
  * @typedef {Object} HeatmapOptions
  */
 const DEFAULT_OPTIONS = {
@@ -142,7 +166,7 @@ class PositionArgs {
  * Heatmap class
  * @property {PositionArgs} positionArgs
  */
-class FHeatmap {
+class FunkyHeatmap {
     constructor(
         data,
         columnInfo,
@@ -868,17 +892,16 @@ class FHeatmap {
  * The main entry point for the library. Takes data and various configuration options and returns
  * an SVG element with the heatmap.
  *
- * @param {Object|Object[]} data - data to plot, usually d3-fetch output.
+ * @param {ColumnData|RowData} data - data to plot, usually d3-fetch output.
  *      It should be an Array of Objects, each object has the same properties.
- * @param {Object|Object[]} columnInfo - information about how the columns should be displayed
- * @param {Object|Object[]} rowInfo - information about how the rows should be displayed
- * @param {Object|Object[]} columnGroups - information about how to group columns
- * @param {Object|Object[]} rowGroups - information about how to group rows
+ * @param {ColumnData|RowData} columnInfo - information about how the columns should be displayed
+ * @param {ColumnData|RowData} rowInfo - information about how the rows should be displayed
+ * @param {ColumnData|RowData} columnGroups - information about how to group columns
+ * @param {ColumnData|RowData} rowGroups - information about how to group rows
  * @param {Object} palettes - mapping of names to palette colors, see {@link module:palettes.assignPalettes}
- * @param {Object|Object[]} legends - a list of legends to add to the plot
+ * @param {ColumnData|RowData} legends - a list of legends to add to the plot
  * @param {Object} positionArgs - positioning arguments, see {@link PositionArgs}
- * @param {Object} options - options for the heatmap
- * @param {int} options.fontSize - font size for all text
+ * @param {Object} options - options for the heatmap, see {@link HeatmapOptions}
  * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
  *      columns. Defaults to true
  *
@@ -913,7 +936,7 @@ function funkyheatmap(
             .style('visibility', 'hidden')
             .style('position', 'absolute')
             .style('left', '-2000px');
-    const heatmap = new FHeatmap(
+    const heatmap = new FunkyHeatmap(
         data,
         columnInfo,
         columnGroups,
