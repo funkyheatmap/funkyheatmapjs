@@ -167,7 +167,8 @@ import * as d3 from 'd3';
 
 /**
  * @typedef {Object} ColumnInfo
- * @description Information about the column and how to display it.
+ * @description Information about dataframe column and how to display it.
+ * @property {string} id - column id in the dataset. Required.
  */
 
 /**
@@ -277,12 +278,16 @@ export class Column {
 export function buildColumnInfo(data, columnInfo, scaleColumn, colorByRank) {
     const item = data[0];
     if (columnInfo === undefined || columnInfo.length === 0) {
+        console.info("No column info specified, assuming all columns are to be displayed.");
         columnInfo = Object.getOwnPropertyNames(item).map(id => {
             return {id: id}
         });
     }
-    return columnInfo.map((info, i) => {
+    return columnInfo.map(info => {
         let column = info.id;
+        if (column === undefined) {
+            throw "Column info must have id field corresponding to the column in the data";
+        }
         column = new Column(info, item[column]);
         column.maybeCalculateStats(data, scaleColumn, colorByRank);
         return column;
