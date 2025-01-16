@@ -34,18 +34,15 @@
 &lt;script type=&quot;module&quot;>
 import { default as funkyheatmap } from 'https://unpkg.com/funkyheatmapjs';
 d3.csv('mtcars.csv').then((data) => {
-    const { columns } = data;
     data = d3.sort(data, (a, b) => d3.ascending(+b.mpg, +a.mpg));
     data = data.slice(0, 20);
-    d3.select(&quot;#app&quot;).node().appendChild(funkyheatmap(data, columns.map(c => {
-        return {id: c}
-    })));
+    d3.select(&quot;#app&quot;).node().appendChild(funkyheatmap(data));
 });
 &lt;/script></code></pre>
     <p>Here we first get the <code>funkyheatmap</code> function from the module, then load the csv
     file, and take first 20 cars, sorted by their miles per gallon. {@link funkyheatmap} function
-    takes the loaded data and the names of the columns to draw, and outputs an <code>svg</code>
-    DOM element, which we put into the webpage.</p>
+    takes the loaded data and outputs an <code>svg</code> DOM element, which we put into
+    the webpage.</p>
     <h3>Result</h3>
     <p>An interactive heatmap, you can click the column names to sort and hover the elements
     to see the values.</p>
