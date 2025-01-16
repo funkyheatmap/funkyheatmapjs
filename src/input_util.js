@@ -47,7 +47,7 @@ export function rowToColData(data) {
 export function ensureRowData(...objects) {
     return objects.map(obj => {
         if (obj && !Array.isArray(obj)) {
-            obj = convertDataframe(obj);
+            obj = colToRowData(obj);
         }
         return obj;
     });
