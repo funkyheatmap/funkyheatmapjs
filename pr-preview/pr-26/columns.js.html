@@ -166,6 +166,11 @@
 import * as d3 from 'd3';
 
 /**
+ * @typedef {Object} ColumnInfo
+ * @description Information about the column and how to display it.
+ */
+
+/**
  * @class
  */
 export class Column {
@@ -264,17 +269,20 @@ export class Column {
 /**
  * Assemble all column information needed for drawing
  *
- * @param {Object[]} data - dataset
- * @param {string[]} columns - names of the columns
- * @param {Object[]} columnInfo - properties of the columns for drawing, which we will modify
+ * @param {RowData} data - dataset
+ * @param {module:columns~ColumnInfo[]} columnInfo - properties of the columns for drawing, which we will modify
  * @param {boolean} scaleColumn - whether to min-max scale data per column
  * @param {boolean} colorByRank - whether to color by rank per column instead of by value
  */
-export function buildColumnInfo(data, columns, columnInfo, scaleColumn, colorByRank) {
+export function buildColumnInfo(data, columnInfo, scaleColumn, colorByRank) {
     const item = data[0];
-    return columns.map((column, i) => {
-        const info = columnInfo ? columnInfo[i] : {};
-        info.id = column;
+    if (columnInfo === undefined || columnInfo.length === 0) {
+        columnInfo = Object.getOwnPropertyNames(item).map(id => {
+            return {id: id}
+        });
+    }
+    return columnInfo.map((info, i) => {
+        let column = info.id;
         column = new Column(info, item[column]);
         column.maybeCalculateStats(data, scaleColumn, colorByRank);
         return column;
