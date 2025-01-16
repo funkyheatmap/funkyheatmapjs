@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 import funkyheatmap from '../src/main';
-import { convertToDataframe } from '../src/input_util';
+import { rowToColData } from '../src/input_util';
 
 if (module.hot) {
     module.hot.accept(() => {
@@ -31,7 +31,7 @@ function prepareData(data) {
         item.output_img = OUTPUT_IMG[item.output];
     });
 
-    data = convertToDataframe(data);
+    data = rowToColData(data);
 
     const RANKS = {
         'rank_pancreas': 'label_pancreas',
