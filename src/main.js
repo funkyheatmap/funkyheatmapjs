@@ -34,6 +34,8 @@ import { GEOMS } from './geoms';
 
 /**
  * @typedef {Object} HeatmapOptions
+ * @property {boolean} [colorByRank=false] - whether to color elements by rank, default for all numeric
+ *   columns.
  */
 const DEFAULT_OPTIONS = {
     legendFontSize: 12,
@@ -262,10 +264,6 @@ class FunkyHeatmap {
             if (prevColGroup && column.group && prevColGroup !== column.group) {
                 offset += 2 * P.padding;
             }
-            let rankedData;
-            if (O.colorByRank && column.numeric) {
-                rankedData = d3.rank(this.data, item => +item[column.id]);
-            }
             let rowGroup, nGroups = 0;
             this.data.forEach((item, j) => {
                 let width = 0;
@@ -292,13 +290,10 @@ class FunkyHeatmap {
                 if (value === undefined || value === null || (isNaN(value) && column.numeric)) {
                     return;
                 }
-                let colorValue = value;
+                let colorValue = column.getColorValue(item, j);
                 let label;
                 if (column.numeric) {
                     value = +value;
-                }
-                if (O.colorByRank && column.numeric) {
-                    colorValue = rankedData[j];
                 }
                 if (column.label) {
                     label = item[column.label];
@@ -902,9 +897,9 @@ class FunkyHeatmap {
  * @param {Object} palettes - mapping of names to palette colors, see {@link module:palettes.assignPalettes}
  * @param {ColumnData|RowData} legends - a list of legends to add to the plot
  * @param {Object} positionArgs - positioning arguments, see {@link PositionArgs}
- * @param {Object} options - options for the heatmap, see {@link HeatmapOptions}
+ * @param {HeatmapOptions} options - options for the heatmap, see {@link HeatmapOptions}
  * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
- *      columns. Defaults to true
+ *   columns. Defaults to true
  *
  * @returns {SVGElement} - the SVG element containing the heatmap
  *

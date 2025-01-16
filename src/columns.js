@@ -2,19 +2,37 @@
 
 import * as d3 from 'd3';
 
+import { rowToColData } from './input_util';
+
 /**
  * @typedef {Object} ColumnInfo
  * @description Information about a dataframe column and how to display it.
- * @property {string} id - column id in the dataset. Required.
+ * @property {string} id - column id in the dataset. Required
+ * @property {string} id_color - id of the column that will determine the color for display
+ * @property {boolean} colorByRank - whether to color by rank per column instead of by value
  */
 
 /**
  * @class
+ * @property {string} id - column id in the dataset
+ * @property {boolean} numeric - whether the column is numeric, computed from the data.
+ *   See {@link module:columns~isNumeric} for details.
+ * @property {boolean} categorical - whether the column is categorical, computed from the data
+ * @property {string} id_color - id of the column that will determine the color for display
+ * @property {boolean} colorByRank - whether to color by rank per column instead of by value
  */
 export class Column {
-    constructor(info, value) {
+    /**
+     * Initialize a column with checks, defaults, and stats calculation.
+     *
+     * @param {module:columns~ColumnInfo} info - column configuration
+     * @param {Array} data - array of data for the column
+     */
+    constructor(info, data) {
         ({
             id: this.id,
+            id_color: this.id_color,
+            colorByRank: this.colorByRank,
             name: this.name,
             geom: this.geom,
             group: this.group,
@@ -24,13 +42,18 @@ export class Column {
             overlay: this.overlay,
             options: this.options
         } = info);
+        this.data = data;
 
+        this.colorByRank = this.colorByRank || false;
+
+        const value = data[0];
         let type = typeof value;
         // geom text is always categorical
         if (isNumeric(value) && this.geom !== 'text') {
             type = 'number';
             this.numeric = true;
             this.categorical = false;
+            this.data = this.data.map(d => +d);
         } else {
             this.numeric = false;
             this.categorical = true;
@@ -81,17 +104,36 @@ export class Column {
         this.sortState = null;
     }
 
-    maybeCalculateStats(data, scaleColumn, colorByRank) {
+    maybeCalculateStats(scaleColumn) {
         let extent = [0, 1];
         if (scaleColumn) {
-            extent = d3.extent(data, i => +i[this.id]);
+            extent = d3.extent(this.data);
         }
         [this.min, this.max] = extent;
         this.range = this.max - this.min;
         this.scale = d3.scaleLinear().domain(extent);
-        if (colorByRank) {
-            this.colorScale = d3.scaleLinear().domain([0, data.length - 1]);
+        if (this.colorByRank) {
+            this.rankedData = d3.rank(this.data);
+            this.colorScale = d3.scaleLinear().domain([0, this.data.length - 1]);
         }
+    }
+
+    /**
+     * Get value for coloring the item.
+     *
+     * @param {Object} item - data item with our column
+     * @param {number} itemPos - data item position in the dataframe. Needed for getting the rank
+     *   with ties.
+     * @returns
+     */
+    getColorValue(item, itemPos) {
+        if (this.id_color !== undefined) {
+            return item[this.id_color];
+        }
+        if (this.colorByRank) {
+            return this.rankedData[itemPos];
+        }
+        return item[this.id];
     }
 
     sort() {
@@ -108,16 +150,23 @@ export class Column {
  * Assemble all column information needed for drawing
  *
  * @param {RowData} data - dataset
- * @param {module:columns~ColumnInfo[]} columnInfo - properties of the columns for drawing, which we will modify
- * @param {boolean} scaleColumn - whether to min-max scale data per column
- * @param {boolean} colorByRank - whether to color by rank per column instead of by value
+ * @param {module:columns~ColumnInfo[]} columnInfo - properties of the columns for drawing, which
+ *   will by modified in place
+ * @param {boolean} scaleColumn - whether to min-max scale data for column, default for all columns
+ * @param {boolean} colorByRank - whether to color by rank instead of by value, default for all
+ *   columns
  */
 export function buildColumnInfo(data, columnInfo, scaleColumn, colorByRank) {
-    const item = data[0];
+    const colData = rowToColData(data);
     if (columnInfo === undefined || columnInfo.length === 0) {
         console.info("No column info specified, assuming all columns are to be displayed.");
-        columnInfo = Object.getOwnPropertyNames(item).map(id => {
+        columnInfo = Object.getOwnPropertyNames(colData).map(id => {
             return {id: id}
+        });
+    }
+    if (colorByRank) {
+        columnInfo.forEach(info => {
+            info.colorByRank === undefined && (info.colorByRank = true);
         });
     }
     return columnInfo.map(info => {
@@ -125,8 +174,8 @@ export function buildColumnInfo(data, columnInfo, scaleColumn, colorByRank) {
         if (column === undefined) {
             throw "Column info must have id field corresponding to the column in the data";
         }
-        column = new Column(info, item[column]);
-        column.maybeCalculateStats(data, scaleColumn, colorByRank);
+        column = new Column(info, colData[column]);
+        column.maybeCalculateStats(scaleColumn);
         return column;
     });
 };
@@ -185,6 +234,12 @@ export function buildColumnGroups(columnGroups, columnInfo) {
     return columnGroups;
 };
 
+/**
+ * Test if a value is a number, including strings that can be coerced to a number.
+ *
+ * @param {*} str - value to test
+ * @returns {boolean} - if the values is a number
+ */
 function isNumeric(str) {
     if (typeof str === 'number') return true;
     if (typeof str !== 'string') return false;

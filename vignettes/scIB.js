@@ -60,8 +60,8 @@ function prepareData(data) {
 
     for (let [rank, label] of Object.entries(RANKS)) {
         data[label] = labelTop3(data[rank]);
-        const [min, max] = d3.extent(data[rank]);
-        data[rank] = data[rank].map(x => (-x + min) / (min - max));
+        const [min, max] = d3.extent(data[rank].map(i => +i));
+        data[rank] = data[rank].map(x => 1 - (x - min) / (max - min));
     }
 
     return data;
