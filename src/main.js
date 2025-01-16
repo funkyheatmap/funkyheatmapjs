@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 
-import { maybeConvertDataframe } from './input_util';
+import { ensureRowData } from './input_util';
 import { buildColumnInfo, buildColumnGroups, Column } from './columns';
 import { assignPalettes } from './palettes';
 import { prepareLegends } from './legends';
@@ -920,7 +920,7 @@ function funkyheatmap(
     options = {},
     scaleColumn = true
 ) {
-    [data, columnInfo, columnGroups, rowInfo, rowGroups, legends] = maybeConvertDataframe(
+    [data, columnInfo, columnGroups, rowInfo, rowGroups, legends] = ensureRowData(
         data, columnInfo, columnGroups, rowInfo, rowGroups, legends
     );
     const columns = columnInfo.map(column => column.id);
