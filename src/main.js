@@ -893,8 +893,9 @@ class FunkyHeatmap {
  * an SVG element with the heatmap.
  *
  * @param {ColumnData|RowData} data - data to plot, usually d3-fetch output.
- *      It should be an Array of Objects, each object has the same properties.
- * @param {ColumnData|module:columns~ColumnInfo[]} columnInfo - information about how the columns should be displayed
+ * @param {ColumnData|module:columns~ColumnInfo[]} columnInfo - information about how the columns
+ *   should be displayed. If not specified, all columns from `data` will be displayed.
+ *   See {@link module:columns~ColumnInfo}, {@link module:columns.Column}.
  * @param {ColumnData|RowData} rowInfo - information about how the rows should be displayed
  * @param {ColumnData|RowData} columnGroups - information about how to group columns
  * @param {ColumnData|RowData} rowGroups - information about how to group rows
