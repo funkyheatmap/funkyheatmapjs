@@ -894,7 +894,7 @@ class FunkyHeatmap {
  *
  * @param {ColumnData|RowData} data - data to plot, usually d3-fetch output.
  *      It should be an Array of Objects, each object has the same properties.
- * @param {ColumnData|RowData} columnInfo - information about how the columns should be displayed
+ * @param {ColumnData|module:columns~ColumnInfo[]} columnInfo - information about how the columns should be displayed
  * @param {ColumnData|RowData} rowInfo - information about how the rows should be displayed
  * @param {ColumnData|RowData} columnGroups - information about how to group columns
  * @param {ColumnData|RowData} rowGroups - information about how to group rows
@@ -923,8 +923,7 @@ function funkyheatmap(
     [data, columnInfo, columnGroups, rowInfo, rowGroups, legends] = ensureRowData(
         data, columnInfo, columnGroups, rowInfo, rowGroups, legends
     );
-    const columns = columnInfo.map(column => column.id);
-    columnInfo = buildColumnInfo(data, columns, columnInfo, scaleColumn, options.colorByRank);
+    columnInfo = buildColumnInfo(data, columnInfo, scaleColumn, options.colorByRank);
     columnGroups = buildColumnGroups(columnGroups, columnInfo);
     legends = prepareLegends(legends, palettes, columnInfo);
     assignPalettes(columnInfo, palettes);
