@@ -8,4 +8,9 @@ describe('funkyheatmap', function() {
         assert.equal(result.length, 2);
         assert.equal(result[0].id, 'a');
     });
+
+    it('should raise when column id is not specified', function() {
+        const data = [{a: 1, b: 4}, {a: 2, b: 5}, {a: 3, b: 6}];
+        assert.throws(() => buildColumnInfo(data, [{name: 'a'}]));
+    });
 });
