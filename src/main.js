@@ -357,7 +357,7 @@ class FunkyHeatmap {
                 if (label) {
                     label = el.select('text');
                     let fontSize = 100;
-                    for (let q = 0; q < 8; q++) {
+                    for (let q = 0; q < 12; q++) {
                         const { width } = label.node().getBBox();
                         if (width > P.geomSize - P.geomPaddingX * 2) {
                             fontSize -= 5;
@@ -910,7 +910,7 @@ class FunkyHeatmap {
  * @param {ColumnData|RowData} legends - a list of legends to add to the plot
  * @param {Object} positionArgs - positioning arguments, see {@link PositionArgs}
  * @param {HeatmapOptions} options - options for the heatmap, see {@link HeatmapOptions}
- * @param {boolean} [scaleColumn=true] - whether to apply min-max scaling to numerical
+ * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
  *   columns. Defaults to true
  *
  * @returns {SVGElement} - the SVG element containing the heatmap
