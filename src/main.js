@@ -309,8 +309,14 @@ class FunkyHeatmap {
                     const g = d3.create('svg:g')
                         .classed('fh-geom', true);
                     g.append(() => el.classed('fh-geom', false).classed('fh-orig-geom', true).node());
+                    // By default place label in the center of the geom
+                    let labelX = P.rowHeight / 2;
+                    if (column.geom === 'bar') {
+                        // Bars are of different widths, place label on the left
+                        labelX = P.padding + P.geomPaddingX * 3;
+                    }
                     g.append('text')
-                        .attr('x', P.rowHeight / 2)
+                        .attr('x', labelX)
                         .attr('y', P.rowHeight / 2)
                         .attr('text-anchor', 'middle')
                         .attr('dominant-baseline', 'central')
@@ -887,18 +893,19 @@ class FunkyHeatmap {
  * The main entry point for the library. Takes data and various configuration options and returns
  * an SVG element with the heatmap.
  *
- * @param {ColumnData|RowData} data - data to plot, usually d3-fetch output.
+ * @param {ColumnData|RowData} data - data to plot, usually d3-fetch output
  * @param {ColumnData|module:columns~ColumnInfo[]} columnInfo - information about how the columns
  *   should be displayed. If not specified, all columns from `data` will be displayed.
- *   See {@link module:columns~ColumnInfo}, {@link module:columns.Column}.
+ *   See {@link module:columns~ColumnInfo}, {@link module:columns.Column}
  * @param {ColumnData|RowData} rowInfo - information about how the rows should be displayed
  * @param {ColumnData|RowData} columnGroups - information about how to group columns
  * @param {ColumnData|RowData} rowGroups - information about how to group rows
- * @param {Object} palettes - mapping of names to palette colors, see {@link module:palettes.assignPalettes}
+ * @param {Object} palettes - mapping of names to palette colors, see
+ *   {@link module:palettes.assignPalettes}
  * @param {ColumnData|RowData} legends - a list of legends to add to the plot
  * @param {Object} positionArgs - positioning arguments, see {@link PositionArgs}
  * @param {HeatmapOptions} options - options for the heatmap, see {@link HeatmapOptions}
- * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
+ * @param {boolean} [scaleColumn=true] - whether to apply min-max scaling to numerical
  *   columns. Defaults to true
  *
  * @returns {SVGElement} - the SVG element containing the heatmap

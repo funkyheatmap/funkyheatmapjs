@@ -10,6 +10,11 @@ import { rowToColData } from './input_util';
  * @property {string} id - column id in the dataset. Required
  * @property {string} id_color - id of the column that will determine the color for display
  * @property {boolean} colorByRank - whether to color by rank per column instead of by value
+ * @property {string} label - id of the column that has the values to display as labels over
+ *   the geoms
+ * @property {string} id_label - synonym for label
+ * @property {string} geom - type of the geom to display. Default is funkyrect for numerical data,
+ *   and text for categorical data
  */
 
 /**
@@ -20,6 +25,10 @@ import { rowToColData } from './input_util';
  * @property {boolean} categorical - whether the column is categorical, computed from the data
  * @property {string} id_color - id of the column that will determine the color for display
  * @property {boolean} colorByRank - whether to color by rank per column instead of by value
+ * @property {boolean} scaleColumn - whether to scale the column data to [0, 1]
+ * @property {string} label - id of the column that has the values to display as labels over the
+ *   geoms
+ * @property {string} geom - type of the geom to display
  */
 export class Column {
     /**
@@ -33,6 +42,7 @@ export class Column {
             id: this.id,
             id_color: this.id_color,
             colorByRank: this.colorByRank,
+            scaleColumn: this.scaleColumn,
             name: this.name,
             geom: this.geom,
             group: this.group,
@@ -44,19 +54,22 @@ export class Column {
         } = info);
         this.data = data;
 
+        // defaults
         this.colorByRank = this.colorByRank || false;
+        this.label = this.label || info.id_label;
 
         const value = data[0];
-        let type = typeof value;
-        // geom text is always categorical
-        if (isNumeric(value) && this.geom !== 'text') {
-            type = 'number';
+        // geoms text and pie are always categorical
+        if (isNumeric(value) && this.geom !== 'text' && this.geom !== 'pie') {
             this.numeric = true;
             this.categorical = false;
             this.data = this.data.map(d => +d);
         } else {
             this.numeric = false;
             this.categorical = true;
+            // disable numerical options for categorical data
+            this.colorByRank = false;
+            this.scaleColumn = false;
         }
 
         if (this.name === undefined) {
@@ -75,7 +88,7 @@ export class Column {
         }
 
         if (this.geom === undefined) {
-            if (type === 'number') {
+            if (this.numeric) {
                 this.geom = 'funkyrect';
             } else {
                 this.geom = 'text';
@@ -102,11 +115,14 @@ export class Column {
         }
 
         this.sortState = null;
+        if (this.numeric) {
+            this.maybeCalculateStats();
+        }
     }
 
-    maybeCalculateStats(scaleColumn) {
+    maybeCalculateStats() {
         let extent = [0, 1];
-        if (scaleColumn) {
+        if (this.scaleColumn) {
             extent = d3.extent(this.data);
         }
         [this.min, this.max] = extent;
@@ -169,14 +185,17 @@ export function buildColumnInfo(data, columnInfo, scaleColumn, colorByRank) {
             info.colorByRank === undefined && (info.colorByRank = true);
         });
     }
+    if (scaleColumn) {
+        columnInfo.forEach(info => {
+            info.scaleColumn === undefined && (info.scaleColumn = true);
+        });
+    }
     return columnInfo.map(info => {
         let column = info.id;
         if (column === undefined) {
             throw "Column info must have id field corresponding to the column in the data";
         }
-        column = new Column(info, colData[column]);
-        column.maybeCalculateStats(scaleColumn);
-        return column;
+        return new Column(info, colData[column]);
     });
 };
 
@@ -238,7 +257,7 @@ export function buildColumnGroups(columnGroups, columnInfo) {
  * Test if a value is a number, including strings that can be coerced to a number.
  *
  * @param {*} str - value to test
- * @returns {boolean} - if the values is a number
+ * @returns {boolean} - if the value is a number
  */
 function isNumeric(str) {
     if (typeof str === 'number') return true;

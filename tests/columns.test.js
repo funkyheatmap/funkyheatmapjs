@@ -32,6 +32,13 @@ describe('buildColumnInfo', function() {
         assert.equal(result[0].colorByRank, true);
         assert.equal(result[1].colorByRank, false);
     });
+
+    it('should pass scaleColumn to all columns, but with overrides', function() {
+        const data = [{a: 1, b: 4}, {a: 2, b: 5}, {a: 3, b: 6}];
+        const result = buildColumnInfo(data, [{id: 'a'}, {id: 'b', scaleColumn: false}], true, true);
+        assert.equal(result[0].scaleColumn, true);
+        assert.equal(result[1].scaleColumn, false);
+    });
 });
 
 describe('column class', function() {
@@ -62,5 +69,17 @@ describe('column class', function() {
         const data = [5, 2, 1];
         const column = new Column(info, data);
         assert.equal(column.getColorValue({'a': 5, 'b': 10}, 0), 10);
+    });
+    it('should not have numerical transformation options for categorical data', function() {
+        let info = {id: 'a', geom: 'text'};
+        const data = [[5, 1], [2, 3], [1, 2]];
+        let column = new Column(info, data);
+        assert.equal(column.colorByRank, false);
+        assert.equal(column.scaleColumn, false);
+
+        info = {id: 'a', geom: 'pie'};
+        column = new Column(info, data);
+        assert.equal(column.colorByRank, false);
+        assert.equal(column.scaleColumn, false);
     });
 });
