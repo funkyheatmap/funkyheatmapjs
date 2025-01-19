@@ -368,7 +368,7 @@ class FunkyHeatmap {
                     }
                 }
             });
-            if (column.geom === 'bar') {
+            if (column.geom === 'bar' && column.options.draw_outline !== false) {
                 maxWidth = P.geomSize * column.width + P.geomPadding;
                 this.body.append('line')
                     .attr('x1', offset + maxWidth)
