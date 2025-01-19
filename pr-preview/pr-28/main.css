@@ -1,0 +1,12 @@
+.logo .image img {
+    height: 60px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+#main > .sidebar.tutorials {
+    width: 240px;
+}
