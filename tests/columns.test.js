@@ -82,4 +82,11 @@ describe('column class', function() {
         assert.equal(column.colorByRank, false);
         assert.equal(column.scaleColumn, false);
     });
+    it('should treat boolean columns as text', function() {
+        const info = {id: 'a'};
+        const data = [true, false, true];
+        const column = new Column(info, data);
+        assert.equal(column.numeric, false);
+        assert.equal(column.geom, 'text');
+    });
 });
