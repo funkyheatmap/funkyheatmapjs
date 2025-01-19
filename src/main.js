@@ -577,7 +577,7 @@ class FunkyHeatmap {
                         .attr('text-anchor', 'middle')
                         .style('fill', O.theme.textColor)
                         .text(label);
-                    myOffset += size * P.geomSize + P.padding;
+                    myOffset += P.geomSize + P.padding;
                 });
             }
             if (legend.geom === 'funkyrect') {
