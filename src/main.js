@@ -34,6 +34,8 @@ import { GEOMS } from './geoms';
 
 /**
  * @typedef {Object} HeatmapOptions
+ * @property {boolean} [colorByRank=false] - whether to color elements by rank, default for all numeric
+ *   columns.
  */
 const DEFAULT_OPTIONS = {
     legendFontSize: 12,
@@ -262,10 +264,6 @@ class FunkyHeatmap {
             if (prevColGroup && column.group && prevColGroup !== column.group) {
                 offset += 2 * P.padding;
             }
-            let rankedData;
-            if (O.colorByRank && column.numeric) {
-                rankedData = d3.rank(this.data, item => +item[column.id]);
-            }
             let rowGroup, nGroups = 0;
             this.data.forEach((item, j) => {
                 let width = 0;
@@ -292,13 +290,10 @@ class FunkyHeatmap {
                 if (value === undefined || value === null || (isNaN(value) && column.numeric)) {
                     return;
                 }
-                let colorValue = value;
+                let colorValue = column.getColorValue(item, j);
                 let label;
                 if (column.numeric) {
                     value = +value;
-                }
-                if (O.colorByRank && column.numeric) {
-                    colorValue = rankedData[j];
                 }
                 if (column.label) {
                     label = item[column.label];
@@ -314,8 +309,14 @@ class FunkyHeatmap {
                     const g = d3.create('svg:g')
                         .classed('fh-geom', true);
                     g.append(() => el.classed('fh-geom', false).classed('fh-orig-geom', true).node());
+                    // By default place label in the center of the geom
+                    let labelX = P.rowHeight / 2;
+                    if (column.geom === 'bar') {
+                        // Bars are of different widths, place label on the left
+                        labelX = P.padding + P.geomPaddingX * 3;
+                    }
                     g.append('text')
-                        .attr('x', P.rowHeight / 2)
+                        .attr('x', labelX)
                         .attr('y', P.rowHeight / 2)
                         .attr('text-anchor', 'middle')
                         .attr('dominant-baseline', 'central')
@@ -367,7 +368,7 @@ class FunkyHeatmap {
                     }
                 }
             });
-            if (column.geom === 'bar') {
+            if (column.geom === 'bar' && column.options.drawGuide !== false) {
                 maxWidth = P.geomSize * column.width + P.geomPadding;
                 this.body.append('line')
                     .attr('x1', offset + maxWidth)
@@ -408,14 +409,13 @@ class FunkyHeatmap {
             const column = new Column({
                 id: '_group',
                 palette: groupInfo.palette
-            }, 1);
-            column.maybeCalculateStats(null, false);
+            }, [1]);
             assignPalettes([column], this.palettes);
             const lastCol = group[group.length - 1];
             const groupStart = group[0].offset;
             const groupEnd = lastCol.offset + lastCol.widthPx + P.geomPadding;
             const fill = column.palette == 'none' && 'transparent' || column.palette(0.5);
-            groups.append('rect')
+            const rect = groups.append('rect')
                 .attr('x', groupStart)
                 .attr('y', 0)
                 .attr('width', groupEnd - groupStart)
@@ -431,6 +431,12 @@ class FunkyHeatmap {
                 .text(groupInfo.level1);
             if (O.fontSize) {
                 text.attr('font-size', O.fontSize);
+            }
+            const { width } = text.node().getBBox();
+            if (width + 2 * P.padding > groupEnd - groupStart) {
+                const diff = width + 2 * P.padding - (groupEnd - groupStart);
+                rect.attr('width', width + 2 * P.padding);
+                rect.attr('x', groupStart - diff / 2);
             }
             if (O.labelGroupsAbc) {
                 const letter = String.fromCharCode("a".charCodeAt(0) + abcCounter);
@@ -892,19 +898,20 @@ class FunkyHeatmap {
  * The main entry point for the library. Takes data and various configuration options and returns
  * an SVG element with the heatmap.
  *
- * @param {ColumnData|RowData} data - data to plot, usually d3-fetch output.
+ * @param {ColumnData|RowData} data - data to plot, usually d3-fetch output
  * @param {ColumnData|module:columns~ColumnInfo[]} columnInfo - information about how the columns
  *   should be displayed. If not specified, all columns from `data` will be displayed.
- *   See {@link module:columns~ColumnInfo}, {@link module:columns.Column}.
+ *   See {@link module:columns~ColumnInfo}, {@link module:columns.Column}
  * @param {ColumnData|RowData} rowInfo - information about how the rows should be displayed
  * @param {ColumnData|RowData} columnGroups - information about how to group columns
  * @param {ColumnData|RowData} rowGroups - information about how to group rows
- * @param {Object} palettes - mapping of names to palette colors, see {@link module:palettes.assignPalettes}
+ * @param {Object} palettes - mapping of names to palette colors, see
+ *   {@link module:palettes.assignPalettes}
  * @param {ColumnData|RowData} legends - a list of legends to add to the plot
  * @param {Object} positionArgs - positioning arguments, see {@link PositionArgs}
- * @param {Object} options - options for the heatmap, see {@link HeatmapOptions}
- * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
- *      columns. Defaults to true
+ * @param {HeatmapOptions} options - options for the heatmap, see {@link HeatmapOptions}
+ * @param {boolean} [scaleColumn=true] - whether to apply min-max scaling to numerical
+ *   columns. Defaults to true
  *
  * @returns {SVGElement} - the SVG element containing the heatmap
  *

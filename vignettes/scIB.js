@@ -49,7 +49,7 @@ function prepareData(data) {
 
     function labelTop3(vector) {
         // d3.rank behaves like R `rank` with `ties.method = "min"`
-        let ranks = d3.rank(vector);
+        let ranks = d3.rank(vector.map(i => +i));
         return ranks.map(rank => {
             if (rank < 3) {
                 return (rank + 1).toString();
@@ -60,8 +60,8 @@ function prepareData(data) {
 
     for (let [rank, label] of Object.entries(RANKS)) {
         data[label] = labelTop3(data[rank]);
-        const [min, max] = d3.extent(data[rank]);
-        data[rank] = data[rank].map(x => (-x + min) / (min - max));
+        const [min, max] = d3.extent(data[rank].map(i => +i));
+        data[rank] = data[rank].map(x => 1 - (x - min) / (max - min));
     }
 
     return data;
