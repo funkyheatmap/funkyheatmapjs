@@ -368,7 +368,7 @@ class FunkyHeatmap {
                     }
                 }
             });
-            if (column.geom === 'bar' && column.options.draw_outline !== false) {
+            if (column.geom === 'bar' && column.options.drawGuide !== false) {
                 maxWidth = P.geomSize * column.width + P.geomPadding;
                 this.body.append('line')
                     .attr('x1', offset + maxWidth)
@@ -409,14 +409,13 @@ class FunkyHeatmap {
             const column = new Column({
                 id: '_group',
                 palette: groupInfo.palette
-            }, 1);
-            column.maybeCalculateStats(null, false);
+            }, [1]);
             assignPalettes([column], this.palettes);
             const lastCol = group[group.length - 1];
             const groupStart = group[0].offset;
             const groupEnd = lastCol.offset + lastCol.widthPx + P.geomPadding;
             const fill = column.palette == 'none' && 'transparent' || column.palette(0.5);
-            groups.append('rect')
+            const rect = groups.append('rect')
                 .attr('x', groupStart)
                 .attr('y', 0)
                 .attr('width', groupEnd - groupStart)
@@ -432,6 +431,12 @@ class FunkyHeatmap {
                 .text(groupInfo.level1);
             if (O.fontSize) {
                 text.attr('font-size', O.fontSize);
+            }
+            const { width } = text.node().getBBox();
+            if (width + 2 * P.padding > groupEnd - groupStart) {
+                const diff = width + 2 * P.padding - (groupEnd - groupStart);
+                rect.attr('width', width + 2 * P.padding);
+                rect.attr('x', groupStart - diff / 2);
             }
             if (O.labelGroupsAbc) {
                 const letter = String.fromCharCode("a".charCodeAt(0) + abcCounter);

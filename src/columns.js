@@ -12,9 +12,15 @@ import { rowToColData } from './input_util';
  * @property {boolean} colorByRank - whether to color by rank per column instead of by value
  * @property {string} label - id of the column that has the values to display as labels over
  *   the geoms
- * @property {string} id_label - synonym for label
- * @property {string} geom - type of the geom to display. Default is funkyrect for numerical data,
- *   and text for categorical data
+ * @property {string} id_label - synonym for `label`
+ * @property {string} geom - type of the geom to display. Default is `funkyrect` for numerical data,
+ *   and `text` for categorical data
+ * @property {Object} options - additional options for the column
+ * @property {string} options.palette - name of the palette to use for coloring the column.
+ *   Synonym for `palette`
+ * @property {boolean} options.drawGuide - whether to draw a guide at maximum for the bar geom
+ *   column
+ * @property {boolean} options.draw_outline - synonym for `options.drawGuide`
  */
 
 /**
@@ -25,7 +31,7 @@ import { rowToColData } from './input_util';
  * @property {boolean} categorical - whether the column is categorical, computed from the data
  * @property {string} id_color - id of the column that will determine the color for display
  * @property {boolean} colorByRank - whether to color by rank per column instead of by value
- * @property {boolean} scaleColumn - whether to scale the column data to [0, 1]
+ * @property {boolean} scaleColumn - whether to scale the column data to `[0, 1]`
  * @property {string} label - id of the column that has the values to display as labels over the
  *   geoms
  * @property {string} geom - type of the geom to display
@@ -112,6 +118,9 @@ export class Column {
 
         if (this.geom === 'image' && this.width === undefined) {
             throw `Please, specify width for column with geom=image`;
+        }
+        if (this.geom === 'bar' && this.options.draw_outline !== undefined) {
+            this.options.drawGuide = this.options.draw_outline;
         }
 
         this.sortState = null;
