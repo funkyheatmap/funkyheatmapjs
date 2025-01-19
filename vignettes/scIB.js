@@ -105,6 +105,13 @@ const palettes = {
 
 const legends = [
     {
+        title: "Output",
+        geom: "image",
+        size: 20,
+        values: ["matrix.png", "embedding.png", "graph.png"],
+        labels: ["Genes", "Embedding", "Graph"],
+    },
+    {
         title: "Scaling",
         geom: "text",
         values: ["Scaled", "Unscaled"],
