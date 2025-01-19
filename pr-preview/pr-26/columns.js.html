@@ -165,19 +165,53 @@
 
 import * as d3 from 'd3';
 
+import { rowToColData } from './input_util';
+
 /**
  * @typedef {Object} ColumnInfo
  * @description Information about a dataframe column and how to display it.
- * @property {string} id - column id in the dataset. Required.
+ * @property {string} id - column id in the dataset. Required
+ * @property {string} id_color - id of the column that will determine the color for display
+ * @property {boolean} colorByRank - whether to color by rank per column instead of by value
+ * @property {string} label - id of the column that has the values to display as labels over
+ *   the geoms
+ * @property {string} id_label - synonym for `label`
+ * @property {string} geom - type of the geom to display. Default is `funkyrect` for numerical data,
+ *   and `text` for categorical data
+ * @property {Object} options - additional options for the column
+ * @property {string} options.palette - name of the palette to use for coloring the column.
+ *   Synonym for `palette`
+ * @property {boolean} options.drawGuide - whether to draw a guide at maximum for the bar geom
+ *   column
+ * @property {boolean} options.draw_outline - synonym for `options.drawGuide`
  */
 
 /**
  * @class
+ * @property {string} id - column id in the dataset
+ * @property {boolean} numeric - whether the column is numeric, computed from the data.
+ *   See {@link module:columns~isNumeric} for details.
+ * @property {boolean} categorical - whether the column is categorical, computed from the data
+ * @property {string} id_color - id of the column that will determine the color for display
+ * @property {boolean} colorByRank - whether to color by rank per column instead of by value
+ * @property {boolean} scaleColumn - whether to scale the column data to `[0, 1]`
+ * @property {string} label - id of the column that has the values to display as labels over the
+ *   geoms
+ * @property {string} geom - type of the geom to display
  */
 export class Column {
-    constructor(info, value) {
+    /**
+     * Initialize a column with checks, defaults, and stats calculation.
+     *
+     * @param {module:columns~ColumnInfo} info - column configuration
+     * @param {Array} data - array of data for the column
+     */
+    constructor(info, data) {
         ({
             id: this.id,
+            id_color: this.id_color,
+            colorByRank: this.colorByRank,
+            scaleColumn: this.scaleColumn,
             name: this.name,
             geom: this.geom,
             group: this.group,
@@ -187,16 +221,24 @@ export class Column {
             overlay: this.overlay,
             options: this.options
         } = info);
+        this.data = data;
 
-        let type = typeof value;
-        // geom text is always categorical
-        if (isNumeric(value) &amp;&amp; this.geom !== 'text') {
-            type = 'number';
+        // defaults
+        this.colorByRank = this.colorByRank || false;
+        this.label = this.label || info.id_label;
+
+        const value = data[0];
+        // geoms text and pie are always categorical
+        if (isNumeric(value) &amp;&amp; this.geom !== 'text' &amp;&amp; this.geom !== 'pie') {
             this.numeric = true;
             this.categorical = false;
+            this.data = this.data.map(d => +d);
         } else {
             this.numeric = false;
             this.categorical = true;
+            // disable numerical options for categorical data
+            this.colorByRank = false;
+            this.scaleColumn = false;
         }
 
         if (this.name === undefined) {
@@ -215,7 +257,7 @@ export class Column {
         }
 
         if (this.geom === undefined) {
-            if (type === 'number') {
+            if (this.numeric) {
                 this.geom = 'funkyrect';
             } else {
                 this.geom = 'text';
@@ -240,21 +282,46 @@ export class Column {
         if (this.geom === 'image' &amp;&amp; this.width === undefined) {
             throw `Please, specify width for column with geom=image`;
         }
+        if (this.geom === 'bar' &amp;&amp; this.options.draw_outline !== undefined) {
+            this.options.drawGuide = this.options.draw_outline;
+        }
 
         this.sortState = null;
+        if (this.numeric) {
+            this.maybeCalculateStats();
+        }
     }
 
-    maybeCalculateStats(data, scaleColumn, colorByRank) {
+    maybeCalculateStats() {
         let extent = [0, 1];
-        if (scaleColumn) {
-            extent = d3.extent(data, i => +i[this.id]);
+        if (this.scaleColumn) {
+            extent = d3.extent(this.data);
         }
         [this.min, this.max] = extent;
         this.range = this.max - this.min;
         this.scale = d3.scaleLinear().domain(extent);
-        if (colorByRank) {
-            this.colorScale = d3.scaleLinear().domain([0, data.length - 1]);
+        if (this.colorByRank) {
+            this.rankedData = d3.rank(this.data);
+            this.colorScale = d3.scaleLinear().domain([0, this.data.length - 1]);
         }
+    }
+
+    /**
+     * Get value for coloring the item.
+     *
+     * @param {Object} item - data item with our column
+     * @param {number} itemPos - data item position in the dataframe. Needed for getting the rank
+     *   with ties.
+     * @returns {number} - value for coloring the item
+     */
+    getColorValue(item, itemPos) {
+        if (this.id_color !== undefined) {
+            return item[this.id_color];
+        }
+        if (this.colorByRank) {
+            return this.rankedData[itemPos];
+        }
+        return item[this.id];
     }
 
     sort() {
@@ -271,16 +338,28 @@ export class Column {
  * Assemble all column information needed for drawing
  *
  * @param {RowData} data - dataset
- * @param {module:columns~ColumnInfo[]} columnInfo - properties of the columns for drawing, which we will modify
- * @param {boolean} scaleColumn - whether to min-max scale data per column
- * @param {boolean} colorByRank - whether to color by rank per column instead of by value
+ * @param {module:columns~ColumnInfo[]} columnInfo - properties of the columns for drawing, which
+ *   will by modified in place
+ * @param {boolean} scaleColumn - whether to min-max scale data for column, default for all columns
+ * @param {boolean} colorByRank - whether to color by rank instead of by value, default for all
+ *   columns
  */
 export function buildColumnInfo(data, columnInfo, scaleColumn, colorByRank) {
-    const item = data[0];
+    const colData = rowToColData(data);
     if (columnInfo === undefined || columnInfo.length === 0) {
         console.info("No column info specified, assuming all columns are to be displayed.");
-        columnInfo = Object.getOwnPropertyNames(item).map(id => {
+        columnInfo = Object.getOwnPropertyNames(colData).map(id => {
             return {id: id}
+        });
+    }
+    if (colorByRank) {
+        columnInfo.forEach(info => {
+            info.colorByRank === undefined &amp;&amp; (info.colorByRank = true);
+        });
+    }
+    if (scaleColumn) {
+        columnInfo.forEach(info => {
+            info.scaleColumn === undefined &amp;&amp; (info.scaleColumn = true);
         });
     }
     return columnInfo.map(info => {
@@ -288,9 +367,7 @@ export function buildColumnInfo(data, columnInfo, scaleColumn, colorByRank) {
         if (column === undefined) {
             throw "Column info must have id field corresponding to the column in the data";
         }
-        column = new Column(info, item[column]);
-        column.maybeCalculateStats(data, scaleColumn, colorByRank);
-        return column;
+        return new Column(info, colData[column]);
     });
 };
 
@@ -348,6 +425,12 @@ export function buildColumnGroups(columnGroups, columnInfo) {
     return columnGroups;
 };
 
+/**
+ * Test if a value is a number, including strings that can be coerced to a number.
+ *
+ * @param {*} str - value to test
+ * @returns {boolean} - if the value is a number
+ */
 function isNumeric(str) {
     if (typeof str === 'number') return true;
     if (typeof str !== 'string') return false;

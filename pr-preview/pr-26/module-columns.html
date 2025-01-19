@@ -349,7 +349,7 @@
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line141">line 141</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line218">line 218</a>
             </span>
         </p>
     
@@ -505,7 +505,8 @@
 
   
 
-  <td class="description last"><p>properties of the columns for drawing, which we will modify</p></td>
+  <td class="description last"><p>properties of the columns for drawing, which
+will by modified in place</p></td>
 </tr>
 
 
@@ -530,7 +531,7 @@
 
   
 
-  <td class="description last"><p>whether to min-max scale data per column</p></td>
+  <td class="description last"><p>whether to min-max scale data for column, default for all columns</p></td>
 </tr>
 
 
@@ -555,7 +556,8 @@
 
   
 
-  <td class="description last"><p>whether to color by rank per column instead of by value</p></td>
+  <td class="description last"><p>whether to color by rank instead of by value, default for all
+columns</p></td>
 </tr>
 
 
@@ -603,7 +605,7 @@
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line115">line 115</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line184">line 184</a>
             </span>
         </p>
     
@@ -625,6 +627,185 @@
 
 
 
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="~isNumeric">
+        <a class="href-link" href="#~isNumeric">#</a>
+        
+            
+                <span class='tag'>inner</span>
+            
+        
+        <span class="code-name">
+            
+                isNumeric<span class="signature">(str)</span><span class="type-signature"> &rarr; {boolean}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Test if a value is a number, including strings that can be coerced to a number.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>str</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">*</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>value to test</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="columns.js.html" class="button">View Source</a>
+            <span>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line271">line 271</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><ul>
+<li>if the value is a number</li>
+</ul></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<code class="param-type">boolean</code>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
 
 
 
@@ -712,8 +893,221 @@
 
     
 
-    <td class="description last"><p>column id in the dataset. Required.</p></td>
+    <td class="description last"><p>column id in the dataset. Required</p></td>
 </tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>id_color</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>id of the column that will determine the color for display</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colorByRank</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>whether to color by rank per column instead of by value</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>label</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>id of the column that has the values to display as labels over
+the geoms</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>id_label</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>synonym for <code>label</code></p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>geom</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>type of the geom to display. Default is <code>funkyrect</code> for numerical data,
+and <code>text</code> for categorical data</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>options</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">Object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>additional options for the column</p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>palette</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the palette to use for coloring the column.
+Synonym for <code>palette</code></p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>drawGuide</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>whether to draw a guide at maximum for the bar geom
+column</p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>draw_outline</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>synonym for <code>options.drawGuide</code></p></td>
+</tr>
+
+  
 
         
         </tbody>
@@ -757,7 +1151,7 @@
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line5">line 5</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line7">line 7</a>
             </span>
         </p>
     

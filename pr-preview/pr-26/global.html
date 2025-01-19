@@ -241,7 +241,7 @@
         
         <span class="code-name">
             
-                funkyheatmap<span class="signature">(data, columnInfo, rowInfo, columnGroups, rowGroups, palettes, legends, positionArgs, options, scaleColumn)</span><span class="type-signature"> &rarr; {SVGElement}</span>
+                funkyheatmap<span class="signature">(data, columnInfo, rowInfo, columnGroups, rowGroups, palettes, legends, positionArgs, options, scaleColumn<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SVGElement}</span>
             
         </span>
     </h4>
@@ -276,6 +276,8 @@ an SVG element with the heatmap.</p>
             <th>Type</th>
 
             
+            <th>Attributes</th>
+            
 
             
             <th>Default</th>
@@ -307,6 +309,14 @@ an SVG element with the heatmap.</p>
   </td>
 
   
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
 
   
       <td class="default">
@@ -314,7 +324,7 @@ an SVG element with the heatmap.</p>
       </td>
   
 
-  <td class="description last"><p>data to plot, usually d3-fetch output.</p></td>
+  <td class="description last"><p>data to plot, usually d3-fetch output</p></td>
 </tr>
 
 
@@ -339,6 +349,14 @@ an SVG element with the heatmap.</p>
   </td>
 
   
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
 
   
       <td class="default">
@@ -348,7 +366,7 @@ an SVG element with the heatmap.</p>
 
   <td class="description last"><p>information about how the columns
 should be displayed. If not specified, all columns from <code>data</code> will be displayed.
-See <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>, <a href="module-columns.Column.html">module:columns.Column</a>.</p></td>
+See <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>, <a href="module-columns.Column.html">module:columns.Column</a></p></td>
 </tr>
 
 
@@ -372,6 +390,14 @@ See <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>, <a 
   
   </td>
 
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
   
 
   
@@ -405,6 +431,14 @@ See <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>, <a 
   </td>
 
   
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
 
   
       <td class="default">
@@ -437,6 +471,14 @@ See <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>, <a 
   </td>
 
   
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
 
   
       <td class="default">
@@ -466,6 +508,14 @@ See <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>, <a 
   </td>
 
   
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
 
   
       <td class="default">
@@ -473,7 +523,8 @@ See <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>, <a 
       </td>
   
 
-  <td class="description last"><p>mapping of names to palette colors, see <a href="module-palettes.html#.assignPalettes">module:palettes.assignPalettes</a></p></td>
+  <td class="description last"><p>mapping of names to palette colors, see
+<a href="module-palettes.html#.assignPalettes">module:palettes.assignPalettes</a></p></td>
 </tr>
 
 
@@ -497,6 +548,14 @@ See <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>, <a 
   
   </td>
 
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
   
 
   
@@ -527,6 +586,14 @@ See <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>, <a 
   </td>
 
   
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
 
   
       <td class="default">
@@ -549,12 +616,20 @@ See <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>, <a 
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="global.html#HeatmapOptions">HeatmapOptions</a></code>
 
 
   
   </td>
 
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
   
 
   
@@ -584,6 +659,16 @@ See <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>, <a 
   
   </td>
 
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
   
 
   
@@ -643,7 +728,7 @@ columns. Defaults to true</p></td>
         <p class="tag-source">
             <a href="main.js.html" class="button">View Source</a>
             <span>
-                <a href="main.js.html">main.js</a>, <a href="main.js.html#line912">line 912</a>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line919">line 919</a>
             </span>
         </p>
     
@@ -819,6 +904,77 @@ array. All columns are of the same length.</p>
 
 
 
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+            <th>Default</th>
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colorByRank</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            false
+        
+        </td>
+    
+
+    <td class="description last"><p>whether to color elements by rank, default for all numeric
+columns.</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
 
 
 
