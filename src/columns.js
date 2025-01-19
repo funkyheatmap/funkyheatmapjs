@@ -149,7 +149,7 @@ export class Column {
      * @param {Object} item - data item with our column
      * @param {number} itemPos - data item position in the dataframe. Needed for getting the rank
      *   with ties.
-     * @returns
+     * @returns {number} - value for coloring the item
      */
     getColorValue(item, itemPos) {
         if (this.id_color !== undefined) {
