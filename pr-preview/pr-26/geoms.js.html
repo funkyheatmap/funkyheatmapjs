@@ -172,9 +172,20 @@ export const GEOMS = {
         if (column.palette) {
             fill = column.palette(value);
         }
+        let align = 'start', x = 0;
+        if (column.options.align === 'center' || column.options.align === 'middle') {
+            align = 'middle';
+            x = P.rowHeight / 2;
+        }
+        if (column.options.align === 'right' || column.options.align === 'end') {
+            align = 'end';
+            x = P.rowHeight - P.padding;
+        }
         const el = d3.create('svg:text')
             .attr('dominant-baseline', 'middle')
             .attr('y', P.rowHeight / 2)
+            .attr('x', x)
+            .attr('text-anchor', align)
             .style('fill', fill)
             .text(value);
         if (O.fontSize) {
