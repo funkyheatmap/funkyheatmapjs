@@ -449,15 +449,12 @@ class FunkyHeatmap {
                     width = groupName.node().getBBox().width;
                 }
                 rowGroup = item[this.rowGroupKey];
-                let value = item[column.id];
+                let value = column.getValue(item);
                 if (value === undefined || value === null || (isNaN(value) &amp;&amp; column.numeric)) {
                     return;
                 }
                 let colorValue = column.getColorValue(item, j);
                 let label;
-                if (column.numeric) {
-                    value = +value;
-                }
                 if (column.label) {
                     label = item[column.label];
                 }

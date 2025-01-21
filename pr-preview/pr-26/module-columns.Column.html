@@ -431,6 +431,29 @@ See <a href="module-columns.html#~isNumeric">module:columns~isNumeric</a> for de
             
 <tr class="deep-level-0">
     
+        <td class="name"><code>id_size</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>id of the column that will determine the size for display</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
         <td class="name"><code>colorByRank</code></td>
     
 
@@ -562,7 +585,7 @@ geoms</p></td>
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line40">line 40</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line46">line 46</a>
             </span>
         </p>
     
@@ -624,7 +647,7 @@ geoms</p></td>
         
         <span class="code-name">
             
-                getColorValue<span class="signature">(item, itemPos)</span><span class="type-signature"> &rarr; {number}</span>
+                getColorValue<span class="signature">(item, itemPos)</span><span class="type-signature"> &rarr; {number|string}</span>
             
         </span>
     </h4>
@@ -761,7 +784,7 @@ with ties.</p></td>
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line166">line 166</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line195">line 195</a>
             </span>
         </p>
     
@@ -801,6 +824,190 @@ with ties.</p></td>
         <label>Type: </label>
         
 <code class="param-type">number</code>
+|
+
+<code class="param-type">string</code>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getValue">
+        <a class="href-link" href="#getValue">#</a>
+        
+        <span class="code-name">
+            
+                getValue<span class="signature">(item)</span><span class="type-signature"> &rarr; {number|string|Array.&lt;number>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Get value for the item, which is size for numeric or display for text/pie.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>item</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">Object</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>data item with our column</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="columns.js.html" class="button">View Source</a>
+            <span>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line177">line 177</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><ul>
+<li>value for sizing or displaying the item</li>
+</ul></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<code class="param-type">number</code>
+|
+
+<code class="param-type">string</code>
+|
+
+<code class="param-type">Array.&lt;number></code>
 
 
     </div>
