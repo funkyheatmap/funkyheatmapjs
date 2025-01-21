@@ -42,8 +42,9 @@ export class Column {
      *
      * @param {module:columns~ColumnInfo} info - column configuration
      * @param {Array} data - array of data for the column
+     * @param {string[]} columnNames - names of the columns in the dataset, to do cross-checks
      */
-    constructor(info, data) {
+    constructor(info, data, columnNames) {
         ({
             id: this.id,
             id_color: this.id_color,
@@ -123,6 +124,13 @@ export class Column {
             this.options.drawGuide = this.options.draw_outline;
         }
 
+        if (this.label !== undefined && !columnNames.includes(this.label)) {
+            throw `Column ${this.id} has label=${this.label}, which is not in the data`;
+        }
+        if (this.id_color !== undefined && !columnNames.includes(this.id_color)) {
+            throw `Column ${this.id} has id_color=${this.id_color}, which is not in the data`;
+        }
+
         this.sortState = null;
         if (this.numeric) {
             this.maybeCalculateStats();
@@ -183,6 +191,7 @@ export class Column {
  */
 export function buildColumnInfo(data, columnInfo, scaleColumn, colorByRank) {
     const colData = rowToColData(data);
+    const columnNames = Object.getOwnPropertyNames(colData);
     if (columnInfo === undefined || columnInfo.length === 0) {
         console.info("No column info specified, assuming all columns are to be displayed.");
         columnInfo = Object.getOwnPropertyNames(colData).map(id => {
@@ -204,7 +213,7 @@ export function buildColumnInfo(data, columnInfo, scaleColumn, colorByRank) {
         if (column === undefined) {
             throw "Column info must have id field corresponding to the column in the data";
         }
-        return new Column(info, colData[column]);
+        return new Column(info, colData[column], columnNames);
     });
 };
 
