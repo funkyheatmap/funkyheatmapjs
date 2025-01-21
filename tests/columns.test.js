@@ -117,4 +117,55 @@ describe('column class', function() {
         const data = [5, 2, 1];
         assert.throws(() => new Column(info, data, ['a']));
     });
+    it('should raise when id_hover_text refers to non-existing column', function() {
+        const info = {id: 'a', id_hover_text: 'b'};
+        const data = [5, 2, 1];
+        assert.throws(() => new Column(info, data, ['a']));
+    });
+    it('should return hoverText simple', function() {
+        const info = {id: 'a'};
+        const data = [1, 2, 3];
+        const column = new Column(info, data);
+        assert.equal(column.getHoverText({'a': 2}, 4), '2');
+        assert.equal(column.getHoverText({'a': 2.12381729312}, 4), '2.1238');
+        assert.equal(column.getHoverText({'a': 2.12381729312}, 2), '2.12');
+    });
+    it('should return hoverText with id_hover_text option', function() {
+        const info = {id: 'a', id_hover_text: 'b'};
+        const data = [5, 2, 1];
+        const column = new Column(info, data, ['a', 'b']);
+        assert.equal(column.getHoverText({'a': 5, 'b': 10}, 4), '10');
+    });
+    it('should return no hoverText for text', function() {
+        const info = {id: 'a'};
+        const data = ['a', 'b', 'c'];
+        const column = new Column(info, data);
+        assert.equal(column.getHoverText({'a': 'a'}, 4), undefined);
+    });
+    it('should return no hoverText for image', function() {
+        const info = {id: 'a', geom: 'image', width: 10};
+        const data = ['a', 'b', 'c'];
+        const column = new Column(info, data);
+        assert.equal(column.getHoverText({'a': 'a'}, 4), undefined);
+    });
+    it('should return hoverText for text with id_hover_text override', function() {
+        const info = {id: 'a', id_hover_text: 'b'};
+        const data = ['a', 'b', 'c'];
+        const column = new Column(info, data, ['a', 'b']);
+        assert.equal(column.getHoverText({'a': 'a', b: 'b'}, 4), 'b');
+    });
+    it('should return no hoverText for image', function() {
+        const info = {id: 'a', geom: 'image', width: 10, id_hover_text: 'b'};
+        const data = ['a', 'b', 'c'];
+        const column = new Column(info, data, ['a', 'b']);
+        assert.equal(column.getHoverText({'a': 'a', b: 'b'}, 4), 'b');
+    });
+    it('should return a table for pie geom', function() {
+        const info = {id: 'a', geom: 'pie'};
+        const data = [[1.01234782, 2]];
+        const column = new Column(info, data);
+        // TODO: shift hover table from main to column. Requires color names for pie,
+        // so we need to call `assignPalettes` first.
+        // assert.equal(column.getHoverText({'a': 'a'}), undefined);
+    });
 });
