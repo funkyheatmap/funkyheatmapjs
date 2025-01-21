@@ -67,7 +67,7 @@ describe('column class', function() {
     it('should return colorValue with id_color option', function() {
         const info = {id: 'a', id_color: 'b'};
         const data = [5, 2, 1];
-        const column = new Column(info, data);
+        const column = new Column(info, data, ['a', 'b']);
         assert.equal(column.getColorValue({'a': 5, 'b': 10}, 0), 10);
     });
     it('should not have numerical transformation options for categorical data', function() {
@@ -88,5 +88,10 @@ describe('column class', function() {
         const column = new Column(info, data);
         assert.equal(column.numeric, false);
         assert.equal(column.geom, 'text');
+    });
+    it('should raise when id_color refers to non-existing column', function() {
+        const info = {id: 'a', id_color: 'b'};
+        const data = [5, 2, 1];
+        assert.throws(() => new Column(info, data, ['a']));
     });
 });
