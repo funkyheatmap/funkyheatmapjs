@@ -34,8 +34,19 @@ import { GEOMS } from './geoms';
 
 /**
  * @typedef {Object} HeatmapOptions
- * @property {boolean} [colorByRank=false] - whether to color elements by rank, default for all numeric
- *   columns.
+ * @property {boolean} [colorByRank=false] - whether to color elements by rank, default for all
+ *   numeric columns
+ * @property {number} [legendFontSize=12] - font size for legend labels
+ * @property {boolean} [labelGroupsAbc=false] - whether to add alphabetical index to column groups
+ *   labels
+ * @property {number} [tooltipPrecision=4] - number of decimal places for floats in the tooltip
+ * @property {Object} [theme] - theme options
+ * @property {string} [theme.oddRowBackground='white'] - background color for odd rows
+ * @property {string} [theme.evenRowBackground='#eee'] - background color for even rows
+ * @property {string} [theme.textColor='black'] - color for text
+ * @property {string} [theme.strokeColor='#555'] - edge color for geoms and guides
+ * @property {string} [theme.headerColor='black'] - color for header text
+ * @property {string} [theme.hoverColor='#1385cb'] - color for hovered text
  */
 const DEFAULT_OPTIONS = {
     legendFontSize: 12,
