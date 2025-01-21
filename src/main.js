@@ -578,11 +578,20 @@ class FunkyHeatmap {
                     const geom = GEOMS.rect(size, colorValue, legend, O, P);
                     geom.attr('transform', `translate(${myOffset}, ${offsetY + P.padding})`);
                     el.append(() => geom.node());
+                    let x = myOffset;
+                    let textAnchor = 'start';
+                    if (legend.label_align === 'center') {
+                        x += P.rowHeight / 2;
+                        textAnchor = 'middle';
+                    } else if (legend.label_align === 'right') {
+                        x += P.rowHeight;
+                        textAnchor = 'end';
+                    }
                     el.append('text')
-                        .attr('x', myOffset + P.rowHeight / 2)
+                        .attr('x', x)
                         .attr('y', offsetY + P.rowHeight + rowHeight + P.padding)
                         .attr('font-size', O.legendFontSize)
-                        .attr('text-anchor', 'middle')
+                        .attr('text-anchor', textAnchor)
                         .style('fill', O.theme.textColor)
                         .text(label);
                     myOffset += P.geomSize + P.padding;
@@ -600,11 +609,20 @@ class FunkyHeatmap {
                         'transform',
                         `translate(${myOffset}, ${offsetY + P.rowHeight / 2 - geomHeight / 2})`
                     );
+                    let x = myOffset + P.rowHeight / 2 - geomWidth / 2;
+                    let textAnchor = 'start';
+                    if (legend.label_align === 'center') {
+                        x += geomWidth / 2;
+                        textAnchor = 'middle';
+                    } else if (legend.label_align === 'right') {
+                        x += geomWidth;
+                        textAnchor = 'end';
+                    }
                     el.append('text')
-                        .attr('x', myOffset + P.rowHeight / 2)
+                        .attr('x', x)
                         .attr('y', offsetY + P.rowHeight + rowHeight + P.padding)
                         .attr('font-size', O.legendFontSize)
-                        .attr('text-anchor', 'middle')
+                        .attr('text-anchor', textAnchor)
                         .style('fill', O.theme.textColor)
                         .text(label);
                     myOffset += geomWidth + P.padding;
@@ -622,11 +640,20 @@ class FunkyHeatmap {
                         'transform',
                         `translate(${myOffset}, ${offsetY + P.rowHeight / 2 - geomHeight / 2})`
                     );
+                    let x = myOffset + P.rowHeight / 2 - geomWidth / 2;
+                    let textAnchor = 'start';
+                    if (legend.label_align === 'center') {
+                        x += geomWidth / 2;
+                        textAnchor = 'middle';
+                    } else if (legend.label_align === 'right') {
+                        x += geomWidth;
+                        textAnchor = 'end';
+                    }
                     el.append('text')
-                        .attr('x', myOffset + P.rowHeight / 2)
+                        .attr('x', x)
                         .attr('y', offsetY + P.rowHeight + rowHeight + P.padding)
                         .attr('font-size', O.legendFontSize)
-                        .attr('text-anchor', 'middle')
+                        .attr('text-anchor', textAnchor)
                         .style('fill', O.theme.textColor)
                         .text(label);
                     myOffset += geomWidth + P.padding;
