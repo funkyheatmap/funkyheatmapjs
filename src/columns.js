@@ -10,15 +10,20 @@ import { rowToColData } from './input_util';
  * @description Information about a dataframe column and how to display it.
  * @property {string} id - column id in the dataset. Required
  * @property {string} id_color - id of the column that will determine the color for display
+ * @property {string} id_size - id of the column that will determine the size for display
  * @property {boolean} colorByRank - whether to color by rank per column instead of by value
  * @property {string} label - id of the column that has the values to display as labels over
  *   the geoms
  * @property {string} id_label - synonym for `label`
  * @property {string} geom - type of the geom to display. Default is `funkyrect` for numerical data,
  *   and `text` for categorical data
+ * @property {string} name - name of the column to display above the column
+ * @property {string} group - name of the group the column belongs to
+ * @property {string} palette - name of the palette to use for coloring the column
+ * @property {number} width - width of the column, only used for `bar` and `image` geoms
  * @property {Object} options - additional options for the column
- * @property {string} options.palette - name of the palette to use for coloring the column.
- *   Synonym for `palette`
+ * @property {string} options.palette - synonym for `palette`
+ * @property {number} options.width - synonym for `width`
  * @property {boolean} options.drawGuide - whether to draw a guide at maximum for the bar geom
  *   column
  * @property {boolean} options.draw_outline - synonym for `options.drawGuide`
@@ -31,6 +36,7 @@ import { rowToColData } from './input_util';
  *   See {@link module:columns~isNumeric} for details.
  * @property {boolean} categorical - whether the column is categorical, computed from the data
  * @property {string} id_color - id of the column that will determine the color for display
+ * @property {string} id_size - id of the column that will determine the size for display
  * @property {boolean} colorByRank - whether to color by rank per column instead of by value
  * @property {boolean} scaleColumn - whether to scale the column data to `[0, 1]`
  * @property {string} label - id of the column that has the values to display as labels over the
@@ -49,6 +55,7 @@ export class Column {
         ({
             id: this.id,
             id_color: this.id_color,
+            id_size: this.id_size,
             colorByRank: this.colorByRank,
             scaleColumn: this.scaleColumn,
             name: this.name,
@@ -57,7 +64,6 @@ export class Column {
             palette: this.palette,
             width: this.width,
             label: this.label,
-            overlay: this.overlay,
             options: this.options
         } = info);
         this.data = data;
@@ -131,6 +137,9 @@ export class Column {
         if (this.id_color !== undefined && !columnNames.includes(this.id_color)) {
             throw `Column ${this.id} has id_color=${this.id_color}, which is not in the data`;
         }
+        if (this.id_size !== undefined && !columnNames.includes(this.id_size)) {
+            throw `Column ${this.id} has id_size=${this.id_size}, which is not in the data`;
+        }
 
         this.sortState = null;
         if (this.numeric) {
@@ -148,6 +157,10 @@ export class Column {
         this.scale = d3.scaleLinear().domain(extent);
         if (this.colorByRank) {
             this.rankedData = d3.rank(this.data);
+            // In case there are ties, d3 will return ranks like [0, 0, 2] skipping rank 1.
+            // So we renormalize the ranks from [0, 2] to [0, 1], and map the colors to the number
+            // of unique ranks only. Otherwise we allocate 3 colors for [0, 0, 2] data, and the
+            // display colors won't fully map the palette.
             const uniqueRanks = _.uniq(this.rankedData);
             const rankedRanks = d3.rank(uniqueRanks);
             this.normalizedRanks = _.zipObject(uniqueRanks, rankedRanks);
@@ -156,12 +169,28 @@ export class Column {
     }
 
     /**
+     * Get value for the item, which is size for numeric or display for text/pie.
+     *
+     * @param {Object} item - data item with our column
+     * @returns {number|string|number[]} - value for sizing or displaying the item
+     */
+    getValue(item) {
+        if (this.id_size !== undefined) {
+            return item[this.id_size];
+        }
+        if (this.numeric) {
+            return +item[this.id];
+        }
+        return item[this.id];
+    }
+
+    /**
      * Get value for coloring the item.
      *
      * @param {Object} item - data item with our column
      * @param {number} itemPos - data item position in the dataframe. Needed for getting the rank
      *   with ties.
-     * @returns {number} - value for coloring the item
+     * @returns {number|string} - value for coloring the item
      */
     getColorValue(item, itemPos) {
         if (this.id_color !== undefined) {
