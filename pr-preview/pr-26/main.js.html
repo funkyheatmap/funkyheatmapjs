@@ -205,6 +205,7 @@ const DEFAULT_OPTIONS = {
     legendTicks: [0, 0.2, 0.4, 0.6, 0.8, 1],
     labelGroupsAbc: false,
     colorByRank: false,
+    tooltipPrecision: 4,
     theme: {
         oddRowBackground: 'white',
         evenRowBackground: '#eee',
@@ -232,7 +233,6 @@ const DEFAULT_POSITION_ARGS = {
 /**
  * Positional options for the heatmap.
  *
- * Configurable options:
  * @property {number} rowHeight - height of a heatmap row, in pixels
  * @property {number} rowSpace - space between rows, as a fraction of rowHeight. Twice the padding
  * @property {number} rowBigspace - space between groups of rows, as a fraction of rowHeight
@@ -243,20 +243,21 @@ const DEFAULT_POSITION_ARGS = {
  * @property {number} padding - padding used in certain places. TODO: document
  * @property {number} minGeomSize - minimum size of a heatmap element, in pixels
  * @property {number} funkyMidpoint - midpoint for funkyrect geom
- *
- * Calculated options:
- * @property {number} rowSpacePx - space between rows, in pixels
- * @property {number} rowBigspacePx - space between groups of rows, in pixels
- * @property {number} colSpacePx - space between columns, in pixels
- * @property {number} geomSize - size of a heatmap element, in pixels
- * @property {number} geomPadding - padding around heatmap elements, in pixels
- * @property {number} geomPaddingX - padding around heatmap elements in the x direction, in pixels
- * @property {number} bodyHeight - height of the heatmap body, in pixels
- * @property {number} bodyWidth - width of the heatmap body, in pixels
- * @property {number} width - width of the heatmap, in pixels, including header and footer
- * @property {number} headerHeight - height of the header, in pixels
- * @property {number} footerHeight - height of the footer, in pixels
- * @property {number} footerOffset - offset of the footer from the left edge of the heatmap, in pixels
+ * @property {number} rowSpacePx - space between rows, in pixels. _Calculated_
+ * @property {number} rowBigspacePx - space between groups of rows, in pixels. _Calculated_
+ * @property {number} colSpacePx - space between columns, in pixels. _Calculated_
+ * @property {number} geomSize - size of a heatmap element, in pixels. _Calculated_
+ * @property {number} geomPadding - padding around heatmap elements, in pixels. _Calculated_
+ * @property {number} geomPaddingX - padding around heatmap elements in the x direction, in pixels.
+ *   _Calculated_
+ * @property {number} bodyHeight - height of the heatmap body, in pixels. _Calculated_
+ * @property {number} bodyWidth - width of the heatmap body, in pixels. _Calculated_
+ * @property {number} width - width of the heatmap, in pixels, including header and footer.
+ *   _Calculated_
+ * @property {number} headerHeight - height of the header, in pixels. _Calculated_
+ * @property {number} footerHeight - height of the footer, in pixels. _Calculated_
+ * @property {number} footerOffset - offset of the footer from the left edge of the heatmap,
+ *   in pixels. _Calculated_
  */
 class PositionArgs {
     /**
@@ -485,16 +486,15 @@ class FunkyHeatmap {
                     el = g;
                 }
                 el.attr('transform', `translate(${offset}, ${(j + nGroups) * P.rowHeight})`);
-                if (column.numeric &amp;&amp; !label) {
-                    let tooltip = (+value).toFixed(4);
-                    tooltip = tooltip.replace(/\.?0+$/, '');
-                    el.datum({tooltip: tooltip});
+                const tooltipValue = column.getHoverText(item, O.tooltipPrecision);
+                if (tooltipValue !== undefined) {
+                    el.datum({tooltip: tooltipValue});
                 }
                 if (column.geom === 'pie') {
-                    const s = 'margin: 5px; border-top: 1px solid #aaa; border-left: 1px solid #aaa; font-size: 80%';
+                    const s = 'margin: 5px; border-collapse: collapse; border-top: 1px solid #aaa; border-left: 1px solid #aaa; font-size: 80%';
                     const s2 = 'padding: 2px 4px; border-bottom: 1px solid #aaa; border-right: 1px solid #aaa';
                     let tooltip = `&lt;table style="${s}">${column.palette.colorNames.map((colorName, i) => {
-                        return `&lt;tr>&lt;td style="${s2}">${colorName}:&lt;/td>&lt;td style="${s2}">${value[i]}&lt;/td>&lt;/tr>`;
+                        return `&lt;tr>&lt;td style="${s2}">${colorName}:&lt;/td>&lt;td style="${s2}">${value[i].toFixed(O.tooltipPrecision)}&lt;/td>&lt;/tr>`;
                     }).join('')}&lt;/table>`;
                     el.datum({tooltip: tooltip});
                 }

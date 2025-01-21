@@ -408,7 +408,7 @@ See <a href="module-columns.html#~isNumeric">module:columns~isNumeric</a> for de
             
 <tr class="deep-level-0">
     
-        <td class="name"><code>id_color</code></td>
+        <td class="name"><code>name</code></td>
     
 
     <td class="type">
@@ -424,7 +424,30 @@ See <a href="module-columns.html#~isNumeric">module:columns~isNumeric</a> for de
 
     
 
-    <td class="description last"><p>id of the column that will determine the color for display</p></td>
+    <td class="description last"><p>name of the column to display above the column</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>group</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the group the column belongs to</p></td>
 </tr>
 
         
@@ -448,6 +471,29 @@ See <a href="module-columns.html#~isNumeric">module:columns~isNumeric</a> for de
     
 
     <td class="description last"><p>id of the column that will determine the size for display</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>id_color</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>id of the column that will determine the color for display</p></td>
 </tr>
 
         
@@ -524,6 +570,29 @@ geoms</p></td>
             
 <tr class="deep-level-0">
     
+        <td class="name"><code>id_hover_text</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>id of the column that has the values to display as hover text</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
         <td class="name"><code>geom</code></td>
     
 
@@ -585,7 +654,7 @@ geoms</p></td>
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line46">line 46</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line51">line 51</a>
             </span>
         </p>
     
@@ -784,7 +853,7 @@ with ties.</p></td>
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line195">line 195</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line206">line 206</a>
             </span>
         </p>
     
@@ -826,6 +895,206 @@ with ties.</p></td>
 <code class="param-type">number</code>
 |
 
+<code class="param-type">string</code>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getHoverText">
+        <a class="href-link" href="#getHoverText">#</a>
+        
+        <span class="code-name">
+            
+                getHoverText<span class="signature">(item, floatPrecision)</span><span class="type-signature"> &rarr; {string}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Get text to display in a tooltip over the geom when mouse hovers it.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>item</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">Object</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>data item with our column</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>floatPrecision</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">number</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>number of decimal places to display for float values</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="columns.js.html" class="button">View Source</a>
+            <span>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line225">line 225</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><ul>
+<li>text to display in tooltip when mouse hovers the geom</li>
+</ul></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
 <code class="param-type">string</code>
 
 
@@ -962,7 +1231,7 @@ with ties.</p></td>
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line177">line 177</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line188">line 188</a>
             </span>
         </p>
     
