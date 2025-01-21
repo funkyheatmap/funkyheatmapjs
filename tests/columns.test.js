@@ -102,4 +102,19 @@ describe('column class', function() {
         const data = [5, 2, 1];
         assert.throws(() => new Column(info, data, ['a']));
     });
+    it('should raise when id_size refers to non-existing column', function() {
+        const info = {id: 'a', id_size: 'b'};
+        const data = [5, 2, 1];
+        assert.throws(() => new Column(info, data, ['a']));
+    });
+    it('should raise when label refers to non-existing column', function() {
+        const info = {id: 'a', label: 'b'};
+        const data = [5, 2, 1];
+        assert.throws(() => new Column(info, data, ['a']));
+    });
+    it('should raise when id_label refers to non-existing column', function() {
+        const info = {id: 'a', id_label: 'b'};
+        const data = [5, 2, 1];
+        assert.throws(() => new Column(info, data, ['a']));
+    });
 });
