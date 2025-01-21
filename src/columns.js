@@ -9,16 +9,18 @@ import { rowToColData } from './input_util';
  * @typedef {Object} ColumnInfo
  * @description Information about a dataframe column and how to display it.
  * @property {string} id - column id in the dataset. Required
- * @property {string} id_color - id of the column that will determine the color for display
+ * @property {string} name - name of the column to display above the column
+ * @property {string} group - name of the group the column belongs to
  * @property {string} id_size - id of the column that will determine the size for display
+ * @property {string} id_color - id of the column that will determine the color for display
  * @property {boolean} colorByRank - whether to color by rank per column instead of by value
+ * @property {boolean} scaleColumn - whether to scale the column data to `[0, 1]`
  * @property {string} label - id of the column that has the values to display as labels over
  *   the geoms
  * @property {string} id_label - synonym for `label`
+ * @property {string} id_hover_text - id of the column that has the values to display as hover text
  * @property {string} geom - type of the geom to display. Default is `funkyrect` for numerical data,
  *   and `text` for categorical data
- * @property {string} name - name of the column to display above the column
- * @property {string} group - name of the group the column belongs to
  * @property {string} palette - name of the palette to use for coloring the column
  * @property {number} width - width of the column, only used for `bar` and `image` geoms
  * @property {Object} options - additional options for the column
@@ -35,12 +37,15 @@ import { rowToColData } from './input_util';
  * @property {boolean} numeric - whether the column is numeric, computed from the data.
  *   See {@link module:columns~isNumeric} for details.
  * @property {boolean} categorical - whether the column is categorical, computed from the data
- * @property {string} id_color - id of the column that will determine the color for display
+ * @property {string} name - name of the column to display above the column
+ * @property {string} group - name of the group the column belongs to
  * @property {string} id_size - id of the column that will determine the size for display
+ * @property {string} id_color - id of the column that will determine the color for display
  * @property {boolean} colorByRank - whether to color by rank per column instead of by value
  * @property {boolean} scaleColumn - whether to scale the column data to `[0, 1]`
  * @property {string} label - id of the column that has the values to display as labels over the
  *   geoms
+ * @property {string} id_hover_text - id of the column that has the values to display as hover text
  * @property {string} geom - type of the geom to display
  */
 export class Column {
@@ -54,16 +59,17 @@ export class Column {
     constructor(info, data, columnNames) {
         ({
             id: this.id,
-            id_color: this.id_color,
+            name: this.name,
+            group: this.group,
             id_size: this.id_size,
+            id_color: this.id_color,
             colorByRank: this.colorByRank,
             scaleColumn: this.scaleColumn,
-            name: this.name,
+            label: this.label,
+            id_hover_text: this.id_hover_text,
             geom: this.geom,
-            group: this.group,
             palette: this.palette,
             width: this.width,
-            label: this.label,
             options: this.options
         } = info);
         this.data = data;
@@ -140,6 +146,11 @@ export class Column {
         if (this.id_size !== undefined && !columnNames.includes(this.id_size)) {
             throw `Column ${this.id} has id_size=${this.id_size}, which is not in the data`;
         }
+        if (this.id_hover_text !== undefined && !columnNames.includes(this.id_hover_text)) {
+            throw (
+                `Column ${this.id} has id_hover_text=${this.id_hover_text}, which is not in the data`
+            );
+        }
 
         this.sortState = null;
         if (this.numeric) {
@@ -202,6 +213,30 @@ export class Column {
             return normalizedRank;
         }
         return item[this.id];
+    }
+
+    /**
+     * Get text to display in a tooltip over the geom when mouse hovers it.
+     *
+     * @param {Object} item - data item with our column
+     * @param {number} floatPrecision - number of decimal places to display for float values
+     * @returns {string} - text to display in tooltip when mouse hovers the geom
+     */
+    getHoverText(item, floatPrecision) {
+        if (['text', 'image'].includes(this.geom) && this.id_hover_text === undefined) {
+            return;
+        }
+        let value = item[this.id];
+        if (this.id_hover_text !== undefined) {
+            value = item[this.id_hover_text];
+        }
+        if (this.numeric) {
+            value = +value;
+        }
+        if (_.isNumber(value) && !_.isInteger(value)) {
+            return value.toFixed(floatPrecision);
+        }
+        return `${value}`;
     }
 
     sort() {
