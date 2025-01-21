@@ -70,6 +70,29 @@ export function prepareLegends(legends, palettes, columnInfo) {
                 legend.enabled = false;
             }
         }
+        if (legend.label_hjust !== undefined) {
+            if (legend.label_hjust === 0) {
+                legend.label_align = 'left';
+                console.info(`Converting label_hjust=0 to label_align=left for legend \`${legend.title}\``);
+            } else if (legend.label_hjust === 1) {
+                legend.label_align = 'right';
+                console.info(`Converting label_hjust=1 to label_align=right for legend \`${legend.title}\``);
+            } else if (legend.label_hjust === 0.5) {
+                legend.label_align = 'center';
+                console.info(`Converting label_hjust=0.5 to label_align=center for legend \`${legend.title}\``);
+            } else {
+                console.warn(`Unsupported value for label_hjust: ${legend.label_hjust} for legend \`${legend.title}\`, ignoring. Only 0, 0.5, 1 are supported`);
+            }
+        }
+        if (legend.label_align === undefined) {
+            if (['circle', 'rect', 'funkyrect'].includes(legend.geom)) {
+                legend.label_align = 'center';
+            }
+        }
+        if (!['left', 'right', 'center'].includes(legend.label_align)) {
+            legend.label_align = 'center';
+            console.warn(`Unsupported value for label_align: ${legend.label_align} for legend \`${legend.title}\`, ignoring. Only left, center, right are supported`);
+        }
         if (legend.size === undefined) {
             console.info(`Legend \`${legend.title}\` did not specify size, inferring from column info`);
             if (legend.geom === 'circle' || legend.geom === 'funkyrect') {
