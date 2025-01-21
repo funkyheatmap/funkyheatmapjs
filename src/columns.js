@@ -1,6 +1,7 @@
 /** @module  */
 
 import * as d3 from 'd3';
+import _ from 'lodash';
 
 import { rowToColData } from './input_util';
 
@@ -147,7 +148,10 @@ export class Column {
         this.scale = d3.scaleLinear().domain(extent);
         if (this.colorByRank) {
             this.rankedData = d3.rank(this.data);
-            this.colorScale = d3.scaleLinear().domain([0, this.data.length - 1]);
+            const uniqueRanks = _.uniq(this.rankedData);
+            const rankedRanks = d3.rank(uniqueRanks);
+            this.normalizedRanks = _.zipObject(uniqueRanks, rankedRanks);
+            this.colorScale = d3.scaleLinear().domain([0, uniqueRanks.length - 1]);
         }
     }
 
@@ -164,7 +168,9 @@ export class Column {
             return item[this.id_color];
         }
         if (this.colorByRank) {
-            return this.rankedData[itemPos];
+            const rank = this.rankedData[itemPos];
+            const normalizedRank = this.normalizedRanks[rank];
+            return normalizedRank;
         }
         return item[this.id];
     }
