@@ -10,3 +10,7 @@
 #main > .sidebar.tutorials {
     width: 240px;
 }
+
+b > code {
+    font-weight: bold;
+}
