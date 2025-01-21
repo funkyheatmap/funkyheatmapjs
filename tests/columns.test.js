@@ -61,8 +61,16 @@ describe('column class', function() {
         const info = {id: 'a', colorByRank: true};
         const data = [5, 2, 1];
         const column = new Column(info, data);
-        column.maybeCalculateStats(true);
         assert.equal(column.getColorValue({'a': 5}, 0), 2);
+        assert.equal(column.getColorValue({'a': 2}, 1), 1);
+        assert.equal(column.getColorValue({'a': 1}, 2), 0);
+    });
+    it('should return colorValue with colorByRank with ties', function() {
+        const info = {id: 'a', colorByRank: true};
+        const data = [1, 1, 2];
+        const column = new Column(info, data);
+        assert.equal(column.getColorValue({'a': 1}, 0), 0);
+        assert.equal(column.getColorValue({'a': 2}, 2), 1);
     });
     it('should return colorValue with id_color option', function() {
         const info = {id: 'a', id_color: 'b'};
