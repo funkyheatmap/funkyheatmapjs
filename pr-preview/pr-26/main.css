@@ -22,3 +22,12 @@ b > code {
     border: 1px solid #333;
     margin-right: -2px;
 }
+
+.tag-source span {
+    color: #999;
+}
+
+.tag-source span a {
+    color: #999;
+    border-bottom: 1px dotted #999;
+}
