@@ -182,23 +182,28 @@ import * as d3 from 'd3';
 /**
  * @typedef {Object.&lt;string, module:palettes~Palette>} PaletteMapping
  * @description Mapping of names to palette colors. For palette colors the possible options are:
- *   - name of a built-in palette (e.g. `Blues`, `Set1`, etc.). See {@link module:palettes~defaultPalettes}
+ *   - name of a built-in palette (e.g. `Blues`, `Set1`, etc.). See
+ *   {@link module:palettes~defaultPalettes|defaultPalettes}
  *   - `Array.&lt;string>` of custom colors as strings
- *   - {@link module:palettes~CustomPalette} array of named colors, important for categorical data
+ *   - {@link module:palettes~CustomPalette|CustomPalette} array of named colors, important for
+ *   categorical data
  */
 
 /**
  * Default palettes for numerical and categorical data. See source for the colors.
  * @constant {Object}
  * @property {Object} numerical - palettes for numerical data. Default is `Blues`. See
- *   {@link module:palettes~numerical}
+ *   {@link module:palettes~numerical|numerical}
  * @property {Object} categorical - palettes for categorical data. Default is `Set1`. See
- *   {@link module:palettes~categorical}
+ *   {@link module:palettes~categorical|categorical}
  */
 const defaultPalettes = {
     numerical:
     /**
      * @member numerical
+     * @abstract
+     * @description Palettes for numerical data. A property of
+     *   `{@link module:palettes~defaultPalettes|defaultPalettes`}.
      * @property {string[]} Blues - &lt;div class="inline-pal-preview" style="background: #011636">&lt;/div>
      *   &lt;div class="inline-pal-preview" style="background: #08306B">&lt;/div>
      *   &lt;div class="inline-pal-preview" style="background: #08519C">&lt;/div>
@@ -263,6 +268,9 @@ const defaultPalettes = {
     categorical:
     /**
      * @member categorical
+     * @abstract
+     * @description Palettes for categorical data. A property of
+     *   `{@link module:palettes~defaultPalettes|defaultPalettes`}.
      * @property {string[]} Set1 - &lt;div class="inline-pal-preview" style="background: #E41A1C">&lt;/div>
      *   &lt;div class="inline-pal-preview" style="background: #377EB8">&lt;/div>
      *   &lt;div class="inline-pal-preview" style="background: #4DAF4A">&lt;/div>

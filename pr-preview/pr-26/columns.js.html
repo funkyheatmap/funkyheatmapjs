@@ -175,11 +175,11 @@ import { rowToColData } from './input_util';
  * @property {string} name - name of the column to display above the column
  * @property {string} group - name of the group the column belongs to
  * @property {string} geom - type of visualization to display the column data. Default is
- *   `funkyrect` for numerical data, and `text` for categorical data. See {@link module:geoms}
+ *   `funkyrect` for numerical data, and `text` for categorical data. See {@link module:geoms|geoms}
  *   for available options
  * @property {string} palette - name of the palette to use for coloring the column. Must be defined
- *   in {@link module:palettes~PaletteMapping} or be a default palette
- *   (see {@link module:palettes~defaultPalettes})
+ *   in {@link module:palettes~PaletteMapping|PaletteMapping} or be a default palette
+ *   (see {@link module:palettes~defaultPalettes|defaultPalettes})
  * @property {string} id_size - id of the column that will determine the size for display
  * @property {string} id_color - id of the column that will determine the color for display
  * @property {boolean} colorByRank - whether to color by rank per column instead of by value
@@ -203,7 +203,7 @@ import { rowToColData } from './input_util';
  * @class
  * @property {string} id - column id in the dataset
  * @property {boolean} numeric - whether the column is numeric, computed from the data.
- *   See {@link module:columns~isNumeric} for details.
+ *   See {@link module:columns~isNumeric|isNumeric} for details.
  * @property {boolean} categorical - whether the column is categorical, computed from the data
  * @property {string} name - name of the column to display above the column
  * @property {string} group - name of the group the column belongs to

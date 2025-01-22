@@ -177,7 +177,8 @@ The following table summarizes available geoms for different data types:</p>
 <thead>
 <tr>
 <th>Data type</th>
-<th>Geom</th>
+<th>Name</th>
+<th>Link</th>
 <th>Size mapping</th>
 <th>Color mapping</th>
 </tr>
@@ -186,48 +187,55 @@ The following table summarizes available geoms for different data types:</p>
 <tr>
 <td><code>number</code></td>
 <td><code>funkyrect</code></td>
+<td><a href="module-geoms.html#.funkyrect">module:geoms.funkyrect</a></td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
 <td><code>number</code></td>
 <td><code>circle</code></td>
+<td><a href="module-geoms.html#.circle">module:geoms.circle</a></td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>number</code></td>
+<td><code>bar</code></td>
+<td><a href="module-geoms.html#.bar">module:geoms.bar</a></td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
 <td><code>number</code></td>
 <td><code>rect</code></td>
+<td><a href="module-geoms.html#.rect">module:geoms.rect</a></td>
 <td>🚫</td>
-<td>✅</td>
-</tr>
-<tr>
-<td><code>number</code></td>
-<td><code>bar</code></td>
-<td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
 <td><code>string</code></td>
 <td><code>text</code></td>
+<td><a href="module-geoms.html#.text">module:geoms.text</a></td>
 <td>🚫</td>
 <td>✅</td>
 </tr>
 <tr>
 <td><code>number[]</code></td>
 <td><code>pie</code></td>
+<td><a href="module-geoms.html#.pie">module:geoms.pie</a></td>
 <td>🚫</td>
 <td>✅</td>
 </tr>
 <tr>
 <td><code>image</code></td>
 <td><code>image</code></td>
+<td><a href="module-geoms.html#.image">module:geoms.image</a></td>
 <td>🚫</td>
 <td>🚫</td>
 </tr>
 </tbody>
 </table>
-<p>Each geom is a function with the signature of <a href="module-geoms.html#~geom">module:geoms~geom</a>.</p></div>
+<p>Each geom is a function with the signature of <a href="module-geoms.html#~geom">geom</a>.</p></div>
         
 
         
@@ -354,8 +362,8 @@ The following table summarizes available geoms for different data types:</p>
     
     <div class="description">
         <p>Bar geom. Renders a bar with width proportional to value. Maximum bar width is
-configured with <code>width</code> property (<a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>). If value is 0, minimal
-bar width is set from <a href="PositionArgs.html">PositionArgs</a> <code>minGeomSize</code>.</p>
+configured with <code>width</code> property (<a href="module-columns.html#~ColumnInfo">ColumnInfo</a>). If value
+is 0, minimal bar width is set from <a href="PositionArgs.html">PositionArgs</a> <code>minGeomSize</code>.</p>
     </div>
     
 
@@ -402,7 +410,7 @@ bar width is set from <a href="PositionArgs.html">PositionArgs</a> <code>minGeom
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="module-geoms.html#~geom">module:geoms~geom</a></li>
+            <li><a href="module-geoms.html#~geom">geom</a> for function signature</li>
         </ul>
     </dd>
     
@@ -511,7 +519,7 @@ minimal circle radius is set from <a href="PositionArgs.html">PositionArgs</a> <
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="module-geoms.html#~geom">module:geoms~geom</a></li>
+            <li><a href="module-geoms.html#~geom">geom</a> for function signature</li>
         </ul>
     </dd>
     
@@ -621,7 +629,7 @@ with corner radius decreasing as value grows.</p>
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="module-geoms.html#~geom">module:geoms~geom</a></li>
+            <li><a href="module-geoms.html#~geom">geom</a> for function signature</li>
         </ul>
     </dd>
     
@@ -683,7 +691,7 @@ with corner radius decreasing as value grows.</p>
     
     <div class="description">
         <p>Image geom. Renders an image with standard height and width specified in column
-options (see <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a> <code>width</code>).</p>
+options (see <a href="module-columns.html#~ColumnInfo">ColumnInfo</a> <code>width</code>).</p>
     </div>
     
 
@@ -730,7 +738,7 @@ options (see <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="module-geoms.html#~geom">module:geoms~geom</a></li>
+            <li><a href="module-geoms.html#~geom">geom</a> for function signature</li>
         </ul>
     </dd>
     
@@ -838,7 +846,7 @@ options (see <a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="module-geoms.html#~geom">module:geoms~geom</a></li>
+            <li><a href="module-geoms.html#~geom">geom</a> for function signature</li>
         </ul>
     </dd>
     
@@ -947,7 +955,7 @@ palette.</p>
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="module-geoms.html#~geom">module:geoms~geom</a></li>
+            <li><a href="module-geoms.html#~geom">geom</a> for function signature</li>
         </ul>
     </dd>
     
@@ -1011,7 +1019,7 @@ palette.</p>
         <p>Text geom. Renders text string. Configured with <code>fontSize</code> and <code>align</code> options.
 Default fontSize is inherited from <a href="global.html#HeatmapOptions">HeatmapOptions</a>. Default align is <code>left</code>.
 Color is mapped from palette by text value, if palette is defined (see
-<a href="module-palettes.html#~CustomPalette">module:palettes~CustomPalette</a>).</p>
+<a href="module-palettes.html#~CustomPalette">CustomPalette</a>).</p>
     </div>
     
 
@@ -1058,7 +1066,7 @@ Color is mapped from palette by text value, if palette is defined (see
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="module-geoms.html#~geom">module:geoms~geom</a></li>
+            <li><a href="module-geoms.html#~geom">geom</a> for function signature</li>
         </ul>
     </dd>
     
