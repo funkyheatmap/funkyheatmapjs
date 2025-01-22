@@ -169,8 +169,9 @@ import * as d3 from 'd3';
  * @typedef {Object} CustomPalette
  * @property {string[]} colors - list of colors
  * @property {string[]} names - list of names for the colors, in the same order
- * @description A custom palette specification. This is important for categorical data, the names
- *   are used as labels in the legend for `pie` geom.
+ * @description A custom palette specification. This is important for categorical data: the names
+ *   are used as labels in the legend for `pie` geom, for `text` geom the values are mapped to
+ *   colors based on the names.
  */
 
 /**
