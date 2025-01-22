@@ -940,8 +940,7 @@ class FunkyHeatmap {
  * @param {ColumnData|RowData} rowInfo - information about how the rows should be displayed
  * @param {ColumnData|RowData} columnGroups - information about how to group columns
  * @param {ColumnData|RowData} rowGroups - information about how to group rows
- * @param {Object} palettes - mapping of names to palette colors, see
- *   {@link module:palettes.assignPalettes}
+ * @param {module:palettes~PaletteMapping} palettes - mapping of names to palette colors
  * @param {ColumnData|RowData} legends - a list of legends to add to the plot
  * @param {Object} positionArgs - positioning arguments, see {@link PositionArgs}
  * @param {HeatmapOptions} options - options for the heatmap, see {@link HeatmapOptions}
