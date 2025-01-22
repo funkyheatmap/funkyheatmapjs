@@ -2,17 +2,17 @@
  * @module
  * @description Module with available visualization functions (called `geoms`) to display the data.
  * The following table summarizes available geoms for different data types:
- * | Data type | Geom | Size mapping | Color mapping |
- * | --- | --- | --- | --- |
- * | `number` | `funkyrect` | ✅ | ✅ |
- * | `number` | `circle` | ✅ | ✅ |
- * | `number` | `rect` | 🚫 | ✅ |
- * | `number` | `bar` | ✅ | ✅ |
- * | `string` | `text` | 🚫 | ✅ |
- * | `number[]` | `pie` | 🚫 | ✅ |
- * | `image` | `image` | 🚫 | 🚫 |
+ * | Data type | Name | Link | Size mapping | Color mapping |
+ * | --- | --- | --- | --- | --- |
+ * | `number` | `funkyrect` | {@link module:geoms.funkyrect} | ✅ | ✅ |
+ * | `number` | `circle` | {@link module:geoms.circle} | ✅ | ✅ |
+ * | `number` | `bar` | {@link module:geoms.bar} | ✅ | ✅ |
+ * | `number` | `rect` | {@link module:geoms.rect} | 🚫 | ✅ |
+ * | `string` | `text` | {@link module:geoms.text} | 🚫 | ✅ |
+ * | `number[]` | `pie` | {@link module:geoms.pie} | 🚫 | ✅ |
+ * | `image` | `image` | {@link module:geoms.image} | 🚫 | 🚫 |
  *
- * Each geom is a function with the signature of {@link module:geoms~geom}.
+ * Each geom is a function with the signature of {@link module:geoms~geom|geom}.
  */
 
 import * as d3 from 'd3';
@@ -35,11 +35,11 @@ import * as d3 from 'd3';
 export const GEOMS = {
     /**
      * @memberof module:geoms
-     * @see module:geoms~geom
+     * @see {@link module:geoms~geom|geom} for function signature
      * @description Text geom. Renders text string. Configured with `fontSize` and `align` options.
      * Default fontSize is inherited from {@link HeatmapOptions}. Default align is `left`.
      * Color is mapped from palette by text value, if palette is defined (see
-     * {@link module:palettes~CustomPalette}).
+     * {@link module:palettes~CustomPalette|CustomPalette}).
      */
     text: (value, _, column, O, P) => {
         let fill = O.theme.textColor;
@@ -73,10 +73,10 @@ export const GEOMS = {
 
     /**
      * @memberof module:geoms
-     * @see module:geoms~geom
+     * @see {@link module:geoms~geom|geom} for function signature
      * @description Bar geom. Renders a bar with width proportional to value. Maximum bar width is
-     * configured with `width` property ({@link module:columns~ColumnInfo}). If value is 0, minimal
-     * bar width is set from {@link PositionArgs} `minGeomSize`.
+     * configured with `width` property ({@link module:columns~ColumnInfo|ColumnInfo}). If value
+     * is 0, minimal bar width is set from {@link PositionArgs} `minGeomSize`.
      */
     bar: (value, colorValue, column, O, P) => {
         const fill = column.palette(colorValue);
@@ -98,7 +98,7 @@ export const GEOMS = {
 
     /**
      * @memberof module:geoms
-     * @see module:geoms~geom
+     * @see {@link module:geoms~geom|geom} for function signature
      * @description Circle geom. Renders a circle with radius proportional to value. If value is 0,
      * minimal circle radius is set from {@link PositionArgs} `minGeomSize`.
      */
@@ -121,7 +121,7 @@ export const GEOMS = {
 
     /**
      * @memberof module:geoms
-     * @see module:geoms~geom
+     * @see {@link module:geoms~geom|geom} for function signature
      * @description Square geom. Renders a square of standard size, but color is mapped from
      * palette.
      */
@@ -141,7 +141,7 @@ export const GEOMS = {
 
     /**
      * @memberof module:geoms
-     * @see module:geoms~geom
+     * @see {@link module:geoms~geom|geom} for function signature
      * @description Funkyrect geom. Renders a circle that grows into a square with rounded corners.
      * Value below {@link PositionArgs} `funkyMidpoint` is rendered as a circle, above as a square,
      * with corner radius decreasing as value grows.
@@ -188,7 +188,7 @@ export const GEOMS = {
 
     /**
      * @memberof module:geoms
-     * @see module:geoms~geom
+     * @see {@link module:geoms~geom|geom} for function signature
      * @description Pie chart geom. Renders a pie chart with slices proportional to values.
      */
     pie: (value, _, column, O, P) => {
@@ -231,9 +231,9 @@ export const GEOMS = {
 
     /**
      * @memberof module:geoms
-     * @see module:geoms~geom
+     * @see {@link module:geoms~geom|geom} for function signature
      * @description Image geom. Renders an image with standard height and width specified in column
-     * options (see {@link module:columns~ColumnInfo} `width`).
+     * options (see {@link module:columns~ColumnInfo|ColumnInfo} `width`).
      */
     image: function(value, _, column, O, P) {
         return d3.create('svg:image')
