@@ -35,3 +35,7 @@ b > code {
 .member .description {
     font-size: 20px;
 }
+
+.member td.description {
+    font-size: 15px;
+}
