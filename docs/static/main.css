@@ -31,3 +31,7 @@ b > code {
     color: #999;
     border-bottom: 1px dotted #999;
 }
+
+.member .description {
+    font-size: 20px;
+}

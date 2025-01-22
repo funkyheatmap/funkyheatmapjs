@@ -69,7 +69,7 @@ function prepareData(data) {
 
 const column_info = [
     {id: "id", name: "Rank", geom: "text", group: "Method", options: {align: "right"}},
-    {id: "method", name: "Method", geom: "text", group: "Method", options: {hjust: 0}},
+    {id: "method", name: "Method", geom: "text", group: "Method"},
     {id: "output_img", name: "Output", geom: "image", group: "Method", options: {width: 20}},
     {id: "features", id_color: "features", name: "Features", geom: "text", group: "Method", options: {palette: "features"}},
     {id: "scaling", name: "Scaling", geom: "text", group: "Method", options: {fontSize: 18, align: "center"}},
