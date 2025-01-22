@@ -28,6 +28,9 @@ export const GEOMS = {
         if (O.fontSize) {
             el.attr('font-size', O.fontSize);
         }
+        if (column.options.fontSize) {
+            el.attr('font-size', column.options.fontSize);
+        }
         return el;
     },
 

@@ -29,6 +29,8 @@ import { rowToColData } from './input_util';
  * @property {boolean} options.drawGuide - whether to draw a guide at maximum for the bar geom
  *   column
  * @property {boolean} options.draw_outline - synonym for `options.drawGuide`
+ * @property {('left'|'center'|'right')} options.align - alignment of the text for `text` geom
+ * @property {number} options.fontSize - font size for the `text` geom
  */
 
 /**
