@@ -88,7 +88,6 @@ export class Column {
         if (isNumeric(value) && this.geom !== 'text' && this.geom !== 'pie') {
             this.numeric = true;
             this.categorical = false;
-            this.data = this.data.map(d => +d);
         } else {
             this.numeric = false;
             this.categorical = true;
@@ -164,6 +163,8 @@ export class Column {
     }
 
     maybeCalculateStats() {
+        this.data = this.data.map(d => +d);
+
         let extent = [0, 1];
         if (this.scaleColumn) {
             extent = d3.extent(this.data);

@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 
-import { ensureRowData } from './input_util';
+import { ensureRowData, rowToColData } from './input_util';
 import { buildColumnInfo, buildColumnGroups, Column } from './columns';
 import { assignPalettes } from './palettes';
 import { prepareLegends } from './legends';
@@ -876,6 +876,13 @@ class FunkyHeatmap {
             return comparator(a, b);
         })));
         this.data = data;
+        const colData = rowToColData(data);
+        this.columnInfo.forEach(column => {
+            column.data = colData[column.id];
+            if (column.numeric) {
+                column.maybeCalculateStats();
+            }
+        });
         this.svg.selectChildren().remove();
         this.render();
 
