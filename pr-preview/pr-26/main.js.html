@@ -227,6 +227,24 @@ const DEFAULT_OPTIONS = {
     }
 };
 
+/**
+ * @typedef {Object} PositionOptions
+ * @property {number} [rowHeight=24] - height of a heatmap row, in pixels
+ * @property {number} [rowSpace=0.1] - space between rows, as a fraction of rowHeight. Twice the
+ *   padding
+ * @property {number} [rowBigspace=1] - space between groups of rows, as a fraction of rowHeight
+ * @property {number} [colWidth=24] - width of a heatmap column, in pixels. Deprecated, has no
+ *   effect
+ * @property {number} [colSpace=0.1] - space between columns, as a fraction of rowHeight. Twice the
+ *   padding
+ * @property {number} [colBigspace=1] - space between groups of columns, as a fraction of rowHeight
+ * @property {number} [colAnnotOffset=10] - offset of column groups from column labels, in pixels
+ * @property {number} [colAnnotAngle=30] - angle of column labels, in degrees
+ * @property {number} [padding=5] - padding for various uses
+ * @property {number} [minGeomSize=0.25] - minimum size of a heatmap element, in pixels
+ * @property {number} [funkyMidpoint=0.8] - midpoint for funkyrect geom, see
+ *   {@link module:geoms.funkyrect|funkyrect}
+ */
 const DEFAULT_POSITION_ARGS = {
     rowHeight: 24,
     rowSpace: 0.1,
@@ -243,17 +261,7 @@ const DEFAULT_POSITION_ARGS = {
 
 /**
  * Positional options for the heatmap.
- *
- * @property {number} rowHeight - height of a heatmap row, in pixels
- * @property {number} rowSpace - space between rows, as a fraction of rowHeight. Twice the padding
- * @property {number} rowBigspace - space between groups of rows, as a fraction of rowHeight
- * @property {number} colSpace - space between columns, as a fraction of rowHeight. Twice the
- *   padding
- * @property {number} colAnnotOffset - offset of column groups from column labels, in pixels
- * @property {number} colAnnotAngle - angle of column labels, in degrees
- * @property {number} padding - padding used in certain places. TODO: document
- * @property {number} minGeomSize - minimum size of a heatmap element, in pixels
- * @property {number} funkyMidpoint - midpoint for funkyrect geom
+ * @extends PositionOptions
  * @property {number} rowSpacePx - space between rows, in pixels. _Calculated_
  * @property {number} rowBigspacePx - space between groups of rows, in pixels. _Calculated_
  * @property {number} colSpacePx - space between columns, in pixels. _Calculated_
@@ -272,24 +280,10 @@ const DEFAULT_POSITION_ARGS = {
  */
 class PositionArgs {
     /**
-     * @param {Object} args - object with positional options
-     * @param {number} [args.rowHeight=24] - height of a heatmap row, in pixels
-     * @param {number} [args.rowSpace=0.1] - space between rows, as a fraction of rowHeight.
-     *   Twice the padding
-     * @param {number} [args.rowBigspace=1] - space between groups of rows, as a fraction of
-     *   rowHeight
-     * @param {number} [args.colWidth=24] - width of a heatmap column, in pixels.
-     *   Deprecated, has no effect
-     * @param {number} [args.colSpace=0.1] - space between columns, as a fraction of rowHeight.
-     *   Twice the padding
-     * @param {number} [args.colBigspace=1] - space between groups of columns, as a fraction of
-     *   rowHeight. Currently not used
-     * @param {number} [args.colAnnotOffset=3] - offset of column groups from column labels,
-     *   in pixels
-     * @param {number} [args.colAnnotAngle=30] - angle of column labels, in degrees
-     * @param {number} [args.padding=5] - padding around heatmap elements, in pixels
-     * @param {number} [args.minGeomSize=0.25] - minimum size of a heatmap element, in pixels
-     * @param {number} [args.funkyMidpoint=0.8] - midpoint for funkyrect geom
+     * Initialize the PositionArgs object from the provided options. Handles deprecation warnings
+     * and calls {@link PositionArgs#calculate|calculate} to pre-calculate values.
+     *
+     * @param {PositionOptions} args - object with positional options
      */
     constructor(args) {
         _.extend(this, DEFAULT_POSITION_ARGS);
@@ -1114,7 +1108,9 @@ class FunkyHeatmap {
 
 /**
  * The main entry point for the library. Takes data and various configuration options and returns
- * an SVG element with the heatmap.
+ * an SVG element with the heatmap. Internally uses {@link FunkyHeatmap}. Creates a new SVG element
+ * and adds it to the DOM immediately, and renders the heatmap offscreen, to be able to calculate
+ * the dimensions of text and other elements.
  *
  * @param {ColumnData|RowData} data - data to plot, usually d3-fetch output
  * @param {ColumnData|module:columns~ColumnInfo[]} columnInfo - information about how the columns
@@ -1125,8 +1121,8 @@ class FunkyHeatmap {
  * @param {ColumnData|RowData} rowGroups - information about how to group rows
  * @param {module:palettes~PaletteMapping} palettes - mapping of names to palette colors
  * @param {ColumnData|RowData} legends - a list of legends to add to the plot
- * @param {Object} positionArgs - positioning arguments, see {@link PositionArgs}
- * @param {HeatmapOptions} options - options for the heatmap, see {@link HeatmapOptions}
+ * @param {PositionOptions} positionArgs - positioning options, see {@link PositionArgs}
+ * @param {HeatmapOptions} options - options for the heatmap
  * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
  *   columns. Defaults to true
  *

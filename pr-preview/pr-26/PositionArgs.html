@@ -195,6 +195,11 @@
 
     
     
+    <div class="description">
+        <p>Initialize the PositionArgs object from the provided options. Handles deprecation warnings
+and calls <a href="PositionArgs.html#calculate">calculate</a> to pre-calculate values.</p>
+    </div>
+    
 
 
 
@@ -217,11 +222,7 @@
             <th>Type</th>
 
             
-            <th>Attributes</th>
-            
 
-            
-            <th>Default</th>
             
 
             <th class="last">Description</th>
@@ -240,468 +241,18 @@
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="global.html#PositionOptions">PositionOptions</a></code>
 
 
   
   </td>
 
   
-      <td class="attributes">
-      
 
-      
-
-      
-      </td>
-  
-
-  
-      <td class="default">
-      
-      </td>
   
 
   <td class="description last"><p>object with positional options</p></td>
 </tr>
-
-  
-  
-    
-<tr class="deep-level-1">
-  
-      <td class="name"><code>rowHeight</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">number</code>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-      <td class="default">
-      
-          24
-      
-      </td>
-  
-
-  <td class="description last"><p>height of a heatmap row, in pixels</p></td>
-</tr>
-
-  
-    
-<tr class="deep-level-1">
-  
-      <td class="name"><code>rowSpace</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">number</code>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-      <td class="default">
-      
-          0.1
-      
-      </td>
-  
-
-  <td class="description last"><p>space between rows, as a fraction of rowHeight.
-Twice the padding</p></td>
-</tr>
-
-  
-    
-<tr class="deep-level-1">
-  
-      <td class="name"><code>rowBigspace</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">number</code>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-      <td class="default">
-      
-          1
-      
-      </td>
-  
-
-  <td class="description last"><p>space between groups of rows, as a fraction of
-rowHeight</p></td>
-</tr>
-
-  
-    
-<tr class="deep-level-1">
-  
-      <td class="name"><code>colWidth</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">number</code>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-      <td class="default">
-      
-          24
-      
-      </td>
-  
-
-  <td class="description last"><p>width of a heatmap column, in pixels.
-Deprecated, has no effect</p></td>
-</tr>
-
-  
-    
-<tr class="deep-level-1">
-  
-      <td class="name"><code>colSpace</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">number</code>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-      <td class="default">
-      
-          0.1
-      
-      </td>
-  
-
-  <td class="description last"><p>space between columns, as a fraction of rowHeight.
-Twice the padding</p></td>
-</tr>
-
-  
-    
-<tr class="deep-level-1">
-  
-      <td class="name"><code>colBigspace</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">number</code>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-      <td class="default">
-      
-          1
-      
-      </td>
-  
-
-  <td class="description last"><p>space between groups of columns, as a fraction of
-rowHeight. Currently not used</p></td>
-</tr>
-
-  
-    
-<tr class="deep-level-1">
-  
-      <td class="name"><code>colAnnotOffset</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">number</code>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-      <td class="default">
-      
-          3
-      
-      </td>
-  
-
-  <td class="description last"><p>offset of column groups from column labels,
-in pixels</p></td>
-</tr>
-
-  
-    
-<tr class="deep-level-1">
-  
-      <td class="name"><code>colAnnotAngle</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">number</code>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-      <td class="default">
-      
-          30
-      
-      </td>
-  
-
-  <td class="description last"><p>angle of column labels, in degrees</p></td>
-</tr>
-
-  
-    
-<tr class="deep-level-1">
-  
-      <td class="name"><code>padding</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">number</code>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-      <td class="default">
-      
-          5
-      
-      </td>
-  
-
-  <td class="description last"><p>padding around heatmap elements, in pixels</p></td>
-</tr>
-
-  
-    
-<tr class="deep-level-1">
-  
-      <td class="name"><code>minGeomSize</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">number</code>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-      <td class="default">
-      
-          0.25
-      
-      </td>
-  
-
-  <td class="description last"><p>minimum size of a heatmap element, in pixels</p></td>
-</tr>
-
-  
-    
-<tr class="deep-level-1">
-  
-      <td class="name"><code>funkyMidpoint</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">number</code>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-      <td class="default">
-      
-          0.8
-      
-      </td>
-  
-
-  <td class="description last"><p>midpoint for funkyrect geom</p></td>
-</tr>
-
-  
 
 
         
@@ -735,214 +286,6 @@ in pixels</p></td>
         </thead>
 
         <tbody>
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>rowHeight</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">number</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>height of a heatmap row, in pixels</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>rowSpace</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">number</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>space between rows, as a fraction of rowHeight. Twice the padding</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>rowBigspace</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">number</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>space between groups of rows, as a fraction of rowHeight</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>colSpace</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">number</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>space between columns, as a fraction of rowHeight. Twice the
-padding</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>colAnnotOffset</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">number</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>offset of column groups from column labels, in pixels</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>colAnnotAngle</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">number</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>angle of column labels, in degrees</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>padding</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">number</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>padding used in certain places. TODO: document</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>minGeomSize</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">number</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>minimum size of a heatmap element, in pixels</p></td>
-</tr>
-
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>funkyMidpoint</code></td>
-    
-
-    <td class="type">
-    
-        
-<code class="param-type">number</code>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>midpoint for funkyrect geom</p></td>
-</tr>
-
         
             
 <tr class="deep-level-0">
@@ -1264,7 +607,7 @@ in pixels. <em>Calculated</em></p></td>
         <p class="tag-source">
             <a href="main.js.html" class="button">View Source</a>
             <span>
-                <a href="main.js.html">main.js</a>, <a href="main.js.html#line110">line 110</a>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line118">line 118</a>
             </span>
         </p>
     
@@ -1298,6 +641,17 @@ in pixels. <em>Calculated</em></p></td>
     
     </div>
     
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li><a href="global.html#PositionOptions">PositionOptions</a></li>
+    </ul>
+
+
     
 
     
@@ -1386,7 +740,7 @@ in pixels. <em>Calculated</em></p></td>
         <p class="tag-source">
             <a href="main.js.html" class="button">View Source</a>
             <span>
-                <a href="main.js.html">main.js</a>, <a href="main.js.html#line168">line 168</a>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line162">line 162</a>
             </span>
         </p>
     

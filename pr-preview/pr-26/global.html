@@ -251,7 +251,9 @@
     
     <div class="description">
         <p>The main entry point for the library. Takes data and various configuration options and returns
-an SVG element with the heatmap.</p>
+an SVG element with the heatmap. Internally uses <a href="FunkyHeatmap.html">FunkyHeatmap</a>. Creates a new SVG element
+and adds it to the DOM immediately, and renders the heatmap offscreen, to be able to calculate
+the dimensions of text and other elements.</p>
     </div>
     
 
@@ -520,7 +522,7 @@ See <a href="module-columns.html#~ColumnInfo">ColumnInfo</a>, <a href="module-co
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="global.html#PositionOptions">PositionOptions</a></code>
 
 
   
@@ -534,7 +536,7 @@ See <a href="module-columns.html#~ColumnInfo">ColumnInfo</a>, <a href="module-co
       </td>
   
 
-  <td class="description last"><p>positioning arguments, see <a href="PositionArgs.html">PositionArgs</a></p></td>
+  <td class="description last"><p>positioning options, see <a href="PositionArgs.html">PositionArgs</a></p></td>
 </tr>
 
 
@@ -563,7 +565,7 @@ See <a href="module-columns.html#~ColumnInfo">ColumnInfo</a>, <a href="module-co
       </td>
   
 
-  <td class="description last"><p>options for the heatmap, see <a href="global.html#HeatmapOptions">HeatmapOptions</a></p></td>
+  <td class="description last"><p>options for the heatmap</p></td>
 </tr>
 
 
@@ -643,7 +645,7 @@ columns. Defaults to true</p></td>
         <p class="tag-source">
             <a href="main.js.html" class="button">View Source</a>
             <span>
-                <a href="main.js.html">main.js</a>, <a href="main.js.html#line973">line 973</a>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line969">line 969</a>
             </span>
         </p>
     
@@ -1300,6 +1302,523 @@ labels</p></td>
             <a href="main.js.html" class="button">View Source</a>
             <span>
                 <a href="main.js.html">main.js</a>, <a href="main.js.html#line35">line 35</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Object</code>
+
+
+    </span>
+
+<h4 class="name" id="PositionOptions">
+    <a class="href-link" href="#PositionOptions">#</a>
+    
+    <span class="code-name">
+        PositionOptions
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+            <th>Default</th>
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>rowHeight</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            24
+        
+        </td>
+    
+
+    <td class="description last"><p>height of a heatmap row, in pixels</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>rowSpace</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            0.1
+        
+        </td>
+    
+
+    <td class="description last"><p>space between rows, as a fraction of rowHeight. Twice the
+padding</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>rowBigspace</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            1
+        
+        </td>
+    
+
+    <td class="description last"><p>space between groups of rows, as a fraction of rowHeight</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colWidth</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            24
+        
+        </td>
+    
+
+    <td class="description last"><p>width of a heatmap column, in pixels. Deprecated, has no
+effect</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colSpace</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            0.1
+        
+        </td>
+    
+
+    <td class="description last"><p>space between columns, as a fraction of rowHeight. Twice the
+padding</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colBigspace</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            1
+        
+        </td>
+    
+
+    <td class="description last"><p>space between groups of columns, as a fraction of rowHeight</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colAnnotOffset</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            10
+        
+        </td>
+    
+
+    <td class="description last"><p>offset of column groups from column labels, in pixels</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colAnnotAngle</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            30
+        
+        </td>
+    
+
+    <td class="description last"><p>angle of column labels, in degrees</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>padding</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            5
+        
+        </td>
+    
+
+    <td class="description last"><p>padding for various uses</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>minGeomSize</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            0.25
+        
+        </td>
+    
+
+    <td class="description last"><p>minimum size of a heatmap element, in pixels</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>funkyMidpoint</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            0.8
+        
+        </td>
+    
+
+    <td class="description last"><p>midpoint for funkyrect geom, see
+<a href="module-geoms.html#.funkyrect">funkyrect</a></p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line67">line 67</a>
             </span>
         </p>
     
