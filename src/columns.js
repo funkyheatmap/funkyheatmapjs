@@ -151,9 +151,7 @@ export class Column {
             throw `Column ${this.id} has id_size=${this.id_size}, which is not in the data`;
         }
         if (this.id_hover_text !== undefined && !columnNames.includes(this.id_hover_text)) {
-            throw (
-                `Column ${this.id} has id_hover_text=${this.id_hover_text}, which is not in the data`
-            );
+            throw `Column ${this.id} has id_hover_text=${this.id_hover_text}, which is not in the data`;
         }
 
         this.sortState = null;
@@ -265,7 +263,7 @@ export class Column {
  * @param {boolean} colorByRank - whether to color by rank instead of by value, default for all
  *   columns
  */
-export function buildColumnInfo(data, columnInfo, scaleColumn, colorByRank) {
+export function createColumns(data, columnInfo, scaleColumn, colorByRank) {
     const colData = rowToColData(data);
     const columnNames = Object.getOwnPropertyNames(colData);
     if (columnInfo === undefined || columnInfo.length === 0) {

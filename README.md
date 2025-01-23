@@ -27,7 +27,7 @@ If you have an npm project, you can install npm package `funkyheatmapjs` with np
 If you want to use it with npm and have trouble, please
 [open an issue](https://github.com/funkyheatmap/funkyheatmapjs/issues). An example build with
 [parcel](https://parceljs.org/) can be found
-[here](https://github.com/funkyheatmap/funkyheatmapjs/blob/main/package.json#L20).
+[here](https://github.com/funkyheatmap/funkyheatmapjs/blob/main/package.json#L13).
 
 ## Contributing
 Please, feel free to [open issues](https://github.com/funkyheatmap/funkyheatmapjs/issues) for
