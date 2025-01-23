@@ -314,12 +314,12 @@ const defaultPalettes = {
 
 /**
  *
- * @param {module:columns.Column[]} columnInfo - array of `Column` objects with information
+ * @param {module:columns.Column[]} columns - array of `Column` objects with information
  * @param {module:palettes~PaletteMapping} palettes - mapping of names to color palettes
  */
-export function assignPalettes(columnInfo, palettes) {
+export function assignPalettes(columns, palettes) {
     palettes = { numerical: "Blues", categorical: "Set1", ...palettes };
-    columnInfo.forEach(column => {
+    columns.forEach(column => {
         if (column.palette &amp;&amp; column.palette != 'none') {
             column.paletteName = column.palette;
             let name = palettes[column.palette];

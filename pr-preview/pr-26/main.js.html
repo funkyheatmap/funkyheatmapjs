@@ -165,7 +165,7 @@
 import * as _ from 'lodash';
 
 import { ensureRowData, rowToColData } from './input_util';
-import { buildColumnInfo, buildColumnGroups, Column } from './columns';
+import { createColumns, buildColumnGroups, Column } from './columns';
 import { assignPalettes } from './palettes';
 import { prepareLegends } from './legends';
 import { GEOMS } from './geoms';
@@ -369,7 +369,7 @@ class FunkyHeatmap {
         this.renderGroups = false;
 
         this.rowGroupOrder = [];
-        // if we don't have row groups, put all rows in unnamed group
+        // if we don't have row groups, put all rows in an unnamed group
         if (this.rowInfo.length === 0 || this.rowInfo[0].group === undefined) {
             this.rowInfo = this.data.map(_ => { return {group: ''} });
         }
@@ -1145,10 +1145,10 @@ function funkyheatmap(
     [data, columnInfo, columnGroups, rowInfo, rowGroups, legends] = ensureRowData(
         data, columnInfo, columnGroups, rowInfo, rowGroups, legends
     );
-    columnInfo = buildColumnInfo(data, columnInfo, scaleColumn, options.colorByRank);
-    columnGroups = buildColumnGroups(columnGroups, columnInfo);
-    legends = prepareLegends(legends, palettes, columnInfo);
-    assignPalettes(columnInfo, palettes);
+    const columns = createColumns(data, columnInfo, scaleColumn, options.colorByRank);
+    columnGroups = buildColumnGroups(columnGroups, columns);
+    legends = prepareLegends(legends, palettes, columns);
+    assignPalettes(columns, palettes);
     assignPalettes(legends, palettes);
 
     const svg = d3.select('body')
@@ -1159,7 +1159,7 @@ function funkyheatmap(
             .style('left', '-2000px');
     const heatmap = new FunkyHeatmap(
         data,
-        columnInfo,
+        columns,
         columnGroups,
         rowInfo,
         rowGroups,
