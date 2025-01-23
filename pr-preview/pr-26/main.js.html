@@ -1074,9 +1074,9 @@ class FunkyHeatmap {
     }
 
     render() {
-        this.header = this.svg.append("g");
-        this.body = this.svg.append("g");
-        this.footer = this.svg.append("g");
+        this.header = this.svg.append('g');
+        this.body = this.svg.append('g');
+        this.footer = this.svg.append('g');
 
         this.renderStripedRows();
         this.renderData();
@@ -1092,7 +1092,7 @@ class FunkyHeatmap {
             this.header.attr('transform', `translate(0, ${P.rowHeight})`);
         }
         this.body.selectAll('.row').attr('width', P.bodyWidth);
-        this.body.attr("transform", `translate(0, ${P.headerHeight})`);
+        this.body.attr('transform', `translate(0, ${P.headerHeight})`);
         this.footer.attr('transform', `translate(${P.footerOffset}, ${P.headerHeight + P.bodyHeight})`);
         this.svg.attr('style', '');
         if (O.rootStyle) {
@@ -1101,7 +1101,8 @@ class FunkyHeatmap {
     }
 
     listen() {
-        this.svg.on("mousemove", this.onMouseMove.bind(this));
+        this.svg.on('mousemove', this.onMouseMove.bind(this));
+        this.svg.on('mouseleave', this.hideTooltip.bind(this));
     }
 };
 
