@@ -39,3 +39,10 @@ b > code {
 .member td.description {
     font-size: 15px;
 }
+
+em.pname {
+    font-weight: bold;
+    font-family: "Inconsolata", monospace;
+    font-size: 0.95em;
+    color: #663e12;
+}

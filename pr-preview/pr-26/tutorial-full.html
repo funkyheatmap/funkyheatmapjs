@@ -155,7 +155,7 @@
                 <section>
 
 <article>
-    <!DOCTYPE html><html lang="en"><head><script type="module" src="scIB.0a14d874.js"></script><title>Full funkyheatmap example</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>.tutorial-body{-webkit-text-size-adjust:100%;margin:0;padding:10px 50px 50px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,Helvetica,sans-serif;line-height:1.2}.hidden{display:none}</style></head><body class="tutorial-body"> <div class="hidden tutorial-content"> <p>Let's continue our tutorial with the <code>mtcars</code> <a href="https://gist.github.com/seankross/a412dfbd88b3db70b74b">example dataset</a>, but adding 2 new columns to showcase {funkyheatmapjs}, and customizing the display.</p> <h3>Load scripts</h3> <p>First, include in your html page the 2 peer dependencies and {funkyheatmapjs} itself:</p> <pre class="lang-html prettyprint source"><code>&lt;script type=&quot;text/javascript&quot; src=&quot;https://unpkg.com/d3@7&quot;>&lt;/script>
+    <!DOCTYPE html><html lang="en"><head><script type="module" src="scIB.7a9d1bb2.js"></script><title>Full funkyheatmap example</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>.tutorial-body{-webkit-text-size-adjust:100%;margin:0;padding:10px 50px 50px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,Helvetica,sans-serif;line-height:1.2}.hidden{display:none}</style></head><body class="tutorial-body"> <div class="hidden tutorial-content"> <p>Let's continue our tutorial with the <code>mtcars</code> <a href="https://gist.github.com/seankross/a412dfbd88b3db70b74b">example dataset</a>, but adding 2 new columns to showcase <em class="pname">funkyheatmapjs</em>, and customizing the display.</p> <h3>Load scripts</h3> <p>First, include in your html page the 2 peer dependencies and <em class="pname">funkyheatmapjs</em> itself:</p> <pre class="lang-html prettyprint source"><code>&lt;script type=&quot;text/javascript&quot; src=&quot;https://unpkg.com/d3@7&quot;>&lt;/script>
 &lt;script type=&quot;text/javascript&quot; src=&quot;https://unpkg.com/lodash@4/lodash.min.js&quot;>&lt;/script>
 &lt;script type=&quot;module&quot; src=&quot;https://unpkg.com/funkyheatmapjs&quot;>&lt;/script></code></pre> <h3>Load and render data</h3> <p>Then, load the data and add custom columns:</p> <pre class="lang-javascript prettyprint source">
 d3.csv('mtcars.csv').then((data) => {
@@ -166,7 +166,7 @@ d3.csv('mtcars.csv').then((data) => {
         d.load = [(i % 3) / 6, ((i + 1) % 3) / 6, 0];
         d.load[2] = 1 - d.load[0] - d.load[1];
     });
-});</pre> <p>Here, the <code>schema</code> column refers to images with their absolute or relative (in this case) URIs. The <code>load</code> column has array as data, of equal sizes for each datapoint.</p> <h3>Adding configuration</h3> <p>Configuration of {funkyheatmapjs} is done via parameters to <a href="global.html#funkyheatmap">funkyheatmap</a> call. In this example we will use <code>column_info</code>, <code>column_groups</code>, <code>palettes</code> and <code>legends</code> parameters.</p> <pre class="lang-javascript prettyprint source">const column_info = [
+});</pre> <p>Here, the <code>schema</code> column refers to images with their absolute or relative (in this case) URIs. The <code>load</code> column has array as data, of equal sizes for each datapoint.</p> <h3>Adding configuration</h3> <p>Configuration of <em class="pname">funkyheatmapjs</em> is done via parameters to <a href="global.html#funkyheatmap">funkyheatmap</a> call. In this example we will use all available parameters: <code>column_info</code>, <code>column_groups</code>, <code>row_info</code>, <code>row_groups</code>, <code>palettes</code> and <code>legends</code>.</p> <pre class="lang-javascript prettyprint source">const column_info = [
     {id: "model", group: null, name: "Name", geom: "text", palette: null},
     {id: "mpg", group: "overall", name: "Miles / gallon", geom: "bar", palette: "palette1", options: {width: 4}},
     {id: "cyl", group: "overall", name: "Number of cylinders", geom: "bar", palette: "palette2", options: {width: 4}},
@@ -181,31 +181,36 @@ d3.csv('mtcars.csv').then((data) => {
     {id: "carb", group: "group2", name: "# Carburetors", geom: "circle", palette: "palette2"},
     {id: "schema", group: "group2", name: "Schema", geom: "image", width: 25},
     {id: "load", group: "group2", name: "Load", geom: "pie", palette: "load"}
-];</pre> <p><b><code>column_info</code></b> tells {funkyheatmapjs} which columns to display (all by default) and how. <code>id</code> refers to the column name in the data, and <code>name</code> is the label for the column. <code>geom</code> is the type of visualization for the column. Compared to the <a href="tutorial-simple.html">Basic usage</a> example, we changed some numerical columns to be displayed as bars or circles, and added columns for images and pie charts.</p> <p>Image column requires a <code>width</code> option, in pixels. For the <code>bar</code> columns the width is in standard column widths, here <code>4</code> means one bar columns is as wide as 4 standard columns.</p> <p>We can also specify <code>palette</code> to configure color scheme for the column, and group them thematically under a header with <code>group</code> option.</p> <pre class="lang-javascript prettyprint source">const column_groups = [
-      {level1: "Overall", group: "overall", palette: "none"},
-      {level1: "Group 1", group: "group1", palette: "palette1"},
-      {level1: "Group 2", group: "group2", palette: "palette2"}
-];</pre> <p><b><code>column_groups</code></b> is used to configure the display of column group headers, if they are used in <code>column_info</code>. Value of <code>group</code> should match between this parameter and <code>column_info</code>. The display name is specified in <code>level1</code>, the default is the capitalized group ID.</p> <pre class="lang-javascript prettyprint source">const palettes = {
-      overall: "Greys",
-      palette1: "Blues",
-      palette2: "Reds",
-      load: {
-          colors: ["#82daf2", "#ba4e79", "#ffffff"],
-          names: ['A', 'B', 'C']
-      }
-};</pre> <p><b><code>palettes</code></b> map our arbitrary names for color schemes to predefined palettes (see <a href="module-palettes.html#~defaultPalettes">module:palettes~defaultPalettes</a>) or custom palettes. Custom palettes could be simple arrays, or named colors. We need named colors for <code>pie</code> chart geom.</p> <pre class="lang-javascript prettyprint source">const legends = [
-      {
-          title: "Type",
-          geom: "image",
-          size: 25,
-          labels: ['Electric', 'Gas'],
-          values: ['electric.png', 'ice.png']
-      },
-      {
-          title: "Oranges",
-          palette: "palette2",
-          geom: "circle"
-      }
+];</pre> <p><b><code>column_info</code></b> tells <em class="pname">funkyheatmapjs</em> which columns to display (all by default) and how. <code>id</code> refers to the column name in the data, and <code>name</code> is the label for the column. <code>geom</code> is the type of visualization for the column. Compared to the <a href="tutorial-simple.html">Basic usage</a> example, we changed some numerical columns to be displayed as bars or circles, and added columns for images and pie charts.</p> <p>Image column requires a <code>width</code> option, in pixels. For the <code>bar</code> columns the width is in standard column widths, here <code>4</code> means one bar columns is as wide as 4 standard columns.</p> <p>We can also specify <code>palette</code> to configure color scheme for the column, and group them thematically under a header with <code>group</code> option.</p> <pre class="lang-javascript prettyprint source">const column_groups = [
+    {level1: "Overall", group: "overall", palette: "none"},
+    {level1: "Group 1", group: "group1", palette: "palette1"},
+    {level1: "Group 2", group: "group2", palette: "palette2"}
+];</pre> <p><b><code>column_groups</code></b> is used to configure the display of column group headers, if they are used in <code>column_info</code>. Value of <code>group</code> should match between this parameter and <code>column_info</code>. The display name is specified in <code>level1</code>, the default is the capitalized group ID.</p> <pre class="lang-javascript prettyprint source">const row_groups = [
+    {group: 'first', Group: 'First'},
+    {group: 'second', Group: 'Seconds'}
+];</pre> <p><b><code>row_groups</code></b> is used to configure the names of the row groups: these are displayed above each group, and split the dataframe into blocks. When sorting by column, each row group is sorted independently.</p> <pre class="lang-javascript prettyprint source">const row_info = data.map((_, i) => {
+    return {group: i < 10 && 'first' || 'second'}
+});</pre> <p><b><code>row_info</code></b> tells <em class="pname">funkyheatmapjs</em> which rows belong to which group. It is expected that rows are already sorted by groups, such that all rows from the same group are adjacent. Here we just put the first 10 rows into one group, and the last into another as an example.</p> <pre class="lang-javascript prettyprint source">const palettes = {
+    overall: "Greys",
+    palette1: "Blues",
+    palette2: "Reds",
+    load: {
+        colors: ["#82daf2", "#ba4e79", "#ffffff"],
+        names: ['A', 'B', 'C']
+    }
+};</pre> <p><b><code>palettes</code></b> map our arbitrary names for color schemes to predefined palettes (see <a href="module-palettes.html#~defaultPalettes">defaultPalettes</a>) or custom palettes. Custom palettes could be simple arrays, or named colors. We need named colors for <code>pie</code> chart geom.</p> <pre class="lang-javascript prettyprint source">const legends = [
+    {
+        title: "Type",
+        geom: "image",
+        size: 25,
+        labels: ['Electric', 'Gas'],
+        values: ['electric.png', 'ice.png']
+    },
+    {
+        title: "Oranges",
+        palette: "palette2",
+        geom: "circle"
+    }
 ];</pre> <p><b><code>legends</code></b> is used to customize legend display. Legends will display once for each palette used in the columns. Here we redefine the legend for <code>palette2</code> palette, but keep the default for <code>palette1</code>. We also add a legend for our <code>image</code> column.</p> <p>Finally, we call the <a href="global.html#funkyheatmap">funkyheatmap</a> function with all the parameters:</p> <pre class="lang-html prettyprint source"><code>&lt;div id=&quot;app&quot;>&lt;/div>
 
 &lt;script type=&quot;module&quot;>
@@ -218,22 +223,25 @@ d3.csv('mtcars.csv').then((data) => {
         d.load = [(i % 3) / 6, ((i + 1) % 3) / 6, 0];
         d.load[2] = 1 - d.load[0] - d.load[1];
     });
+    const row_info = data.map((_, i) => {
+        return {group: i < 10 && 'first' || 'second'}
+    });
     d3.select("#app").node().appendChild(funkyheatmap(
         data,
         column_info,
-        undefined, // row info
+        row_info,
         column_groups,
-        undefined, // row groups
+        row_groups,
         palettes,
-        legends, // legends
-        {rowHeight: 28},
-        {
+        legends,
+        {rowHeight: 28}, // position arguments
+        { // heatmap options
             labelGroupsAbc: true,
             colorByRank: true
         }
     ));
 });
-&lt;/script></code></pre> <p>Here we also used <a href="PositionArgs.html">PositionArgs</a> options and <a href="global.html#HeatmapOptions">HeatmapOptions</a> options, which allow additional configuration of sizes and positions, and of behavior and theme options.</p> <h3>Result</h3> </div> <div id="app"></div> <script src="https://unpkg.com/d3@7.8.2/dist/d3.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script> <script type="module" src="full.6bc8ff79.js"></script> <p>You can see a realistic usage example in the <a href="tutorial-scIB.html">next tutorial</a>.</p> </body></html>
+&lt;/script></code></pre> <p>Here we also used <a href="PositionArgs.html">PositionArgs</a> options and <a href="global.html#HeatmapOptions">HeatmapOptions</a> options, which allow additional configuration of sizes and positions, and of behavior and theme options.</p> <h3>Result</h3> </div> <div id="app"></div> <script src="https://unpkg.com/d3@7.8.2/dist/d3.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script> <script type="module" src="full.7a16b9dc.js"></script> <p>You can see a realistic usage example in the <a href="tutorial-scIB.html">next tutorial</a>.</p> </body></html>
 </article>
 
 </section>
