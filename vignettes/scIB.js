@@ -154,12 +154,12 @@ d3.csv('scib_summary.csv').then((data) => {
         data,
         column_info,
         undefined, // row info
-        column_groups, // column_groups,
+        column_groups,
         undefined, // row groups
         palettes,
         legends, // legends
-        {rowHeight: 28, expand_ymax: 20},
-        {
+        {rowHeight: 28}, // position options
+        { // heatmap options
             labelGroupsAbc: false,
             colorByRank: false
         },

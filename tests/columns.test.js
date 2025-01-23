@@ -1,22 +1,22 @@
 import assert from 'node:assert/strict';
-import { buildColumnInfo, Column } from '../src/columns';
+import { createColumns, Column } from '../src/columns';
 
 describe('buildColumnInfo', function() {
     it('should work with just data parameter', function() {
         const data = [{a: 1, b: 4}, {a: 2, b: 5}, {a: 3, b: 6}];
-        const result = buildColumnInfo(data);
+        const result = createColumns(data);
         assert.equal(result.length, 2);
         assert.equal(result[0].id, 'a');
     });
 
     it('should raise when column id is not specified', function() {
         const data = [{a: 1, b: 4}, {a: 2, b: 5}, {a: 3, b: 6}];
-        assert.throws(() => buildColumnInfo(data, [{name: 'a'}]));
+        assert.throws(() => createColumns(data, [{name: 'a'}]));
     });
 
     it('should create columns with data', function() {
         const data = [{a: 1, b: 4}, {a: 2, b: 5}, {a: 3, b: 6}];
-        const result = buildColumnInfo(data);
+        const result = createColumns(data);
         assert.equal(result.length, 2);
         assert.equal(result[0].numeric, true);
         assert.equal(result[0].data.length, 3);
@@ -28,14 +28,14 @@ describe('buildColumnInfo', function() {
 
     it('should pass colorByRank to all columns, but with overrides', function() {
         const data = [{a: 1, b: 4}, {a: 2, b: 5}, {a: 3, b: 6}];
-        const result = buildColumnInfo(data, [{id: 'a'}, {id: 'b', colorByRank: false}], true, true);
+        const result = createColumns(data, [{id: 'a'}, {id: 'b', colorByRank: false}], true, true);
         assert.equal(result[0].colorByRank, true);
         assert.equal(result[1].colorByRank, false);
     });
 
     it('should pass scaleColumn to all columns, but with overrides', function() {
         const data = [{a: 1, b: 4}, {a: 2, b: 5}, {a: 3, b: 6}];
-        const result = buildColumnInfo(data, [{id: 'a'}, {id: 'b', scaleColumn: false}], true, true);
+        const result = createColumns(data, [{id: 'a'}, {id: 'b', scaleColumn: false}], true, true);
         assert.equal(result[0].scaleColumn, true);
         assert.equal(result[1].scaleColumn, false);
     });
