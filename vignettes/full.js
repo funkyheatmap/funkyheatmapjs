@@ -31,6 +31,11 @@ const column_groups = [
     {level1: "Group 2", group: "group2", palette: "palette2"}
 ];
 
+const row_groups = [
+    {group: 'first', Group: 'First'},
+    {group: 'second', Group: 'Seconds'}
+];
+
 const palettes = {
     overall: "Greys",
     palette1: "Blues",
@@ -64,16 +69,19 @@ d3.csv('mtcars.csv').then((data) => {
         d.load = [(i % 3) / 6, ((i + 1) % 3) / 6, 0];
         d.load[2] = 1 - d.load[0] - d.load[1];
     });
+    const row_info = data.map((_, i) => {
+        return {group: i < 10 && 'first' || 'second'}
+    });
     d3.select("#app").node().appendChild(funkyheatmap(
         data,
         column_info,
-        undefined, // row info
+        row_info,
         column_groups,
-        undefined, // row groups
+        row_groups,
         palettes,
-        legends, // legends
-        {rowHeight: 28},
-        {
+        legends,
+        {rowHeight: 28}, // position arguments
+        { // heatmap options
             labelGroupsAbc: true,
             colorByRank: true
         }

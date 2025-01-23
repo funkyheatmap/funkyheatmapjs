@@ -291,11 +291,22 @@ class FunkyHeatmap {
                         P
                     );
                     groupName
-                        .attr('transform', `translate(${offset - padding}, ${(j + nGroups - 1) * P.rowHeight})`)
+                        .classed('fh-row-group-name', true)
+                        .attr('transform', `translate(${offset - padding}, ${(j + nGroups - 1) * P.rowHeight - 2 * P.geomPadding})`)
                         .attr('font-weight', 'bold')
                         .attr('dominant-baseline', 'hanging');
                     this.body.append(() => groupName.node());
                     width = groupName.node().getBBox().width;
+                    if (nGroups > 1) {
+                        const rowGroupWhiteBack = d3.create('svg:rect')
+                            .classed('fh-row-group-back', true)
+                            .attr('x', 0)
+                            .attr('y', 0)
+                            .attr('height', P.rowHeight)
+                            .attr('fill', O.theme.oddRowBackground)
+                            .attr('transform', `translate(${offset - padding}, ${(j + nGroups - 1) * P.rowHeight})`);
+                        this.body.append(() => rowGroupWhiteBack.node());
+                    }
                 }
                 rowGroup = item[this.rowGroupKey];
                 let value = column.getValue(item);
@@ -394,6 +405,8 @@ class FunkyHeatmap {
             prevColGroup = column.group;
         });
         P.bodyWidth = offset + P.colSpacePx;
+        this.body.selectAll('.fh-row-group-back').attr('width', P.bodyWidth).raise();
+        this.body.selectAll('.fh-row-group-name').raise();
     }
 
     renderHeader() {

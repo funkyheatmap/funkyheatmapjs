@@ -9,8 +9,8 @@ This is an interactive JavaScript adaptation of
 [d3.js](https://d3js.org/).
 
 ## Installation
-If you want to add {funkyheatmap} to your website, you can include `d3.js`, `lodash` and
-`funkyheatmapjs` from [unpkg](https://unpkg.com) or other service serving npm packages.
+If you want to add <em class="pname">funkyheatmapjs</em> to your website, you can include `d3.js`,
+`lodash` and `funkyheatmapjs` from [unpkg](https://unpkg.com) or other service serving npm packages.
 
 ```html
 <script type="text/javascript" src="https://unpkg.com/d3@7"></script>
@@ -21,8 +21,8 @@ If you want to add {funkyheatmap} to your website, you can include `d3.js`, `lod
 If you have an npm project, you can install npm package `funkyheatmapjs` with npm or yarn.
 
 ## Usage
-`funkyheatmapjs` is meant to be used in browser, please see [tutorials]{@tutorial simple}
-and [documentation]{@link funkyheatmap}.
+<em class="pname">funkyheatmapjs</em> is meant to be used in browser, please see
+[tutorials]{@tutorial simple} and [documentation]{@link funkyheatmap}.
 
 If you want to use it with npm and have trouble, please
 [open an issue](https://github.com/funkyheatmap/funkyheatmapjs/issues). An example build with
