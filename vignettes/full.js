@@ -21,7 +21,7 @@ const column_info = [
     {id: "am", group: "group2", name: "Transmission", geom: "circle", palette: "palette2"},
     {id: "gear", group: "group2", name: "# Forward gears", geom: "circle", palette: "palette2"},
     {id: "carb", group: "group2", name: "# Carburetors", geom: "circle", palette: "palette2"},
-    {id: "schema", group: "group2", name: "Schema", geom: "image", width: 25},
+    {id: "schema", group: "group2", name: "Schema", geom: "image", width: 25, id_hover_text: "engine_type"},
     {id: "load", group: "group2", name: "Load", geom: "pie", palette: "load"}
 ];
 
@@ -66,6 +66,8 @@ d3.csv('mtcars.csv').then((data) => {
     data = data.slice(0, 20);
     data.forEach((d, i) => {
         d.schema = i % 2 ? "electric.png" : "ice.png";
+        d.engine_type = i % 2 ? 'Electric' : 'Gas';
+        d.engine_type += ` (${d.hp}🐴)`;
         d.load = [(i % 3) / 6, ((i + 1) % 3) / 6, 0];
         d.load[2] = 1 - d.load[0] - d.load[1];
     });
