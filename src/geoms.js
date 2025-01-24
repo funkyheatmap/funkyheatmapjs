@@ -56,6 +56,7 @@ export const GEOMS = {
             x = P.rowHeight - P.padding;
         }
         const el = d3.create('svg:text')
+            .classed('fh-geom', true)
             .attr('dominant-baseline', 'middle')
             .attr('y', P.rowHeight / 2)
             .attr('x', x)
@@ -237,6 +238,7 @@ export const GEOMS = {
      */
     image: function(value, _, column, O, P) {
         return d3.create('svg:image')
+            .classed('fh-geom', true)
             .attr('y', P.geomPadding)
             .attr('href', value)
             .attr('height', P.geomSize)
