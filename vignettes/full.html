@@ -54,8 +54,8 @@ d3.csv('mtcars.csv').then((data) => {
 
     <pre class="prettyprint source lang-javascript">const column_info = [
     {id: "model", group: null, name: "Name", geom: "text", palette: null},
-    {id: "mpg", group: "overall", name: "Miles / gallon", geom: "bar", palette: "palette1", options: {width: 4}},
-    {id: "cyl", group: "overall", name: "Number of cylinders", geom: "bar", palette: "palette2", options: {width: 4}},
+    {id: "mpg", group: "overall_1", name: "Miles / gallon", geom: "bar", palette: "palette1", options: {width: 4}},
+    {id: "cyl", group: "overall_2", name: "Number of cylinders", geom: "bar", palette: "palette2", options: {width: 4}},
     {id: "disp", group: "group1", name: "Displacement (cu.in.)", geom: "funkyrect", palette: "palette1"},
     {id: "hp", group: "group1", name: "Gross horsepower", geom: "funkyrect", palette: "palette1"},
     {id: "drat", group: "group1", name: "Rear axle ratio", geom: "funkyrect", palette: "palette1"},
@@ -85,15 +85,17 @@ d3.csv('mtcars.csv').then((data) => {
     another column when move hovers the display element.</p>
 
     <pre class="prettyprint source lang-javascript">const column_groups = [
-    {level1: "Overall", group: "overall", palette: "none"},
+    {level1: "Overall", level2: "Left", group: "overall_1", palette: "none"},
+    {level1: "Overall", level2: "Right", group: "overall_2", palette: "none"},
     {level1: "Group 1", group: "group1", palette: "palette1"},
     {level1: "Group 2", group: "group2", palette: "palette2"}
 ];</pre>
 
     <p><b><code>column_groups</code></b> is used to configure the display of column group headers, if they
     are used in <code>column_info</code>. Value of <code>group</code> should match between this
-    parameter and <code>column_info</code>. The display name is specified in <code>level1</code>,
-    the default is the capitalized group ID.</p>
+    parameter and <code>column_info</code>. The display name is specified in <code>levelX</code>
+    properties, the default is the capitalized group ID. More than one level allows nesting the
+    column groups.</p>
 
     <pre class="prettyprint source lang-javascript">const row_groups = [
     {group: 'first', Group: 'First'},
