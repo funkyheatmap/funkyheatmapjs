@@ -424,9 +424,10 @@ class FunkyHeatmap {
             }
             return i - 1;
         }));
+        const groupsHeight = this.columnGroups.size === 0 ? 0 : nLevels * (P.rowHeight + P.padding);
 
         const labels = this.header.append('g')
-            .attr('transform', `translate(0, ${nLevels * (P.rowHeight + P.padding) + P.colAnnotOffset})`);
+            .attr('transform', `translate(0, ${groupsHeight + P.colAnnotOffset})`);
 
         let abcCounter = 0;
         for (let level = 0; level < nLevels; level++) {
@@ -568,7 +569,7 @@ class FunkyHeatmap {
             }
         });
         P.width = bodyWidth;
-        P.headerHeight = headerHeight + nLevels * (P.rowHeight + P.padding) + P.colAnnotOffset;
+        P.headerHeight = headerHeight + groupsHeight + P.colAnnotOffset;
     }
 
     renderLegends() {
