@@ -10,8 +10,8 @@ if (module.hot) {
 
 const column_info = [
     {id: "model", group: null, name: "Name", geom: "text", palette: null},
-    {id: "mpg", group: "overall", name: "Miles / gallon", geom: "bar", palette: "palette1", options: {width: 4}},
-    {id: "cyl", group: "overall", name: "Number of cylinders", geom: "bar", palette: "palette2", options: {width: 4}},
+    {id: "mpg", group: "overall_1", name: "Miles / gallon", geom: "bar", palette: "palette1", options: {width: 4}},
+    {id: "cyl", group: "overall_2", name: "Number of cylinders", geom: "bar", palette: "palette2", options: {width: 4}},
     {id: "disp", group: "group1", name: "Displacement (cu.in.)", geom: "funkyrect", palette: "palette1"},
     {id: "hp", group: "group1", name: "Gross horsepower", geom: "funkyrect", palette: "palette1"},
     {id: "drat", group: "group1", name: "Rear axle ratio", geom: "funkyrect", palette: "palette1"},
@@ -26,7 +26,8 @@ const column_info = [
 ];
 
 const column_groups = [
-    {level1: "Overall", group: "overall", palette: "none"},
+    {level1: "Overall", level2: "Left", group: "overall_1", palette: "overall"},
+    {level1: "Overall", level2: "Right", group: "overall_2", palette: "overall"},
     {level1: "Group 1", group: "group1", palette: "palette1"},
     {level1: "Group 2", group: "group2", palette: "palette2"}
 ];

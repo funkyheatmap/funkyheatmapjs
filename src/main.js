@@ -45,7 +45,8 @@ import { GEOMS } from './geoms';
  * @property {string} [theme.evenRowBackground='#eee'] - background color for even rows
  * @property {string} [theme.textColor='black'] - color for text
  * @property {string} [theme.strokeColor='#555'] - edge color for geoms and guides
- * @property {string} [theme.headerColor='black'] - color for header text
+ * @property {string} [theme.headerColorL1='white'] - color for column groups of the first level
+ * @property {string} [theme.headerColorRest='black'] - color for column groups if the other levels
  * @property {string} [theme.hoverColor='#1385cb'] - color for hovered text
  */
 const DEFAULT_OPTIONS = {
@@ -59,7 +60,8 @@ const DEFAULT_OPTIONS = {
         evenRowBackground: '#eee',
         textColor: 'black',
         strokeColor: '#555',
-        headerColor: 'black',
+        headerColorL1: 'white',
+        headerColorRest: 'black',
         hoverColor: '#1385cb'
     }
 };
@@ -411,62 +413,104 @@ class FunkyHeatmap {
         let bodyWidth = 0;
         let nonZeroRotate = false;
         const groups = this.header.append('g');
-        const labels = this.header.append('g')
-            .attr('transform', `translate(0, ${P.rowHeight + P.colAnnotOffset})`);
 
-        const columnGroups = d3.group(this.columnInfo, column => column.group);
-        let abcCounter = 0;
-        columnGroups.forEach((group, groupName) => {
-            if (!groupName) {
-                return;
-            }
-            const groupInfo = this.columnGroups.get(groupName);
-            const column = new Column({
-                id: '_group',
-                palette: groupInfo.palette
-            }, [1]);
-            assignPalettes([column], this.palettes);
-            const lastCol = group[group.length - 1];
-            const groupStart = group[0].offset;
-            const groupEnd = lastCol.offset + lastCol.widthPx + P.geomPadding;
-            const fill = column.palette == 'none' && 'transparent' || column.palette(0.5);
-            const rect = groups.append('rect')
-                .attr('x', groupStart)
-                .attr('y', 0)
-                .attr('width', groupEnd - groupStart)
-                .attr('height', P.rowHeight)
-                .attr('fill', fill)
-                .attr('opacity', 0.25);
-            const text = groups.append('text')
-                .attr('x', groupStart + (groupEnd - groupStart) / 2)
-                .attr('y', P.rowHeight / 2)
-                .attr('text-anchor', 'middle')
-                .attr('dominant-baseline', 'central')
-                .attr('fill', O.theme.headerColor)
-                .text(groupInfo.level1);
-            if (O.fontSize) {
-                text.attr('font-size', O.fontSize);
-            }
-            const { width } = text.node().getBBox();
-            if (width + 2 * P.padding > groupEnd - groupStart) {
-                const diff = width + 2 * P.padding - (groupEnd - groupStart);
-                rect.attr('width', width + 2 * P.padding);
-                rect.attr('x', groupStart - diff / 2);
-            }
-            if (O.labelGroupsAbc) {
-                const letter = String.fromCharCode("a".charCodeAt(0) + abcCounter);
-                const text = groups.append('text')
-                    .attr('x', groupStart + P.padding)
-                    .attr('y', P.rowHeight / 2)
-                    .attr('dominant-baseline', 'central')
-                    .attr('fill', O.theme.headerColor)
-                    .text(`${letter})`);
-                if (O.fontSize) {
-                    text.attr('font-size', O.fontSize);
+        const nLevels = Math.max(...this.columnGroups.values().map(group => {
+            let i = 1;
+            while (true) {
+                if (group[`level${i}`] === undefined) {
+                    break;
                 }
+                i += 1;
             }
-            abcCounter += 1;
-        });
+            return i - 1;
+        }));
+
+        const labels = this.header.append('g')
+            .attr('transform', `translate(0, ${nLevels * (P.rowHeight + P.padding) + P.colAnnotOffset})`);
+
+        let abcCounter = 0;
+        for (let level = 0; level < nLevels; level++) {
+            const levelID = `level${level + 1}`;
+            let levelName;
+            let groupStart;
+            // iterate over columns _in order_
+            this.columnInfo.forEach((column, columnIdx) => {
+                const groupInfo = this.columnGroups.get(column.group);
+
+                let nextCol, nextColGroup;
+                // peek at the next column group. If we're at the last column, or if the next group
+                // is empty, it's the same: we draw current group
+                if (this.columnInfo.length > columnIdx + 1) {
+                    nextCol = this.columnInfo[columnIdx + 1];
+                    nextColGroup = this.columnGroups.get(nextCol.group);
+                }
+
+                if (groupInfo && groupInfo[levelID] !== undefined && levelName === undefined) {
+                    // start a new group if we haven't started yet
+                    levelName = groupInfo[levelID];
+                    groupStart = column.offset;
+                }
+                if (levelName !== undefined
+                    && (nextColGroup === undefined
+                        || levelName !== nextColGroup[levelID])
+                ) {
+                    // if we have a group and the next column is not in the same group, draw the
+                    // current group until the current column
+                    const groupEnd = column.offset + column.widthPx + P.geomPadding;
+                    const groupCol = new Column({
+                        id: '_group',
+                        palette: groupInfo.palette
+                    }, [1]);
+                    assignPalettes([groupCol], this.palettes);
+                    const fill = (
+                        groupCol.palette == 'none' && 'transparent' || groupCol.palette(0.5)
+                    );
+                    const yOffset = level * P.rowHeight + level * P.padding;
+                    const rect = groups.append('rect')
+                        .attr('x', groupStart)
+                        .attr('y', yOffset)
+                        .attr('width', groupEnd - groupStart)
+                        .attr('height', P.rowHeight)
+                        .attr('fill', fill)
+                        .attr('opacity', level === 0 && 1 || 0.25);
+                    const text = groups.append('text')
+                        .attr('x', groupStart + (groupEnd - groupStart) / 2)
+                        .attr('y', yOffset + P.rowHeight / 2)
+                        .attr('text-anchor', 'middle')
+                        .attr('dominant-baseline', 'central')
+                        .attr(
+                            'fill',
+                            level === 0 && O.theme.headerColorL1 || O.theme.headerColorRest
+                        )
+                        .text(levelName);
+                    if (O.fontSize) {
+                        text.attr('font-size', O.fontSize);
+                    }
+                    const { width } = text.node().getBBox();
+                    if (width + 2 * P.padding > groupEnd - groupStart) {
+                        const diff = width + 2 * P.padding - (groupEnd - groupStart);
+                        rect.attr('width', width + 2 * P.padding);
+                        rect.attr('x', groupStart - diff / 2);
+                    }
+                    if (O.labelGroupsAbc && level === 0) {
+                        // only add ABC labels for the first level
+                        const letter = String.fromCharCode("a".charCodeAt(0) + abcCounter);
+                        const text = groups.append('text')
+                            .attr('x', groupStart + P.padding)
+                            .attr('y', yOffset + P.rowHeight / 2)
+                            .attr('dominant-baseline', 'central')
+                            .attr('fill', O.theme.headerColorL1)
+                            .text(`${letter})`);
+                        if (O.fontSize) {
+                            text.attr('font-size', O.fontSize);
+                        }
+                    }
+                    abcCounter += 1;
+                    // we have drawn the group, reset the variables
+                    levelName = undefined;
+                }
+            });
+        }
 
         this.columnInfo.forEach((column, i) => {
             const el = labels.append('g')
@@ -524,7 +568,7 @@ class FunkyHeatmap {
             }
         });
         P.width = bodyWidth;
-        P.headerHeight = headerHeight + P.rowHeight + P.colAnnotOffset;
+        P.headerHeight = headerHeight + nLevels * (P.rowHeight + P.padding) + P.colAnnotOffset;
     }
 
     renderLegends() {
