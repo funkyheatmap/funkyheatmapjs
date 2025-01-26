@@ -123,6 +123,9 @@ export class Column {
             if (this.geom === 'pie') {
                 this.palette = 'categorical';
             }
+            if (this.geom === 'text') {
+                this.palette = 'none';
+            }
             if (this.numeric) {
                 this.palette = 'numerical';
             }

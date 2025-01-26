@@ -51,6 +51,24 @@ describe('column class', function() {
         assert.equal(column.data.length, 3);
         assert.equal(column.colorByRank, false);
     });
+    it('should automatically set palette for pie geom', function() {
+        const info = {id: 'a', geom: 'pie'};
+        const data = [1, 2, 3];
+        const column = new Column(info, data);
+        assert.equal(column.palette, 'categorical');
+    });
+    it('should automatically set palette for text geom', function() {
+        const info = {id: 'a', geom: 'text'};
+        const data = [1, 2, 3];
+        const column = new Column(info, data);
+        assert.equal(column.palette, 'none');
+    });
+    it('should automatically set palette for bar geom', function() {
+        const info = {id: 'a', geom: 'bar'};
+        const data = [1, 2, 3];
+        const column = new Column(info, data);
+        assert.equal(column.palette, 'numerical');
+    });
     it('should return colorValue simple', function() {
         const info = {id: 'a'};
         const data = [1, 2, 3];
