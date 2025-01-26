@@ -43,7 +43,7 @@ export const GEOMS = {
      */
     text: (value, _, column, O, P) => {
         let fill = O.theme.textColor;
-        if (column.palette) {
+        if (column.palette && column.palette !== 'none') {
             fill = column.palette(value);
         }
         let align = 'start', x = 0;
