@@ -1045,7 +1045,11 @@ class FunkyHeatmap {
             .html(text)
             .style("top", mouse[1] + 2 * offset + "px")
             .style("left", mouse[0] + offset + "px")
-            .style("display", "block");
+            .style("display", "block")
+            .style("visibility", "none");
+        const { height } = this.tooltip.node().getBoundingClientRect();
+        this.tooltip.style("top", mouse[1] - height + "px")
+            .style("visibility", "visible");
     }
 
     onMouseMove(e) {
