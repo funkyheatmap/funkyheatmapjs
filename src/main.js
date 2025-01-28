@@ -1004,7 +1004,8 @@ class FunkyHeatmap {
  *   should be displayed. If not specified, all columns from `data` will be displayed.
  *   See {@link module:columns~ColumnInfo|ColumnInfo}, {@link module:columns.Column|Column}
  * @param {ColumnData|RowData} rowInfo - information about how the rows should be displayed
- * @param {ColumnData|RowData} columnGroups - information about how to group columns
+ * @param {ColumnData|module:columns~ColumnGroup[]} columnGroups - information about how to group
+ *   columns. See {@link module:columns~ColumnGroup|ColumnGroup}
  * @param {ColumnData|RowData} rowGroups - information about how to group rows
  * @param {module:palettes~PaletteMapping} palettes - mapping of names to palette colors
  * @param {ColumnData|RowData} legends - a list of legends to add to the plot
