@@ -225,12 +225,25 @@ import { rowToColData } from './input_util';
  * @property {string} group - name of the group the column belongs to
  * @property {string} id_size - id of the column that will determine the size for display
  * @property {string} id_color - id of the column that will determine the color for display
- * @property {boolean} colorByRank - whether to color by rank per column instead of by value
+ * @property {boolean} colorByRank - whether to color by rank per column instead of by value, only
+ *   for `numeric` columns
  * @property {boolean} scaleColumn - whether to scale the column data to `[0, 1]`
  * @property {string} label - id of the column that has the values to display as labels over the
  *   geoms
  * @property {string} id_hover_text - id of the column that has the values to display as hover text
  * @property {string} geom - type of the geom to display
+ * @property {Array} data - array of data for the column
+ * @property {number} min - minimum value in the column, for `numeric` columns. `0` if
+ *   `scaleColumn === false`
+ * @property {number} max - maximum value in the column, for `numeric` columns. `1` if
+ *   `scaleColumn === false`
+ * @property {number} range - range of the column, for `numeric` columns
+ * @property {d3.scaleLinear} scale - scale for the column, for `numeric` columns
+ * @property {d3.scaleLinear} colorScale - scale for the color, for `colorByRank` `numeric` columns
+ * @property {number[]} rankedData - ranks of the data, for `colorByRank` `numeric` columns
+ * @property {Object.&lt;number, number>} normalizedRanks - mapping of rank to normalized rank, for
+ *   `colorByRank` `numeric` columns. See
+ *   {@link module:columns.Column#maybeCalculateStats|maybeCalculateStats}
  */
 export class Column {
     /**
@@ -345,6 +358,20 @@ export class Column {
         }
     }
 
+    /**
+     * Calculate stats, scales and maybe ranks for the column. Should be called only for `numeric`
+     * columns. If `colorByRank` is set, data is ranked, and ranks with ties are normalized to
+     * unique ranks.
+     *
+     * Sets `min`, `max`, `range`, `scale`, `colorScale`, `rankedData`, `normalizedRanks`
+     * properties.
+     *
+     * In case there are ties in ranks, d3 will return ranks like `[0, 0, 2]` skipping rank `1`.
+     * So we renormalize the ranks from `[0, 2]` to `[0, 1]`, and map the colors to the number
+     * of unique ranks only. Otherwise we allocate 3 colors for `[0, 0, 2]` data, and the
+     * display colors won't fully map the palette. In this case `normalizedRanks` will be
+     * `{0: 0, 2: 1}`.
+     */
     maybeCalculateStats() {
         this.data = this.data.map(d => +d);
 
@@ -357,10 +384,6 @@ export class Column {
         this.scale = d3.scaleLinear().domain(extent);
         if (this.colorByRank) {
             this.rankedData = d3.rank(this.data);
-            // In case there are ties, d3 will return ranks like [0, 0, 2] skipping rank 1.
-            // So we renormalize the ranks from [0, 2] to [0, 1], and map the colors to the number
-            // of unique ranks only. Otherwise we allocate 3 colors for [0, 0, 2] data, and the
-            // display colors won't fully map the palette.
             const uniqueRanks = _.uniq(this.rankedData);
             const rankedRanks = d3.rank(uniqueRanks);
             this.normalizedRanks = _.zipObject(uniqueRanks, rankedRanks);

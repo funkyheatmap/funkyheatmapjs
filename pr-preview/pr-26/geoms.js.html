@@ -200,9 +200,9 @@ export const GEOMS = {
      * @memberof module:geoms
      * @see {@link module:geoms~geom|geom} for function signature
      * @description Text geom. Renders text string. Configured with `fontSize` and `align` options.
-     * Default fontSize is inherited from {@link HeatmapOptions}. Default align is `left`.
-     * Color is mapped from palette by text value, if palette is defined (see
-     * {@link module:palettes~CustomPalette|CustomPalette}).
+     *   Default fontSize is inherited from {@link HeatmapOptions}. Default align is `left`.
+     *   Color is mapped from palette by text value, if palette is defined (see
+     *   {@link module:palettes~CustomPalette|CustomPalette}).
      */
     text: (value, _, column, O, P) => {
         let fill = O.theme.textColor;
@@ -239,8 +239,8 @@ export const GEOMS = {
      * @memberof module:geoms
      * @see {@link module:geoms~geom|geom} for function signature
      * @description Bar geom. Renders a bar with width proportional to value. Maximum bar width is
-     * configured with `width` property ({@link module:columns~ColumnInfo|ColumnInfo}). If value
-     * is 0, minimal bar width is set from {@link PositionArgs} `minGeomSize`.
+     *   configured with `width` property ({@link module:columns~ColumnInfo|ColumnInfo}). If value
+     *   is 0, minimal bar width is set from {@link PositionArgs} `minGeomSize`.
      */
     bar: (value, colorValue, column, O, P) => {
         const fill = column.palette(colorValue);
@@ -264,7 +264,7 @@ export const GEOMS = {
      * @memberof module:geoms
      * @see {@link module:geoms~geom|geom} for function signature
      * @description Circle geom. Renders a circle with radius proportional to value. If value is 0,
-     * minimal circle radius is set from {@link PositionArgs} `minGeomSize`.
+     *   minimal circle radius is set from {@link PositionArgs} `minGeomSize`.
      */
     circle: (value, colorValue, column, O, P) => {
         const fill = column.palette(colorValue);
@@ -287,7 +287,7 @@ export const GEOMS = {
      * @memberof module:geoms
      * @see {@link module:geoms~geom|geom} for function signature
      * @description Square geom. Renders a square of standard size, but color is mapped from
-     * palette.
+     *   palette.
      */
     rect: (value, colorValue, column, O, P) => {
         const fill = column.palette(colorValue);
@@ -307,8 +307,8 @@ export const GEOMS = {
      * @memberof module:geoms
      * @see {@link module:geoms~geom|geom} for function signature
      * @description Funkyrect geom. Renders a circle that grows into a square with rounded corners.
-     * Value below {@link PositionArgs} `funkyMidpoint` is rendered as a circle, above as a square,
-     * with corner radius decreasing as value grows.
+     *   Value below {@link PositionArgs} `funkyMidpoint` is rendered as a circle, above as
+     *   a square, with corner radius decreasing as value grows.
      */
     funkyrect: (value, colorValue, column, O, P) => {
         let scaled = column.scale(value);
@@ -397,7 +397,7 @@ export const GEOMS = {
      * @memberof module:geoms
      * @see {@link module:geoms~geom|geom} for function signature
      * @description Image geom. Renders an image with standard height and width specified in column
-     * options (see {@link module:columns~ColumnInfo|ColumnInfo} `width`).
+     *   options (see {@link module:columns~ColumnInfo|ColumnInfo} `width`).
      */
     image: function(value, _, column, O, P) {
         return d3.create('svg:image')
