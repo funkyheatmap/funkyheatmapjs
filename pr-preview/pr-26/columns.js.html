@@ -200,6 +200,22 @@ import { rowToColData } from './input_util';
  */
 
 /**
+ * @typedef {Object} ColumnGroup
+ * @description Information about a group of columns for display. Creating multiple levels of groups
+ *   is possible by specifying `level1`, `level2`, etc. with increasing numbers. The columns are not
+ *   sorted by &lt;em class="pname">funkyheatmapjs&lt;/em>, so the columns should have the groups on the
+ *   adjacent positions.
+ * @property {string} group - name of the group, must correspond to the `group` field in
+ *   {@link module:columns~ColumnInfo|ColumnInfo}
+ * @property {string} level1 - name of the first level of the grouping. If not specified, derived
+ *   from the `group` field
+ * @property {string} level2 - name of the second level of the grouping, if necessary
+ * @property {string} level… - further levels of the grouping are possible
+ * @property {string} palette - name of the palette to use for coloring the background of the group,
+ *   the middle of the palette is used
+ */
+
+/**
  * @class
  * @property {string} id - column id in the dataset
  * @property {boolean} numeric - whether the column is numeric, computed from the data.
@@ -317,7 +333,10 @@ export class Column {
             throw `Column ${this.id} has id_size=${this.id_size}, which is not in the data`;
         }
         if (this.id_hover_text !== undefined &amp;&amp; !columnNames.includes(this.id_hover_text)) {
-            throw `Column ${this.id} has id_hover_text=${this.id_hover_text}, which is not in the data`;
+            throw (
+                `Column ${this.id} has id_hover_text=${this.id_hover_text},`
+                + ` which is not in the data`
+            );
         }
 
         this.sortState = null;
@@ -460,13 +479,16 @@ export function createColumns(data, columnInfo, scaleColumn, colorByRank) {
 /**
  * Check and prepare column group information
  *
- * @param {Object[]} columnGroups - information about column groups, empty array if not specified
- * @param {Object[]} columnInfo - information about columns, to crosscheck
- * @returns {Object[]} - column groups with defaults filled in, if necessary
+ * @param {ColumnGroup[]} columnGroups - information about column groups, empty array if not
+ *   specified
+ * @param {Column[]} columnInfo - information about columns, to crosscheck
+ * @returns {ColumnGroup[]} - column groups with defaults filled in, if necessary
  */
 export function buildColumnGroups(columnGroups, columnInfo) {
     if (columnGroups.length === 0 &amp;&amp; columnInfo.some(i => i.group)) {
-        console.info("No column groups specified, but some columns have group, building automatically");
+        console.info(
+            "No column groups specified, but some columns have group, building automatically"
+        );
         columnGroups = columnInfo
             .filter(i => i.group)
             .map(i => i.group);
@@ -489,15 +511,9 @@ export function buildColumnGroups(columnGroups, columnInfo) {
         console.warn(`Unused column groups: ${unused.map(i => i.group).join(', ')}`);
     }
 
-    if (columnGroups[0].palette === undefined) {
-        console.info("Column groups did not specify `palette`. Assuming no colours")
-        columnGroups.forEach(i => {
-            i.palette = 'none';
-        });
-    }
     columnGroups.forEach(i => {
         if (i.palette === undefined) {
-            throw `Column group ${i.group} did not specify palette`;
+            i.palette = 'none';
         }
     });
 

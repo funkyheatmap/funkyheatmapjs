@@ -213,7 +213,7 @@
         
         <span class="code-name">
             
-                buildColumnGroups<span class="signature">(columnGroups, columnInfo)</span><span class="type-signature"> &rarr; {Array.&lt;Object>}</span>
+                buildColumnGroups<span class="signature">(columnGroups, columnInfo)</span><span class="type-signature"> &rarr; {Array.&lt;ColumnGroup>}</span>
             
         </span>
     </h4>
@@ -266,7 +266,7 @@
   <td class="type">
   
       
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;ColumnGroup></code>
 
 
   
@@ -276,7 +276,8 @@
 
   
 
-  <td class="description last"><p>information about column groups, empty array if not specified</p></td>
+  <td class="description last"><p>information about column groups, empty array if not
+specified</p></td>
 </tr>
 
 
@@ -291,7 +292,7 @@
   <td class="type">
   
       
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;Column></code>
 
 
   
@@ -349,7 +350,7 @@
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line304">line 304</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line324">line 324</a>
             </span>
         </p>
     
@@ -388,7 +389,7 @@
     <div class='column is-5 has-text-left'>
         <label>Type: </label>
         
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;ColumnGroup></code>
 
 
     </div>
@@ -605,7 +606,7 @@ columns</p></td>
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line269">line 269</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line288">line 288</a>
             </span>
         </p>
     
@@ -757,7 +758,7 @@ columns</p></td>
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line357">line 357</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line373">line 373</a>
             </span>
         </p>
     
@@ -820,6 +821,233 @@ columns</p></td>
         <div class='vertical-section'>
             <h1>Type Definitions</h1>
             <div class="members">
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Object</code>
+
+
+    </span>
+
+<h4 class="name" id="~ColumnGroup">
+    <a class="href-link" href="#~ColumnGroup">#</a>
+    
+    <span class="code-name">
+        ColumnGroup
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>Information about a group of columns for display. Creating multiple levels of groups
+is possible by specifying <code>level1</code>, <code>level2</code>, etc. with increasing numbers. The columns are not
+sorted by <em class="pname">funkyheatmapjs</em>, so the columns should have the groups on the
+adjacent positions.</p>
+</div>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>group</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the group, must correspond to the <code>group</code> field in
+<a href="module-columns.html#~ColumnInfo">ColumnInfo</a></p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>level1</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the first level of the grouping. If not specified, derived
+from the <code>group</code> field</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>level2</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the second level of the grouping, if necessary</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>level…</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>further levels of the grouping are possible</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>palette</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the palette to use for coloring the background of the group,
+the middle of the palette is used</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="columns.js.html" class="button">View Source</a>
+            <span>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line39">line 39</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
             
                 <div class="member">
 
