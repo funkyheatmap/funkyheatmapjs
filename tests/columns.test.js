@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createColumns, Column } from '../src/columns';
+import { createColumns, Column, buildColumnGroups } from '../src/columns';
 
 describe('buildColumnInfo', function() {
     it('should work with just data parameter', function() {
@@ -185,5 +185,36 @@ describe('column class', function() {
         // TODO: shift hover table from main to column. Requires color names for pie,
         // so we need to call `assignPalettes` first.
         // assert.equal(column.getHoverText({'a': 'a'}), undefined);
+    });
+});
+
+describe('column group creation', function() {
+    it('should autofill column groups from columns', function() {
+        let columns = [{id: 'a', group: 'a'}, {id: 'b', group: 'a'}];
+        columns = createColumns([{a: 1, b: 4}], columns);
+        const result = buildColumnGroups([], columns);
+        assert.equal(result.length, 1);
+        // capitalized
+        assert.equal(result[0].level1, 'A');
+        assert.equal(result[0].palette, 'none');
+    });
+    it('should return empty if no groups are specified', function() {
+        let columns = [{id: 'a'}, {id: 'b'}];
+        columns = createColumns([{a: 1, b: 4}], columns);
+        const result = buildColumnGroups([], columns);
+        assert.equal(result.length, 0);
+    });
+    it('should raise if column groups are specified but lacking a group', function() {
+        let columns = [{id: 'a', group: 'a'}, {id: 'b', group: 'a'}];
+        columns = createColumns([{a: 1, b: 4}], columns);
+        assert.throws(() => buildColumnGroups([{group: 'b'}], columns));
+    });
+    it('should keep known palettes and set others to none', function() {
+        let columns = [{id: 'a', group: 'a'}, {id: 'b', group: 'b'}];
+        columns = createColumns([{a: 1, b: 4}], columns);
+        const result = buildColumnGroups([{group: 'a'}, {group: 'b', palette: 'b'}], columns);
+        assert.equal(result.length, 2);
+        assert.equal(result[0].palette, 'none');
+        assert.equal(result[1].palette, 'b');
     });
 });
