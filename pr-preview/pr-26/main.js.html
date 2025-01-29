@@ -196,6 +196,20 @@ import { GEOMS } from './geoms';
  */
 
 /**
+ * @typedef {Object} RowInfo
+ * @description Minimal metadata for each row in the heatmap. Used to group rows.
+ * @property {string} group - group id for the row
+ */
+
+/**
+ * @typedef {Object} RowGroup
+ * @description ID and title for a row group for display. Rows within a group are visually apart
+ *   and are sorted together.
+ * @property {string} group - group id, must match the `group` property in {@link RowInfo}
+ * @property {string} Group - group title for display. _Required_ to enable row grouping
+ */
+
+/**
  * @typedef {Object} HeatmapOptions
  * @property {boolean} [colorByRank=false] - whether to color elements by rank, default for all
  *   numeric columns
@@ -1166,16 +1180,20 @@ class FunkyHeatmap {
  * @param {ColumnData|module:columns~ColumnInfo[]} columnInfo - information about how the columns
  *   should be displayed. If not specified, all columns from `data` will be displayed.
  *   See {@link module:columns~ColumnInfo|ColumnInfo}, {@link module:columns.Column|Column}
- * @param {ColumnData|RowData} rowInfo - information about how the rows should be displayed
+ * @param {ColumnData|RowInfo[]} rowInfo - information about how the rows should be grouped,
+ *   see {@link RowInfo}
  * @param {ColumnData|module:columns~ColumnGroup[]} columnGroups - information about how to group
  *   columns. See {@link module:columns~ColumnGroup|ColumnGroup}
- * @param {ColumnData|RowData} rowGroups - information about how to group rows
- * @param {module:palettes~PaletteMapping} palettes - mapping of names to palette colors
- * @param {ColumnData|RowData} legends - a list of legends to add to the plot
+ * @param {ColumnData|RowGroup[]} rowGroups - information about how to display row groups,
+ *   see {@link RowGroup}
+ * @param {module:palettes~PaletteMapping} palettes - mapping of names to palette colors,
+ *   see {@link module:palettes~PaletteMapping|PaletteMapping}
+ * @param {ColumnData|module:legends~LegendInfo[]} legends - a list of legends to add or configure
+ *   for the plot. See {@link module:legends~LegendInfo|LegendInfo}
  * @param {PositionOptions} positionArgs - positioning options, see {@link PositionArgs}
  * @param {HeatmapOptions} options - options for the heatmap
  * @param {boolean} scaleColumn - whether to apply min-max scaling to numerical
- *   columns. Defaults to true
+ *   columns
  *
  * @returns {SVGElement} - the SVG element containing the heatmap
  *

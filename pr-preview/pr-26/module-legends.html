@@ -214,6 +214,13 @@
 
     
     
+    <div class="description">
+        <p>Validate user-provided legend options and prepare legends for rendering. A legend is necessary
+for each palette used in the visualization. If user have not provided legend configuration for
+a palette that is used in <a href="module-columns.html#~ColumnInfo">ColumnInfo</a>, it will be added
+automatically.</p>
+    </div>
+    
 
 
 
@@ -255,10 +262,7 @@
   <td class="type">
   
       
-<code class="param-type">Array.&lt;Object></code>
-|
-
-<code class="param-type">undefined</code>
+<code class="param-type">Array.&lt;<a href="module-legends.html#~LegendInfo">module:legends~LegendInfo</a>></code>
 
 
   
@@ -283,7 +287,7 @@
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="module-palettes.html#~PaletteMapping">module:palettes~PaletteMapping</a></code>
 
 
   
@@ -308,7 +312,7 @@
   <td class="type">
   
       
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;<a href="module-columns.Column.html">module:columns.Column</a>></code>
 
 
   
@@ -366,7 +370,7 @@
         <p class="tag-source">
             <a href="legends.js.html" class="button">View Source</a>
             <span>
-                <a href="legends.js.html">legends.js</a>, <a href="legends.js.html#line11">line 11</a>
+                <a href="legends.js.html">legends.js</a>, <a href="legends.js.html#line41">line 41</a>
             </span>
         </p>
     
@@ -398,6 +402,328 @@
         </div>
     
 
+    
+        <div class='vertical-section'>
+            <h1>Type Definitions</h1>
+            <div class="members">
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Object</code>
+
+
+    </span>
+
+<h4 class="name" id="~LegendInfo">
+    <a class="href-link" href="#~LegendInfo">#</a>
+    
+    <span class="code-name">
+        LegendInfo
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>Legend configuration</p>
+</div>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>title</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>title of the legend, defaults to palette name</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>palette</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the palette to use</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>geom</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>type of geom to use for legend. If absent, will be copied from the
+first column info with the same palette</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>labels</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">Array.&lt;string></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>labels for the legend. <em>Required</em> for <code>text</code> and <code>image</code> geoms.
+For <code>image</code> geom is a list of captions for the images. For <code>text</code> geom is a list of texts
+displayed on the left of the legend. For <code>pie</code> geom can be inferred from palette, if palette
+is specified as a <a href="module-palettes.html#~CustomPalette">CustomPalette</a>. For numeric geoms
+defaults to <code>['0', '', '0.2', '', '0.4', '', '0.6', '', '0.8', '', '1']</code></p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>label_align</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">'left'</code>
+|
+
+<code class="param-type">'center'</code>
+|
+
+<code class="param-type">'right'</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>alignment of the labels. Defaults to <code>center</code>
+for <code>circle</code>, <code>rect</code> and <code>funkyrect</code> geoms</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>label_hjust</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>numerical alias for <code>label_align</code>, converts <code>0, 0.5, 1</code> to
+<code>left, center, right</code>, complains about any other values</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>size</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+|
+
+<code class="param-type">Array.&lt;number></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>size of the legend elements. <em>Required</em> for <code>image</code> geom,
+will set the width of the image. For <code>circle</code> and <code>funkyrect</code> geoms defaults to increasing
+values from 0 to 1. For <code>rect</code> and <code>bar</code> geoms defaults to 1. Must be the same length as
+<code>labels</code></p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>values</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+|
+
+<code class="param-type">Array.&lt;number></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>values for the legend elements. For numeric geoms represents
+color values for the legend elements. Must be the same length as <code>labels</code>. <em>Required</em> for
+<code>image</code> and <code>text</code> geoms. For <code>image</code> geom is a list of image URLs. For <code>text</code> geom is a list
+of texts displayed on the right of the legend</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="legends.js.html" class="button">View Source</a>
+            <span>
+                <a href="legends.js.html">legends.js</a>, <a href="legends.js.html#line5">line 5</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
     
 
     
