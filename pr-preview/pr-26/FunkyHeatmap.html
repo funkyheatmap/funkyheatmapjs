@@ -161,9 +161,10 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>FunkyHeatmap<span class="signature">()</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>FunkyHeatmap<span class="signature">(data, columnInfo, columnGroups, rowInfo, rowGroups, palettes, legends, positionArgs, options, svg)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description"><p>Heatmap class</p></div>
+            <div class="class-description"><p>Heatmap class responsible for rendering the heatmap and handling user interactions. Takes
+preprocessed user data and stores it, along with the configuration options</p></div>
         
     
 </header>
@@ -187,7 +188,7 @@
         
         <span class="code-name">
             
-                new FunkyHeatmap<span class="signature">()</span><span class="type-signature"></span>
+                new FunkyHeatmap<span class="signature">(data, columnInfo, columnGroups, rowInfo, rowGroups, palettes, legends, positionArgs, options, svg)</span><span class="type-signature"></span>
             
         </span>
     </h4>
@@ -195,6 +196,11 @@
 
     
     
+    <div class="description">
+        <p>Calls <a href="FunkyHeatmap.html#calculateOptions">calculateOptions</a> to pre-calculate some derived
+values.</p>
+    </div>
+    
 
 
 
@@ -203,6 +209,282 @@
 
 
 
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>data</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type"><a href="global.html#RowData">RowData</a></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>data to be visualized</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>columnInfo</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">Array.&lt;<a href="module-columns.Column.html">module:columns.Column</a>></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>information about columns</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>columnGroups</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">Array.&lt;<a href="module-columns.html#~ColumnGroup">module:columns~ColumnGroup</a>></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>column groups</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>rowInfo</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">Array.&lt;<a href="global.html#RowInfo">RowInfo</a>></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>information about rows</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>rowGroups</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">Array.&lt;<a href="global.html#RowGroup">RowGroup</a>></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>row groups</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>palettes</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type"><a href="module-palettes.html#~PaletteMapping">module:palettes~PaletteMapping</a></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>palettes used in the heatmap</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>legends</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">Array.&lt;<a href="module-legends.html#~LegendInfo">module:legends~LegendInfo</a>></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>legends to be displayed</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>positionArgs</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type"><a href="global.html#PositionOptions">PositionOptions</a></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>position arguments</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>options</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type"><a href="global.html#HeatmapOptions">HeatmapOptions</a></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>heatmap options</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>svg</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">SVGElement</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>SVG element to render the heatmap in</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
 
 
 
@@ -254,6 +536,213 @@
 </tr>
 
         
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>options</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type"><a href="global.html#HeatmapOptions">HeatmapOptions</a></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>svg</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">SVGElement</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>SVG element to render the heatmap in</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>data</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type"><a href="global.html#RowData">RowData</a></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>data to be visualized</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>columnInfo</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">Array.&lt;<a href="module-columns.Column.html">module:columns.Column</a>></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>information about columns</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>columnGroups</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">Map.&lt;string, <a href="module-columns.html#~ColumnGroup">module:columns~ColumnGroup</a>></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>column groups</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>rowInfo</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">Array.&lt;<a href="global.html#RowInfo">RowInfo</a>></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>information about rows</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>rowGroups</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">Map.&lt;string, <a href="module-columns.html#~ColumnGroup">module:columns~ColumnGroup</a>></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>row groups</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>palettes</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type"><a href="module-palettes.html#~PaletteMapping">module:palettes~PaletteMapping</a></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>palettes used in the heatmap</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>legends</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">Array.&lt;<a href="module-legends.html#~LegendInfo">module:legends~LegendInfo</a>></code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>legends to be displayed</p></td>
+</tr>
+
+        
         </tbody>
     </table>
 </div>
@@ -295,7 +784,7 @@
         <p class="tag-source">
             <a href="main.js.html" class="button">View Source</a>
             <span>
-                <a href="main.js.html">main.js</a>, <a href="main.js.html#line193">line 193</a>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line204">line 204</a>
             </span>
         </p>
     
@@ -343,6 +832,1209 @@
 
     
 
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="calculateOptions">
+        <a class="href-link" href="#calculateOptions">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
+        
+        <span class="code-name">
+            
+                calculateOptions<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Determines if we render row groups and in which order.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line251">line 251</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="hideTooltip">
+        <a class="href-link" href="#hideTooltip">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
+        
+        <span class="code-name">
+            
+                hideTooltip<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line922">line 922</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="indicateSort">
+        <a class="href-link" href="#indicateSort">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
+        
+        <span class="code-name">
+            
+                indicateSort<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Draws an arrow indicating the sort order near the corresponding column.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line1013">line 1013</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="listen">
+        <a class="href-link" href="#listen">#</a>
+        
+        <span class="code-name">
+            
+                listen<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Adds event listeners to the SVG element to show and hide the tooltip.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line1075">line 1075</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="onColumnClick">
+        <a class="href-link" href="#onColumnClick">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
+        
+        <span class="code-name">
+            
+                onColumnClick<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Event handler for column click to sort the data and rerender the heatmap.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line982">line 982</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="onMouseMove">
+        <a class="href-link" href="#onMouseMove">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
+        
+        <span class="code-name">
+            
+                onMouseMove<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Event handler for mouse move to trigger showing the tooltip.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line962">line 962</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="render">
+        <a class="href-link" href="#render">#</a>
+        
+        <span class="code-name">
+            
+                render<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Renders the heatmap, calling the necessary functions in order.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line1044">line 1044</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="renderData">
+        <a class="href-link" href="#renderData">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
+        
+        <span class="code-name">
+            
+                renderData<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Renders data column by column.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line305">line 305</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="renderHeader">
+        <a class="href-link" href="#renderHeader">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
+        
+        <span class="code-name">
+            
+                renderHeader<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Renders column labels and groups.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line464">line 464</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="renderLegends">
+        <a class="href-link" href="#renderLegends">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
+        
+        <span class="code-name">
+            
+                renderLegends<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Renders the footer with legends.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line635">line 635</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="renderStripedRows">
+        <a class="href-link" href="#renderStripedRows">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
+        
+        <span class="code-name">
+            
+                renderStripedRows<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Renders the heatmap's striped background.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line278">line 278</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="showTooltip">
+        <a class="href-link" href="#showTooltip">#</a>
+        
+            
+                <span class='tag'>protected</span>
+            
+        
+        <span class="code-name">
+            
+                showTooltip<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line931">line 931</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
     
 
     
