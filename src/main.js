@@ -187,10 +187,36 @@ class PositionArgs {
 }
 
 /**
- * Heatmap class
+ * Heatmap class responsible for rendering the heatmap and handling user interactions. Takes
+ * preprocessed user data and stores it, along with the configuration options
+ *
  * @property {PositionArgs} positionArgs
+ * @property {HeatmapOptions} options
+ * @property {SVGElement} svg - SVG element to render the heatmap in
+ * @property {RowData} data - data to be visualized
+ * @property {module:columns.Column[]} columnInfo - information about columns
+ * @property {Map<string, module:columns~ColumnGroup>} columnGroups - column groups
+ * @property {RowInfo[]} rowInfo - information about rows
+ * @property {Map<string, module:columns~ColumnGroup>} rowGroups - row groups
+ * @property {module:palettes~PaletteMapping} palettes - palettes used in the heatmap
+ * @property {module:legends~LegendInfo[]} legends - legends to be displayed
  */
 class FunkyHeatmap {
+    /**
+     * Calls {@link FunkyHeatmap#calculateOptions|calculateOptions} to pre-calculate some derived
+     * values.
+     *
+     * @param {RowData} data - data to be visualized
+     * @param {module:columns.Column[]} columnInfo - information about columns
+     * @param {module:columns~ColumnGroup[]} columnGroups - column groups
+     * @param {RowInfo[]} rowInfo - information about rows
+     * @param {RowGroup[]} rowGroups - row groups
+     * @param {module:palettes~PaletteMapping} palettes - palettes used in the heatmap
+     * @param {module:legends~LegendInfo[]} legends - legends to be displayed
+     * @param {PositionOptions} positionArgs - position arguments
+     * @param {HeatmapOptions} options - heatmap options
+     * @param {SVGElement} svg - SVG element to render the heatmap in
+     */
     constructor(
         data,
         columnInfo,
@@ -218,6 +244,10 @@ class FunkyHeatmap {
         this.svg = svg;
     }
 
+    /**
+     * Determines if we render row groups and in which order.
+     * @protected
+     */
     calculateOptions() {
         this.renderGroups = false;
 
@@ -241,6 +271,10 @@ class FunkyHeatmap {
         }
     }
 
+    /**
+     * Renders the heatmap's striped background.
+     * @protected
+     */
     renderStripedRows() {
         const O = this.options;
         const P = this.positionArgs;
@@ -264,6 +298,10 @@ class FunkyHeatmap {
         });
     }
 
+    /**
+     * Renders data column by column.
+     * @protected
+     */
     renderData() {
         const O = this.options;
         const P = this.positionArgs;
@@ -419,6 +457,10 @@ class FunkyHeatmap {
         this.body.selectAll('.fh-row-group-name').raise();
     }
 
+    /**
+     * Renders column labels and groups.
+     * @protected
+     */
     renderHeader() {
         const O = this.options;
         const P = this.positionArgs;
@@ -586,6 +628,10 @@ class FunkyHeatmap {
         P.headerHeight = headerHeight + groupsHeight + P.colAnnotOffset;
     }
 
+    /**
+     * Renders the footer with legends.
+     * @protected
+     */
     renderLegends() {
         const O = this.options;
         const P = this.positionArgs;
@@ -870,12 +916,18 @@ class FunkyHeatmap {
         P.footerHeight = footerHeight + P.rowHeight;
     }
 
+    /**
+     * @protected
+     */
     hideTooltip() {
         if (this.tooltip) {
             this.tooltip.style("display", "none");
         }
     }
 
+    /**
+     * @protected
+     */
     showTooltip(mouse, text) {
         if (this.tooltip === undefined) {
             this.tooltip = d3.select("body")
@@ -903,6 +955,10 @@ class FunkyHeatmap {
             .style("visibility", "visible");
     }
 
+    /**
+     * Event handler for mouse move to trigger showing the tooltip.
+     * @protected
+     */
     onMouseMove(e) {
         if (e.target) {
             let el = d3.select(e.target);
@@ -919,6 +975,10 @@ class FunkyHeatmap {
         this.hideTooltip();
     }
 
+    /**
+     * Event handler for column click to sort the data and rerender the heatmap.
+     * @protected
+     */
     onColumnClick(e) {
         const el = d3.select(e.target);
         const elBox = el.node().getBBox();
@@ -946,6 +1006,10 @@ class FunkyHeatmap {
         this.indicateSort(column, elBox);
     }
 
+    /**
+     * Draws an arrow indicating the sort order near the corresponding column.
+     * @protected
+     */
     indicateSort(column, labelBox) {
         const O = this.options;
         const P = this.positionArgs;
@@ -973,6 +1037,10 @@ class FunkyHeatmap {
             .attr('y', y);
     }
 
+    /**
+     * Renders the heatmap, calling the necessary functions in order.
+     * @public
+     */
     render() {
         this.header = this.svg.append('g');
         this.body = this.svg.append('g');
@@ -1000,6 +1068,10 @@ class FunkyHeatmap {
         }
     }
 
+    /**
+     * Adds event listeners to the SVG element to show and hide the tooltip.
+     * @public
+     */
     listen() {
         this.svg.on('mousemove', this.onMouseMove.bind(this));
         this.svg.on('mouseleave', this.hideTooltip.bind(this));
