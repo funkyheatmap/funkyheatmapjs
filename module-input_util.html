@@ -140,7 +140,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-columns.html">columns</a></li><li><a href="module-geoms.html">geoms</a></li><li><a href="module-input_util.html">input_util</a></li><li><a href="module-legends.html">legends</a></li><li><a href="module-palettes.html">palettes</a></li></ul><h3>Classes</h3><ul><li><a href="FHeatmap.html">FHeatmap</a></li><li><a href="PositionArgs.html">PositionArgs</a></li><li><a href="module-columns.Column.html">Column</a></li></ul><h3>Global</h3><ul><li><a href="global.html#funkyheatmap">funkyheatmap</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-columns.html">columns</a></li><li><a href="module-geoms.html">geoms</a></li><li><a href="module-input_util.html">input_util</a></li><li><a href="module-legends.html">legends</a></li><li><a href="module-palettes.html">palettes</a></li></ul><h3>Classes</h3><ul><li><a href="FunkyHeatmap.html">FunkyHeatmap</a></li><li><a href="PositionArgs.html">PositionArgs</a></li><li><a href="module-columns.Column.html">Column</a></li></ul><h3>Global</h3><ul><li><a href="global.html#funkyheatmap">funkyheatmap</a></li></ul></div>
                 
             </nav>
         </div>
@@ -197,8 +197,8 @@
 
 
     
-    <h4 class="name" id=".convertDataframe">
-        <a class="href-link" href="#.convertDataframe">#</a>
+    <h4 class="name" id=".colToRowData">
+        <a class="href-link" href="#.colToRowData">#</a>
         
             
                 <span class='tag'>static</span>
@@ -206,7 +206,7 @@
         
         <span class="code-name">
             
-                convertDataframe<span class="signature">(data)</span><span class="type-signature"> &rarr; {Array.&lt;Object>}</span>
+                colToRowData<span class="signature">(data)</span><span class="type-signature"> &rarr; {<a href="global.html#RowData">RowData</a>}</span>
             
         </span>
     </h4>
@@ -215,7 +215,7 @@
     
     
     <div class="description">
-        <p>Converts object-based dataframe to array-based dataframe</p>
+        <p>Converts object-based dataframe to array-based dataframe.</p>
     </div>
     
 
@@ -259,7 +259,7 @@
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="global.html#ColumnData">ColumnData</a></code>
 
 
   
@@ -269,8 +269,8 @@
 
   
 
-  <td class="description last"><p>an object with each property representing
-dataframe column as array of equal length</p></td>
+  <td class="description last"><p>an object with each property representing dataframe column as an array.
+Columns are of the same length</p></td>
 </tr>
 
 
@@ -350,14 +350,14 @@ dataframe column as array of equal length</p></td>
 <div class="columns">
     
     <div class='param-desc column is-7'><ul>
-<li>array of objects with same properties</li>
+<li>array of objects with properties corresponding to columns</li>
 </ul></div>
     
     
     <div class='column is-5 has-text-left'>
         <label>Type: </label>
         
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type"><a href="global.html#RowData">RowData</a></code>
 
 
     </div>
@@ -377,8 +377,8 @@ dataframe column as array of equal length</p></td>
 
 
     
-    <h4 class="name" id=".convertToDataframe">
-        <a class="href-link" href="#.convertToDataframe">#</a>
+    <h4 class="name" id=".ensureRowData">
+        <a class="href-link" href="#.ensureRowData">#</a>
         
             
                 <span class='tag'>static</span>
@@ -386,7 +386,7 @@ dataframe column as array of equal length</p></td>
         
         <span class="code-name">
             
-                convertToDataframe<span class="signature">(data)</span><span class="type-signature"> &rarr; {Object}</span>
+                ensureRowData<span class="signature">(objects)</span><span class="type-signature"> &rarr; {Array.&lt;Object>}</span>
             
         </span>
     </h4>
@@ -395,7 +395,7 @@ dataframe column as array of equal length</p></td>
     
     
     <div class="description">
-        <p>Converts array-based dataframe to object-based dataframe</p>
+        <p>Convenience function to convert potential column-based dataframes to row-based dataframes.</p>
     </div>
     
 
@@ -433,7 +433,7 @@ dataframe column as array of equal length</p></td>
             
 <tr class="deep-level-0">
   
-      <td class="name"><code>data</code></td>
+      <td class="name"><code>objects</code></td>
   
 
   <td class="type">
@@ -449,8 +449,8 @@ dataframe column as array of equal length</p></td>
 
   
 
-  <td class="description last"><p>an object with each property representing
-dataframe column as array of equal length</p></td>
+  <td class="description last"><p>potential objects to convert to row-based dataframes. Only converts
+objects, skips arrays</p></td>
 </tr>
 
 
@@ -498,7 +498,7 @@ dataframe column as array of equal length</p></td>
         <p class="tag-source">
             <a href="input_util.js.html" class="button">View Source</a>
             <span>
-                <a href="input_util.js.html">input_util.js</a>, <a href="input_util.js.html#line40">line 40</a>
+                <a href="input_util.js.html">input_util.js</a>, <a href="input_util.js.html#line47">line 47</a>
             </span>
         </p>
     
@@ -530,14 +530,194 @@ dataframe column as array of equal length</p></td>
 <div class="columns">
     
     <div class='param-desc column is-7'><ul>
-<li>array of objects with same properties</li>
+<li>array of converted objects</li>
 </ul></div>
     
     
     <div class='column is-5 has-text-left'>
         <label>Type: </label>
         
-<code class="param-type">Object</code>
+<code class="param-type">Array.&lt;Object></code>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".rowToColData">
+        <a class="href-link" href="#.rowToColData">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                rowToColData<span class="signature">(data)</span><span class="type-signature"> &rarr; {<a href="global.html#ColumnData">ColumnData</a>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Converts array-based dataframe to object-based dataframe.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>data</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type"><a href="global.html#RowData">RowData</a></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>an array of objects with properties</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="input_util.js.html" class="button">View Source</a>
+            <span>
+                <a href="input_util.js.html">input_util.js</a>, <a href="input_util.js.html#line31">line 31</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><ul>
+<li>object with each property representing dataframe column as an array,
+values are preserved in the same order as in the input array</li>
+</ul></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<code class="param-type"><a href="global.html#ColumnData">ColumnData</a></code>
 
 
     </div>
