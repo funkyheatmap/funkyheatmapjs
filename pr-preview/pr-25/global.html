@@ -140,7 +140,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-columns.html">columns</a></li><li><a href="module-geoms.html">geoms</a></li><li><a href="module-input_util.html">input_util</a></li><li><a href="module-legends.html">legends</a></li><li><a href="module-palettes.html">palettes</a></li></ul><h3>Classes</h3><ul><li><a href="FHeatmap.html">FHeatmap</a></li><li><a href="PositionArgs.html">PositionArgs</a></li><li><a href="module-columns.Column.html">Column</a></li></ul><h3>Global</h3><ul><li><a href="global.html#funkyheatmap">funkyheatmap</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-columns.html">columns</a></li><li><a href="module-geoms.html">geoms</a></li><li><a href="module-input_util.html">input_util</a></li><li><a href="module-legends.html">legends</a></li><li><a href="module-palettes.html">palettes</a></li></ul><h3>Classes</h3><ul><li><a href="FunkyHeatmap.html">FunkyHeatmap</a></li><li><a href="PositionArgs.html">PositionArgs</a></li><li><a href="module-columns.Column.html">Column</a></li></ul><h3>Global</h3><ul><li><a href="global.html#funkyheatmap">funkyheatmap</a></li></ul></div>
                 
             </nav>
         </div>
@@ -251,7 +251,9 @@
     
     <div class="description">
         <p>The main entry point for the library. Takes data and various configuration options and returns
-an SVG element with the heatmap.</p>
+an SVG element with the heatmap. Internally uses <a href="FunkyHeatmap.html">FunkyHeatmap</a>. Creates a new SVG element
+and adds it to the DOM immediately, and renders the heatmap offscreen, to be able to calculate
+the dimensions of text and other elements.</p>
     </div>
     
 
@@ -278,6 +280,8 @@ an SVG element with the heatmap.</p>
             
 
             
+            <th>Default</th>
+            
 
             <th class="last">Description</th>
         </tr>
@@ -295,10 +299,10 @@ an SVG element with the heatmap.</p>
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="global.html#ColumnData">ColumnData</a></code>
 |
 
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type"><a href="global.html#RowData">RowData</a></code>
 
 
   
@@ -307,9 +311,12 @@ an SVG element with the heatmap.</p>
   
 
   
+      <td class="default">
+      
+      </td>
+  
 
-  <td class="description last"><p>data to plot, usually d3-fetch output.
-It should be an Array of Objects, each object has the same properties.</p></td>
+  <td class="description last"><p>data to plot, usually d3-fetch output</p></td>
 </tr>
 
 
@@ -324,10 +331,10 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="global.html#ColumnData">ColumnData</a></code>
 |
 
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;<a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>></code>
 
 
   
@@ -336,8 +343,14 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   
 
   
+      <td class="default">
+      
+      </td>
+  
 
-  <td class="description last"><p>information about how the columns should be displayed</p></td>
+  <td class="description last"><p>information about how the columns
+should be displayed. If not specified, all columns from <code>data</code> will be displayed.
+See <a href="module-columns.html#~ColumnInfo">ColumnInfo</a>, <a href="module-columns.Column.html">Column</a></p></td>
 </tr>
 
 
@@ -352,10 +365,10 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="global.html#ColumnData">ColumnData</a></code>
 |
 
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;<a href="global.html#RowInfo">RowInfo</a>></code>
 
 
   
@@ -364,8 +377,13 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   
 
   
+      <td class="default">
+      
+      </td>
+  
 
-  <td class="description last"><p>information about how the rows should be displayed</p></td>
+  <td class="description last"><p>information about how the rows should be grouped,
+see <a href="global.html#RowInfo">RowInfo</a></p></td>
 </tr>
 
 
@@ -380,10 +398,10 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="global.html#ColumnData">ColumnData</a></code>
 |
 
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;<a href="module-columns.html#~ColumnGroup">module:columns~ColumnGroup</a>></code>
 
 
   
@@ -392,8 +410,13 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   
 
   
+      <td class="default">
+      
+      </td>
+  
 
-  <td class="description last"><p>information about how to group columns</p></td>
+  <td class="description last"><p>information about how to group
+columns. See <a href="module-columns.html#~ColumnGroup">ColumnGroup</a></p></td>
 </tr>
 
 
@@ -408,10 +431,10 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="global.html#ColumnData">ColumnData</a></code>
 |
 
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;<a href="global.html#RowGroup">RowGroup</a>></code>
 
 
   
@@ -420,8 +443,13 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   
 
   
+      <td class="default">
+      
+      </td>
+  
 
-  <td class="description last"><p>information about how to group rows</p></td>
+  <td class="description last"><p>information about how to display row groups,
+see <a href="global.html#RowGroup">RowGroup</a></p></td>
 </tr>
 
 
@@ -436,7 +464,7 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="module-palettes.html#~PaletteMapping">module:palettes~PaletteMapping</a></code>
 
 
   
@@ -445,8 +473,13 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   
 
   
+      <td class="default">
+      
+      </td>
+  
 
-  <td class="description last"><p>mapping of names to palette colors, see <a href="module-palettes.html#.assignPalettes">module:palettes.assignPalettes</a></p></td>
+  <td class="description last"><p>mapping of names to palette colors,
+see <a href="module-palettes.html#~PaletteMapping">PaletteMapping</a></p></td>
 </tr>
 
 
@@ -461,10 +494,10 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="global.html#ColumnData">ColumnData</a></code>
 |
 
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;<a href="module-legends.html#~LegendInfo">module:legends~LegendInfo</a>></code>
 
 
   
@@ -473,8 +506,13 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   
 
   
+      <td class="default">
+      
+      </td>
+  
 
-  <td class="description last"><p>a list of legends to add to the plot</p></td>
+  <td class="description last"><p>a list of legends to add or configure
+for the plot. See <a href="module-legends.html#~LegendInfo">LegendInfo</a></p></td>
 </tr>
 
 
@@ -489,7 +527,7 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="global.html#PositionOptions">PositionOptions</a></code>
 
 
   
@@ -498,8 +536,12 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   
 
   
+      <td class="default">
+      
+      </td>
+  
 
-  <td class="description last"><p>positioning arguments, see <a href="PositionArgs.html">PositionArgs</a></p></td>
+  <td class="description last"><p>positioning options, see <a href="PositionArgs.html">PositionArgs</a></p></td>
 </tr>
 
 
@@ -514,7 +556,7 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   <td class="type">
   
       
-<code class="param-type">Object</code>
+<code class="param-type"><a href="global.html#HeatmapOptions">HeatmapOptions</a></code>
 
 
   
@@ -522,36 +564,14 @@ It should be an Array of Objects, each object has the same properties.</p></td>
 
   
 
+  
+      <td class="default">
+      
+      </td>
   
 
   <td class="description last"><p>options for the heatmap</p></td>
 </tr>
-
-  
-  
-    
-<tr class="deep-level-1">
-  
-      <td class="name"><code>fontSize</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">int</code>
-
-
-  
-  </td>
-
-  
-
-  
-
-  <td class="description last"><p>font size for all text</p></td>
-</tr>
-
-  
 
 
         
@@ -574,9 +594,15 @@ It should be an Array of Objects, each object has the same properties.</p></td>
   
 
   
+      <td class="default">
+      
+          true
+      
+      </td>
+  
 
   <td class="description last"><p>whether to apply min-max scaling to numerical
-columns. Defaults to true</p></td>
+columns</p></td>
 </tr>
 
 
@@ -624,7 +650,7 @@ columns. Defaults to true</p></td>
         <p class="tag-source">
             <a href="main.js.html" class="button">View Source</a>
             <span>
-                <a href="main.js.html">main.js</a>, <a href="main.js.html#line888">line 888</a>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line1110">line 1110</a>
             </span>
         </p>
     
@@ -698,17 +724,22 @@ columns. Defaults to true</p></td>
 
     </span>
 
-<h4 class="name" id="HeatmapOptions">
-    <a class="href-link" href="#HeatmapOptions">#</a>
+<h4 class="name" id="ColumnData">
+    <a class="href-link" href="#ColumnData">#</a>
     
     <span class="code-name">
-        HeatmapOptions
+        ColumnData
     </span>
     
 </h4>
 
 
 
+
+<div class="description">
+    <p>A dataframe in column-based format. Each property is a column, represented as an
+array. All columns are of the same length.</p>
+</div>
 
 
 
@@ -750,6 +781,1457 @@ columns. Defaults to true</p></td>
             <a href="main.js.html" class="button">View Source</a>
             <span>
                 <a href="main.js.html">main.js</a>, <a href="main.js.html#line11">line 11</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>{
+  'model': ['Toyota Corolla', 'Fiat 128', 'Honda Civic'],
+  'mpg': [33.9, 32.4, 30.4],
+  'weight': [1.835, 2.2, 1.615]
+}</code></pre>
+    
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Object</code>
+
+
+    </span>
+
+<h4 class="name" id="HeatmapOptions">
+    <a class="href-link" href="#HeatmapOptions">#</a>
+    
+    <span class="code-name">
+        HeatmapOptions
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+            <th>Default</th>
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colorByRank</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            false
+        
+        </td>
+    
+
+    <td class="description last"><p>whether to color elements by rank, default for all
+numeric columns</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>legendFontSize</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            12
+        
+        </td>
+    
+
+    <td class="description last"><p>font size for legend labels</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>labelGroupsAbc</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            false
+        
+        </td>
+    
+
+    <td class="description last"><p>whether to add alphabetical index to column groups
+labels</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>tooltipPrecision</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            4
+        
+        </td>
+    
+
+    <td class="description last"><p>number of decimal places for floats in the tooltip</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>theme</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">Object</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+        </td>
+    
+
+    <td class="description last"><p>theme options</p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>oddRowBackground</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            'white'
+        
+        </td>
+    
+
+    <td class="description last"><p>background color for odd rows</p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>evenRowBackground</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            '#eee'
+        
+        </td>
+    
+
+    <td class="description last"><p>background color for even rows</p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>textColor</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            'black'
+        
+        </td>
+    
+
+    <td class="description last"><p>color for text</p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>strokeColor</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            '#555'
+        
+        </td>
+    
+
+    <td class="description last"><p>edge color for geoms and guides</p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>headerColorL1</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            'white'
+        
+        </td>
+    
+
+    <td class="description last"><p>color for column groups of the first level</p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>headerColorRest</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            'black'
+        
+        </td>
+    
+
+    <td class="description last"><p>color for column groups if the other levels</p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>hoverColor</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            '#1385cb'
+        
+        </td>
+    
+
+    <td class="description last"><p>color for hovered text</p></td>
+</tr>
+
+  
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line49">line 49</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Object</code>
+
+
+    </span>
+
+<h4 class="name" id="PositionOptions">
+    <a class="href-link" href="#PositionOptions">#</a>
+    
+    <span class="code-name">
+        PositionOptions
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+            <th>Default</th>
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>rowHeight</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            24
+        
+        </td>
+    
+
+    <td class="description last"><p>height of a heatmap row, in pixels</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>rowSpace</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            0.1
+        
+        </td>
+    
+
+    <td class="description last"><p>space between rows, as a fraction of rowHeight. Twice the
+padding</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>rowBigspace</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            1
+        
+        </td>
+    
+
+    <td class="description last"><p>space between groups of rows, as a fraction of rowHeight</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colWidth</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            24
+        
+        </td>
+    
+
+    <td class="description last"><p>width of a heatmap column, in pixels. Deprecated, has no
+effect</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colSpace</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            0.1
+        
+        </td>
+    
+
+    <td class="description last"><p>space between columns, as a fraction of rowHeight. Twice the
+padding</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colBigspace</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            1
+        
+        </td>
+    
+
+    <td class="description last"><p>space between groups of columns, as a fraction of rowHeight</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colAnnotOffset</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            10
+        
+        </td>
+    
+
+    <td class="description last"><p>offset of column groups from column labels, in pixels</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colAnnotAngle</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            30
+        
+        </td>
+    
+
+    <td class="description last"><p>angle of column labels, in degrees</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>padding</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            5
+        
+        </td>
+    
+
+    <td class="description last"><p>padding for various uses</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>minGeomSize</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            0.25
+        
+        </td>
+    
+
+    <td class="description last"><p>minimum size of a heatmap element, in pixels</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>funkyMidpoint</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+        <td class="default">
+        
+            0.8
+        
+        </td>
+    
+
+    <td class="description last"><p>midpoint for funkyrect geom, see
+<a href="module-geoms.html#.funkyrect">funkyrect</a></p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line83">line 83</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;Object></code>
+
+
+    </span>
+
+<h4 class="name" id="RowData">
+    <a class="href-link" href="#RowData">#</a>
+    
+    <span class="code-name">
+        RowData
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>A dataframe in row-based format. Each element is an object with properties. All
+objects have the same properties.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line23">line 23</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>[
+  {model: 'Toyota Corolla', mpg: 33.9, weight: 1.835},
+  {model: 'Fiat 128', mpg: 32.4, weight: 2.2},
+  {model: 'Honda Civic', mpg: 30.4, weight: 1.615}
+]</code></pre>
+    
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Object</code>
+
+
+    </span>
+
+<h4 class="name" id="RowGroup">
+    <a class="href-link" href="#RowGroup">#</a>
+    
+    <span class="code-name">
+        RowGroup
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>ID and title for a row group for display. Rows within a group are visually apart
+and are sorted together.</p>
+</div>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>group</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>group id, must match the <code>group</code> property in <a href="global.html#RowInfo">RowInfo</a></p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>Group</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>group title for display. <em>Required</em> to enable row grouping</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line41">line 41</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Object</code>
+
+
+    </span>
+
+<h4 class="name" id="RowInfo">
+    <a class="href-link" href="#RowInfo">#</a>
+    
+    <span class="code-name">
+        RowInfo
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>Minimal metadata for each row in the heatmap. Used to group rows.</p>
+</div>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>group</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>group id for the row</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="main.js.html" class="button">View Source</a>
+            <span>
+                <a href="main.js.html">main.js</a>, <a href="main.js.html#line35">line 35</a>
             </span>
         </p>
     

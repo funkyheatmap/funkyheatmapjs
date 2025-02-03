@@ -1,1 +1,147 @@
-<!DOCTYPE html><html lang="en"><head><script type="module" src="scIB.a4fc521f.js"></script><title>A JavaScript project</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>.tutorial-body{-webkit-text-size-adjust:100%;margin:0;padding:10px 50px 50px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,Helvetica,sans-serif;line-height:1.2}</style></head><body class="tutorial-body"> <div id="app"></div> <script src="https://unpkg.com/d3@7.8.2/dist/d3.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script> <script type="module" src="scIB.68c8893f.js"></script> </body></html>
+<!DOCTYPE html><html lang="en"><head><script type="module" src="scIB.d3c0cc42.js"></script><title>A JavaScript project</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>.tutorial-body{-webkit-text-size-adjust:100%;margin:0;padding:10px 50px 50px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Helvetica Neue,Helvetica,sans-serif;line-height:1.2}.hidden{display:none}</style></head><body class="tutorial-body"> <div class="hidden tutorial-content"> <h3>Introduction</h3> <p>As in the <a href="https://funkyheatmap.github.io/funkyheatmap/articles/scIB.html">R version</a>, we will try to reproduce the results figure from <a href="https://theislab.github.io/scib-reproducibility/">single-cell integration benchmark (scIB)</a> paper (Luecken et al., <em>Nat Met</em>, 2022). The purpose of the paper was to systematically evaluate and compare the performance of methods for integrating single-cell RNA and ATAC sequencing datasets.</p> <p>This is the original figure:</p> <img src="https://github.com/theislab/scib-reproducibility/blob/main/data/img/best-RNA.png?raw=true" alt="scIB figure" style="width:100%;max-width:800px"> <h3>Data</h3> <p>We have included <a href="scib_summary.csv">scib_summary.csv</a> from <a href="https://github.com/funkyheatmap/funkyheatmap">funkyheatmap</a> <code>data</code>. Additionally, this data needs some preprocessing to be used in <em class="pname">funkyheatmapjs</em>.</p> <pre class="lang-javascript prettyprint source"><code>function prepareData(data) {
+    const SCALING_LABELS = {
+        'Unscaled': '–',
+        'Scaled': '+'
+    };
+    const FEATURES_LABELS = {
+        'Full': 'FULL',
+        'HVG': 'HVG'
+    };
+    const OUTPUT_IMG = {
+        'Features': 'matrix.png',
+        'Embedding': 'embedding.png',
+        'Graph': 'graph.png'
+    };
+
+    data.forEach((item, idx) => {
+        item.id = (idx + 1).toString();
+        item.scaling = SCALING_LABELS[item.scaling];
+        item.features = FEATURES_LABELS[item.features];
+        item.output_img = OUTPUT_IMG[item.output];
+    });
+
+    data = rowToColData(data);
+
+    const RANKS = {
+        'rank_pancreas': 'label_pancreas',
+        'rank_lung_atlas': 'label_lung_atlas',
+        'rank_immune_cell_hum': 'label_immune_cell_hum',
+        'rank_immune_cell_hum_mou': 'label_immune_cell_hum_mou',
+        'rank_mouse_brain': 'label_mouse_brain',
+        'rank_simulations_1_1': 'label_simulations_1_1',
+        'rank_simulations_2': 'label_simulations_2',
+        'package_rank': 'package_label',
+        'paper_rank': 'paper_label',
+        'time_rank': 'time_label',
+        'memory_rank': 'memory_label'
+    };
+
+    function labelTop3(vector) {
+        // d3.rank behaves like R `rank` with `ties.method = "min"`
+        let ranks = d3.rank(vector.map(i => +i));
+        return ranks.map(rank => {
+            if (rank < 3) {
+                return (rank + 1).toString();
+            }
+            return '';
+        })
+    }
+
+    for (let [rank, label] of Object.entries(RANKS)) {
+        data[label] = labelTop3(data[rank]);
+        const [min, max] = d3.extent(data[rank].map(i => +i));
+        data[rank] = data[rank].map(x => 1 - (x - min) / (max - min));
+    }
+
+    return data;
+}</code></pre> <p>Here we created an <code>id</code> column with the row numbers, along with replacing some text values and adding image paths for indication of method output. Additionally, we created text label columns for each of the ranking scores, which only have top 3 performers as strings, and empty otherwise.</p> <h3>Column information</h3> <p>Now we need to manually define how each column should be plotted, using {@link module:columns~ColumnInfo|ColumnInfo} options.</p> <pre class="lang-javascript prettyprint source"><code>const column_info = [
+    {id: "id", name: "Rank", geom: "text", group: "Method", options: {align: "right"}},
+    {id: "method", name: "Method", geom: "text", group: "Method"},
+    {id: "output_img", name: "Output", geom: "image", group: "Method", options: {width: 20}},
+    {id: "features", id_color: "features", name: "Features", geom: "text", group: "Method", options: {palette: "features"}},
+    {id: "scaling", name: "Scaling", geom: "text", group: "Method", options: {fontSize: 18, align: "center"}},
+    {id: "overall_pancreas", id_color: "rank_pancreas", name: "Pancreas", geom: "bar", group: "RNA", id_label: "label_pancreas", options: {palette: "blues", width: 1.5, draw_outline: false}},
+    {id: "overall_lung_atlas", id_color: "rank_lung_atlas", name: "Lung", geom: "bar", group: "RNA", id_label: "label_lung_atlas", options: {palette: "blues", width: 1.5, draw_outline: false}},
+    {id: "overall_immune_cell_hum", id_color: "rank_immune_cell_hum", name: "Immune (human)", geom: "bar", group: "RNA", id_label: "label_immune_cell_hum", options: {palette: "blues", width: 1.5, draw_outline: false}},
+    {id: "overall_immune_cell_hum_mou", id_color: "rank_immune_cell_hum_mou", name: "Immune (human/mouse)", geom: "bar", group: "RNA", id_label: "label_immune_cell_hum_mou", options: {palette: "blues", width: 1.5, draw_outline: false}},
+    {id: "overall_mouse_brain", id_color: "rank_mouse_brain", name: "Mouse brain", geom: "bar", group: "RNA", id_label: "label_mouse_brain", options: {palette: "blues", width: 1.5, draw_outline: false}},
+    {id: "overall_simulations_1_1", id_color: "rank_simulations_1_1", name: "Sim 1", geom: "bar", group: "Simulations", id_label: "label_simulations_1_1", options: {palette: "greens", width: 1.5, draw_outline: false}},
+    {id: "overall_simulations_2", id_color: "rank_simulations_2", name: "Sim 2", geom: "bar", group: "Simulations", id_label: "label_simulations_2", options: {palette: "greens", width: 1.5, draw_outline: false}},
+    {id: "package_score", id_color: "package_rank", name: "Package", geom: "bar", group: "Usability", id_label: "package_label", options: {palette: "oranges", width: 1.5, draw_outline: false}},
+    {id: "paper_score", id_color: "paper_rank", name: "Paper", geom: "bar", group: "Usability", id_label: "paper_label", options: {palette: "oranges", width: 1.5, draw_outline: false}},
+    {id: "time_score", id_color: "time_rank", name: "Time", geom: "bar", group: "Scalability", id_label: "time_label", options: {palette: "greys", width: 1.5, draw_outline: false}},
+    {id: "memory_score", id_color: "memory_rank", name: "Memory", geom: "bar", group: "Scalability", id_label: "memory_label", options: {palette: "greys", width: 1.5, draw_outline: false}}
+];</code></pre> <p>As in the [previous tutorial]{@tutorial full}, here we define how each column should be visualized, with which color scheme, their names and groupings, and some additional options. For the ranking columns, we use <code>{@link module:geoms.bar|bar}</code> geom with <code>width: 1.5, draw_outline: false</code> options. Importantly, for these columns we use <code>id_color</code> option to indicate a different data column to get the color mapping from (coloring by ranking), and <code>id_label</code> to indicate a separate data column to get the overlaying text from. This uses our prepared column with only top 3 methods labeled.</p> <p></p> <pre class="lang-javascript prettyprint source"><code>const column_groups = [
+    {level1: "Method", group: "Method", palette: "black"},
+    {level1: "RNA", group: "RNA", palette: "blues"},
+    {level1: "Simulations", group: "Simulations", palette: "greens"},
+    {level1: "Usability", group: "Usability", palette: "oranges"},
+    {level1: "Scalability", group: "Scalability", palette: "greys"}
+];</code></pre> <p>For column groups we only define their titles and palettes to use.</p> <h3>Palettes and legends</h3> <pre class="lang-javascript prettyprint source"><code>const palettes = {
+    features: {colors: ["#4c4c4c", "#006300"], names: ['FULL', 'HVG']},
+    blues: "Blues",
+    greens: "Greens",
+    oranges: ["#7F2704", "#A63603", "#D94801", "#F16913", "#FD8D3C", "#FDAE6B", "#FDD0A2", "#FEE6CE", "#FFF5EB"],
+    greys: "Greys",
+    black: ["black", "black"]
+};</code></pre> <p>Here we define the color palettes, with the <code>features</code> palette being a {@link module:palettes~CustomPalette|CustomPalette} with colors and names which would provide mapping for the corresponding strings. The rest of the palettes either map to a predefined panel (see {@link module:palettes~defaultPalettes|defaultPalettes}), or simply list colors.</p> <pre class="lang-javascript prettyprint source"><code>const legends = [
+    {
+        title: "Output",
+        geom: "image",
+        size: 20,
+        values: ["matrix.png", "embedding.png", "graph.png"],
+        labels: ["Genes", "Embedding", "Graph"],
+    },
+    {
+        title: "Scaling",
+        geom: "text",
+        values: ["Scaled", "Unscaled"],
+        labels: ["+", "–"],
+    },
+    {
+        title: "RNA rank",
+        palette: "blues",
+        geom: "rect",
+        labels: ["20", "", "10", "", "1"],
+        size: [1, 1, 1, 1, 1]
+    },
+    {
+        title: "Simulations rank",
+        palette: "greens",
+        geom: "rect",
+        labels: ["20", "", "10", "", "1"],
+        size: [1, 1, 1, 1, 1]
+    },
+    {
+        title: "Usability rank",
+        palette: "oranges",
+        geom: "rect",
+        labels: ["20", "", "10", "", "1"],
+        size: [1, 1, 1, 1, 1]
+    },
+    {
+        title: "Scalability rank",
+        palette: "greys",
+        geom: "rect",
+        labels: ["20", "", "10", "", "1"],
+        size: [1, 1, 1, 1, 1]
+    }
+];</code></pre> <p>For each palette used in the <code>column_info</code>, we provide configuration for how to display the legend, with additional legends for Output column (geom <code>{@link module:geoms.image|image}</code>) and Scaling column (geom <code>{@link module:geoms.text|text}</code>). Ranking legends use simple rectangles to display progression of colors, with predefined labels.</p> <h3>Rendering</h3> <pre class="lang-javascript prettyprint source"><code>d3.csv('scib_summary.csv').then((data) => {
+    data = prepareData(data);
+
+    d3.select("#app").node().appendChild(funkyheatmap(
+        data,
+        column_info,
+        undefined, // row info
+        column_groups,
+        undefined, // row groups
+        palettes,
+        legends, // legends
+        {rowHeight: 28}, // position options
+        { // heatmap options
+            labelGroupsAbc: false,
+            colorByRank: false
+        },
+        false // scaleColumn
+    ));
+});</code></pre> <p>We disable <code>scaleColumn</code> option, because we have preprocessed the data to the <code>[0, 1]</code> range manually, and disable <code>colorByRank</code> while providing ranks as separate columns for colors. No need to specify <code>row_info</code> or <code>row_groups</code>. Full details are in the documentation: {@link funkyheatmap}. For loading the scripts and the surrounding HTML, please see the [basic tutorial]{@tutorial simple}.</p> <h3>Result</h3> </div> <div id="app"></div> <script src="https://unpkg.com/d3@7.8.2/dist/d3.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script> <script type="module" src="scIB.79f7d164.js"></script> </body></html>

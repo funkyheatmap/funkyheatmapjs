@@ -140,7 +140,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-columns.html">columns</a></li><li><a href="module-geoms.html">geoms</a></li><li><a href="module-input_util.html">input_util</a></li><li><a href="module-legends.html">legends</a></li><li><a href="module-palettes.html">palettes</a></li></ul><h3>Classes</h3><ul><li><a href="FHeatmap.html">FHeatmap</a></li><li><a href="PositionArgs.html">PositionArgs</a></li><li><a href="module-columns.Column.html">Column</a></li></ul><h3>Global</h3><ul><li><a href="global.html#funkyheatmap">funkyheatmap</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-columns.html">columns</a></li><li><a href="module-geoms.html">geoms</a></li><li><a href="module-input_util.html">input_util</a></li><li><a href="module-legends.html">legends</a></li><li><a href="module-palettes.html">palettes</a></li></ul><h3>Classes</h3><ul><li><a href="FunkyHeatmap.html">FunkyHeatmap</a></li><li><a href="PositionArgs.html">PositionArgs</a></li><li><a href="module-columns.Column.html">Column</a></li></ul><h3>Global</h3><ul><li><a href="global.html#funkyheatmap">funkyheatmap</a></li></ul></div>
                 
             </nav>
         </div>
@@ -213,7 +213,7 @@
         
         <span class="code-name">
             
-                buildColumnGroups<span class="signature">(columnGroups, columnInfo)</span><span class="type-signature"> &rarr; {Array.&lt;Object>}</span>
+                buildColumnGroups<span class="signature">(columnGroups, columnInfo)</span><span class="type-signature"> &rarr; {Array.&lt;ColumnGroup>}</span>
             
         </span>
     </h4>
@@ -266,7 +266,7 @@
   <td class="type">
   
       
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;ColumnGroup></code>
 
 
   
@@ -276,7 +276,8 @@
 
   
 
-  <td class="description last"><p>information about column groups, empty array if not specified</p></td>
+  <td class="description last"><p>information about column groups, empty array if not
+specified</p></td>
 </tr>
 
 
@@ -291,7 +292,7 @@
   <td class="type">
   
       
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;Column></code>
 
 
   
@@ -349,7 +350,7 @@
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line128">line 128</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line347">line 347</a>
             </span>
         </p>
     
@@ -388,7 +389,7 @@
     <div class='column is-5 has-text-left'>
         <label>Type: </label>
         
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;ColumnGroup></code>
 
 
     </div>
@@ -408,8 +409,8 @@
 
 
     
-    <h4 class="name" id=".buildColumnInfo">
-        <a class="href-link" href="#.buildColumnInfo">#</a>
+    <h4 class="name" id=".createColumns">
+        <a class="href-link" href="#.createColumns">#</a>
         
             
                 <span class='tag'>static</span>
@@ -417,7 +418,7 @@
         
         <span class="code-name">
             
-                buildColumnInfo<span class="signature">(data, columns, columnInfo, scaleColumn, colorByRank)</span><span class="type-signature"></span>
+                createColumns<span class="signature">(data, columnInfo, scaleColumn, colorByRank)</span><span class="type-signature"></span>
             
         </span>
     </h4>
@@ -470,7 +471,7 @@
   <td class="type">
   
       
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type"><a href="global.html#RowData">RowData</a></code>
 
 
   
@@ -489,38 +490,13 @@
             
 <tr class="deep-level-0">
   
-      <td class="name"><code>columns</code></td>
-  
-
-  <td class="type">
-  
-      
-<code class="param-type">Array.&lt;string></code>
-
-
-  
-  </td>
-
-  
-
-  
-
-  <td class="description last"><p>names of the columns</p></td>
-</tr>
-
-
-        
-
-            
-<tr class="deep-level-0">
-  
       <td class="name"><code>columnInfo</code></td>
   
 
   <td class="type">
   
       
-<code class="param-type">Array.&lt;Object></code>
+<code class="param-type">Array.&lt;<a href="module-columns.html#~ColumnInfo">module:columns~ColumnInfo</a>></code>
 
 
   
@@ -530,7 +506,8 @@
 
   
 
-  <td class="description last"><p>properties of the columns for drawing, which we will modify</p></td>
+  <td class="description last"><p>properties of the columns for drawing, which
+will by modified in place</p></td>
 </tr>
 
 
@@ -555,7 +532,7 @@
 
   
 
-  <td class="description last"><p>whether to min-max scale data per column</p></td>
+  <td class="description last"><p>whether to min-max scale data for column, default for all columns</p></td>
 </tr>
 
 
@@ -580,7 +557,8 @@
 
   
 
-  <td class="description last"><p>whether to color by rank per column instead of by value</p></td>
+  <td class="description last"><p>whether to color by rank instead of by value, default for all
+columns</p></td>
 </tr>
 
 
@@ -628,7 +606,7 @@
         <p class="tag-source">
             <a href="columns.js.html" class="button">View Source</a>
             <span>
-                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line110">line 110</a>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line311">line 311</a>
             </span>
         </p>
     
@@ -656,10 +634,1003 @@
 
 </div>
             
+                <div class="member">
+
+
+    
+    <h4 class="name" id="~isNumeric">
+        <a class="href-link" href="#~isNumeric">#</a>
+        
+            
+                <span class='tag'>inner</span>
+            
+        
+        <span class="code-name">
+            
+                isNumeric<span class="signature">(str)</span><span class="type-signature"> &rarr; {boolean}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Test if a value is a number, including strings that can be coerced to a number.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>str</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">*</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>value to test</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="columns.js.html" class="button">View Source</a>
+            <span>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line396">line 396</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><ul>
+<li>if the value is a number</li>
+</ul></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<code class="param-type">boolean</code>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
             </div>
         </div>
     
 
+    
+        <div class='vertical-section'>
+            <h1>Type Definitions</h1>
+            <div class="members">
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Object</code>
+
+
+    </span>
+
+<h4 class="name" id="~ColumnGroup">
+    <a class="href-link" href="#~ColumnGroup">#</a>
+    
+    <span class="code-name">
+        ColumnGroup
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>Information about a group of columns for display. Creating multiple levels of groups
+is possible by specifying <code>level1</code>, <code>level2</code>, etc. with increasing numbers. The columns are not
+sorted by <em class="pname">funkyheatmapjs</em>, so the columns should have the groups on the
+adjacent positions.</p>
+</div>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>group</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the group, must correspond to the <code>group</code> field in
+<a href="module-columns.html#~ColumnInfo">ColumnInfo</a></p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>level1</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the first level of the grouping. If not specified, derived
+from the <code>group</code> field</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>level2</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the second level of the grouping, if necessary</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>level…</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>further levels of the grouping are possible</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>palette</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the palette to use for coloring the background of the group,
+the middle of the palette is used</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="columns.js.html" class="button">View Source</a>
+            <span>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line39">line 39</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Object</code>
+
+
+    </span>
+
+<h4 class="name" id="~ColumnInfo">
+    <a class="href-link" href="#~ColumnInfo">#</a>
+    
+    <span class="code-name">
+        ColumnInfo
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>Information about a dataframe column and how to display it.</p>
+</div>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>id</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>column id in the dataset. <em>Required</em></p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>name</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the column to display above the column</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>group</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the group the column belongs to</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>geom</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>type of visualization to display the column data. Default is
+<code>funkyrect</code> for numerical data, and <code>text</code> for categorical data. See <a href="module-geoms.html">geoms</a>
+for available options</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>palette</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>name of the palette to use for coloring the column. Must be defined
+in <a href="module-palettes.html#~PaletteMapping">PaletteMapping</a> or be a default palette
+(see <a href="module-palettes.html#~defaultPalettes">defaultPalettes</a>)</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>id_size</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>id of the column that will determine the size for display</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>id_color</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>id of the column that will determine the color for display</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>colorByRank</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>whether to color by rank per column instead of by value</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>scaleColumn</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>whether to scale the column data to <code>[0, 1]</code></p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>label</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>id of the column that has the values to display as labels over
+the geoms</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>id_label</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>synonym for <code>label</code></p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>id_hover_text</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>id of the column that has the values to display as hover text</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>width</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>width of the column, only used for <code>bar</code> and <code>image</code> geoms</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>options</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">Object</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>additional options for the column</p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>palette</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">string</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>synonym for <code>palette</code></p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>width</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>synonym for <code>width</code></p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>drawGuide</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>whether to draw a guide at maximum for the bar geom
+column</p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>draw_outline</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">boolean</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>synonym for <code>options.drawGuide</code></p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>align</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">'left'</code>
+|
+
+<code class="param-type">'center'</code>
+|
+
+<code class="param-type">'right'</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>alignment of the text for <code>text</code> geom</p></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>fontSize</code></td>
+    
+
+    <td class="type">
+    
+        
+<code class="param-type">number</code>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>font size for the <code>text</code> geom</p></td>
+</tr>
+
+  
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="columns.js.html" class="button">View Source</a>
+            <span>
+                <a href="columns.js.html">columns.js</a>, <a href="columns.js.html#line8">line 8</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
     
 
     
