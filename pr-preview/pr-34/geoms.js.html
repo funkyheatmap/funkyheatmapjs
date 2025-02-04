@@ -1,0 +1,433 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FunkyHeatmap.js geoms.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="styles/tomorrow-night.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="static/main.css">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+    <script src='static/main.js'></script>
+  
+</head>
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+             
+                <a class="image" href="index.html">
+                    <img src="https://raw.githubusercontent.com/funkyheatmap/logo/refs/heads/main/src/funkyheatmap_edited.svg" alt="logo">
+                </a>
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">FunkyHeatmap.js</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                <div class="dropdown is-hoverable is-right">
+                    <a class="dropdown-trigger link">
+                        Tutorials
+                        <i class="fas fa-chevron-down fa-xs"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-content">
+                        
+                            <a class="dropdown-item" href="tutorial-simple.html">
+                                Basic usage
+                            </a>
+                        
+                            <a class="dropdown-item" href="tutorial-full.html">
+                                Customizing the heatmap
+                            </a>
+                        
+                            <a class="dropdown-item" href="tutorial-scIB.html">
+                                Reproducing scIB figure
+                            </a>
+                        
+                        </div>
+                    </div>
+                </div>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/funkyheatmap/funkyheatmapjs"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/funkyheatmap/funkyheatmapjs/blob/main/CHANGELOG.md"
+                        >
+                            Changelog
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://www.npmjs.com/package/funkyheatmapjs"
+                        >
+                            NPM package
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://funkyheatmap.github.io/funkyheatmap"
+                        >
+                            R version
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://funkyheatmap.github.io/funkyheatmappy"
+                        >
+                            Python version
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-columns.html">columns</a></li><li><a href="module-geoms.html">geoms</a></li><li><a href="module-input_util.html">input_util</a></li><li><a href="module-legends.html">legends</a></li><li><a href="module-palettes.html">palettes</a></li></ul><h3>Classes</h3><ul><li><a href="FunkyHeatmap.html">FunkyHeatmap</a></li><li><a href="PositionArgs.html">PositionArgs</a></li><li><a href="module-columns.Column.html">Column</a></li></ul><h3>Global</h3><ul><li><a href="global.html#funkyheatmap">funkyheatmap</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                
+                    <header class="page-title">
+                        <p>Source</p>
+                        <h1>geoms.js</h1>
+                    </header>
+                
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module
+ * @description Module with available visualization functions (called `geoms`) to display the data.
+ * The following table summarizes available geoms for different data types:
+ * | Data type | Name | Link | Size mapping | Color mapping |
+ * | --- | --- | --- | --- | --- |
+ * | `number` | `funkyrect` | {@link module:geoms.funkyrect} | ✅ | ✅ |
+ * | `number` | `circle` | {@link module:geoms.circle} | ✅ | ✅ |
+ * | `number` | `bar` | {@link module:geoms.bar} | ✅ | ✅ |
+ * | `number` | `rect` | {@link module:geoms.rect} | 🚫 | ✅ |
+ * | `string` | `text` | {@link module:geoms.text} | 🚫 | ✅ |
+ * | `number[]` | `pie` | {@link module:geoms.pie} | 🚫 | ✅ |
+ * | `image` | `image` | {@link module:geoms.image} | 🚫 | 🚫 |
+ *
+ * Each geom is a function with the signature of {@link module:geoms~geom|geom}.
+ */
+
+import * as d3 from 'd3';
+
+/**
+ * @name geom
+ * @constant
+ * @function
+ * @abstract
+ * @description Abstract virtual function representing a geom.
+ *
+ * @param {number|number[]|string} value - data value to be visualized, of the above types
+ * @param {number|string} colorValue - value to be used for color mapping, if applicable
+ * @param {module:columns.Column} column - column object
+ * @param {HeatmapOptions} O - heatmap options
+ * @param {PositionArgs} P - position arguments
+ * @returns {SVGElement} - SVG element representing the geom
+ */
+
+export const GEOMS = {
+    /**
+     * @memberof module:geoms
+     * @see {@link module:geoms~geom|geom} for function signature
+     * @description Text geom. Renders text string. Configured with `fontSize` and `align` options.
+     *   Default fontSize is inherited from {@link HeatmapOptions}. Default align is `left`.
+     *   Color is mapped from palette by text value, if palette is defined (see
+     *   {@link module:palettes~CustomPalette|CustomPalette}).
+     */
+    text: (value, _, column, O, P) => {
+        let fill = O.theme.textColor;
+        if (column.palette &amp;&amp; column.palette !== 'none') {
+            fill = column.palette(value);
+        }
+        let align = 'start', x = 0;
+        if (column.options.align === 'center' || column.options.align === 'middle') {
+            align = 'middle';
+            x = P.rowHeight / 2;
+        }
+        if (column.options.align === 'right' || column.options.align === 'end') {
+            align = 'end';
+            x = P.rowHeight - P.padding;
+        }
+        const el = d3.create('svg:text')
+            .classed('fh-geom', true)
+            .attr('dominant-baseline', 'middle')
+            .attr('y', P.rowHeight / 2)
+            .attr('x', x)
+            .attr('text-anchor', align)
+            .style('fill', fill)
+            .text(value);
+        if (O.fontSize) {
+            el.attr('font-size', O.fontSize);
+        }
+        if (column.options.fontSize) {
+            el.attr('font-size', column.options.fontSize);
+        }
+        return el;
+    },
+
+    /**
+     * @memberof module:geoms
+     * @see {@link module:geoms~geom|geom} for function signature
+     * @description Bar geom. Renders a bar with width proportional to value. Maximum bar width is
+     *   configured with `width` property ({@link module:columns~ColumnInfo|ColumnInfo}). If value
+     *   is 0, minimal bar width is set from {@link PositionArgs} `minGeomSize`.
+     */
+    bar: (value, colorValue, column, O, P) => {
+        const fill = column.palette(colorValue);
+        value = column.scale(value);
+        let width = value * column.width * P.geomSize;
+        if (width === 0) {
+            width = P.minGeomSize;
+        }
+        return d3.create('svg:rect')
+            .classed('fh-geom', true)
+            .attr('x', P.geomPaddingX)
+            .attr('y', P.geomPadding)
+            .attr('width', width.toFixed(2))
+            .attr('height', P.geomSize)
+            .style('stroke', O.theme.strokeColor)
+            .style('stroke-width', 1)
+            .style('fill', fill);
+    },
+
+    /**
+     * @memberof module:geoms
+     * @see {@link module:geoms~geom|geom} for function signature
+     * @description Circle geom. Renders a circle with radius proportional to value. If value is 0,
+     *   minimal circle radius is set from {@link PositionArgs} `minGeomSize`.
+     */
+    circle: (value, colorValue, column, O, P) => {
+        const fill = column.palette(colorValue);
+        value = column.scale(value);
+        let radius = value * P.geomSize / 2;
+        if (radius === 0) {
+            radius = P.minGeomSize;
+        }
+        return d3.create('svg:circle')
+            .classed('fh-geom', true)
+            .style('stroke', O.theme.strokeColor)
+            .style('stroke-width', 1)
+            .style('fill', fill)
+            .attr('cx', P.rowHeight / 2)
+            .attr('cy', P.rowHeight / 2)
+            .attr('r', radius.toFixed(2));
+    },
+
+    /**
+     * @memberof module:geoms
+     * @see {@link module:geoms~geom|geom} for function signature
+     * @description Square geom. Renders a square of standard size, but color is mapped from
+     *   palette.
+     */
+    rect: (value, colorValue, column, O, P) => {
+        const fill = column.palette(colorValue);
+        value = column.scale(value);
+        return d3.create('svg:rect')
+            .classed('fh-geom', true)
+            .style('stroke', O.theme.strokeColor)
+            .style('stroke-width', 1)
+            .style('fill', fill)
+            .attr('x', P.geomPaddingX)
+            .attr('y', P.geomPadding)
+            .attr('width', P.geomSize)
+            .attr('height', P.geomSize);
+    },
+
+    /**
+     * @memberof module:geoms
+     * @see {@link module:geoms~geom|geom} for function signature
+     * @description Funkyrect geom. Renders a circle that grows into a square with rounded corners.
+     *   Value below {@link PositionArgs} `funkyMidpoint` is rendered as a circle, above as
+     *   a square, with corner radius decreasing as value grows.
+     */
+    funkyrect: (value, colorValue, column, O, P) => {
+        let scaled = column.scale(value);
+        const fill = column.palette(colorValue);
+        if (scaled &lt; P.funkyMidpoint) {
+            // transform value to a 0.0 .. 0.5 range
+            value = column.scale.copy()
+                .range([0, 0.5])
+                .domain([column.min, column.min + column.range * P.funkyMidpoint])(value);
+            let radius = (value * 0.9 + 0.1) * P.geomSize - P.geomPadding; // 0.5 for stroke
+            if (radius &lt;= 0) {
+                radius = P.minGeomSize;
+            }
+            return d3.create('svg:circle')
+                .classed('fh-geom', true)
+                .style('stroke', O.theme.strokeColor)
+                .style('stroke-width', 1)
+                .style('fill', fill)
+                .attr('cx', P.rowHeight / 2)
+                .attr('cy', P.rowHeight / 2)
+                .attr('r', radius.toFixed(2));
+        }
+        // transform value to a 0.5 .. 1.0 range
+        value = column.scale
+            .copy()
+            .range([0.5, 1])
+            .domain([column.min + column.range * P.funkyMidpoint, column.max])(value);
+        const cornerSize = (0.9 - 0.8 * value) * P.geomSize;
+        return d3.create('svg:rect')
+            .classed('fh-geom', true)
+            .style('stroke', O.theme.strokeColor)
+            .style('stroke-width', 1)
+            .style('fill', fill)
+            .attr('x', P.geomPaddingX)
+            .attr('y', P.geomPadding)
+            .attr('width', P.geomSize)
+            .attr('height', P.geomSize)
+            .attr('rx', cornerSize.toFixed(2))
+            .attr('ry', cornerSize.toFixed(2));
+    },
+
+    /**
+     * @memberof module:geoms
+     * @see {@link module:geoms~geom|geom} for function signature
+     * @description Pie chart geom. Renders a pie chart with slices proportional to values.
+     */
+    pie: (value, _, column, O, P) => {
+        let nonZero = 0;
+        let nonZeroIdx = 0;
+        value.forEach((x, i) => {
+            if (x > 0) {
+                nonZero += 1;
+                nonZeroIdx = i;
+            }
+        });
+        if (nonZero === 1) {
+            const fill = column.palette(nonZeroIdx);
+            return d3.create('svg:circle')
+                .classed('fh-geom', true)
+                .style('stroke', O.theme.strokeColor)
+                .style('stroke-width', 1)
+                .style('fill', fill)
+                .attr('cx', P.rowHeight / 2)
+                .attr('cy', P.rowHeight / 2)
+                .attr('r', P.geomSize / 2);
+        }
+
+        const arcs = d3.pie().sortValues(null)(value);
+        const g = d3.create('svg:g');
+        g.classed('fh-geom', true);
+        g.selectAll('arcs')
+            .data(arcs)
+            .enter()
+            .append('path')
+                .attr('d', d3.arc().innerRadius(0).outerRadius(P.geomSize / 2))
+                .attr('fill', (_, i) => {
+                    return column.palette(i);
+                })
+                .style('stroke', O.theme.strokeColor)
+                .style('stroke-width', 1)
+                .attr('transform', `translate(${P.rowHeight / 2}, ${P.rowHeight / 2})`);
+        return g;
+    },
+
+    /**
+     * @memberof module:geoms
+     * @see {@link module:geoms~geom|geom} for function signature
+     * @description Image geom. Renders an image with standard height and width specified in column
+     *   options (see {@link module:columns~ColumnInfo|ColumnInfo} `width`).
+     */
+    image: function(value, _, column, O, P) {
+        return d3.create('svg:image')
+            .classed('fh-geom', true)
+            .attr('y', P.geomPadding)
+            .attr('href', value)
+            .attr('height', P.geomSize)
+            .attr('width', column.width)
+            .attr('preserveAspectRatio', 'xMidYMid');
+    }
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+
+</body>
+</html>

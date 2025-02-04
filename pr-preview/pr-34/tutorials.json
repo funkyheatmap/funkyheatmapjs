@@ -1,0 +1,11 @@
+{
+    "simple": {
+        "title": "Basic usage"
+    },
+    "full": {
+        "title": "Customizing the heatmap"
+    },
+    "scIB": {
+        "title": "Reproducing scIB figure"
+    }
+}
