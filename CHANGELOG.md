@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1](https://github.com/funkyheatmap/funkyheatmapjs/compare/v0.3.0...v0.3.1) (2025-02-04)
+
+
+### Bug Fixes
+
+* safari hover text-decoration on headers ([fb35b23](https://github.com/funkyheatmap/funkyheatmapjs/commit/fb35b236cecb13d844a614a562bd7619609981db))
+* safari Iterable map is undefined [#33](https://github.com/funkyheatmap/funkyheatmapjs/issues/33) ([dd1264c](https://github.com/funkyheatmap/funkyheatmapjs/commit/dd1264c3e20258515d9e0d448b3b8071ff707ba1))
+
 ## 0.3.0 (2025-02-03)
 
 
