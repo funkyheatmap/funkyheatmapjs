@@ -574,7 +574,7 @@ class FunkyHeatmap {
             const el = labels.append('g')
                 .attr('transform', `rotate(${-P.colAnnotAngle})`)
                 .classed(`column-${i}`, true);
-            el.append('text')
+            el.append('svg:text')
                 .attr('x', 0)
                 .attr('y', 0)
                 .attr('font-size', O.fontSize)
@@ -583,11 +583,18 @@ class FunkyHeatmap {
                 .datum(column)
                 .on('click', this.onColumnClick.bind(this))
                 .on('mouseenter', () => {
-                    el.style('text-decoration', 'underline dashed')
-                        .style('fill', O.theme.hoverColor)
+                    el.select('text')
+                        .style('text-decoration', 'underline')
+                        .style('text-decoration-style', 'dashed')
+                        .style('text-decoration-color', O.theme.hoverColor)
+                        .style('fill', O.theme.hoverColor);
                 })
                 .on('mouseleave', () => {
-                    el.style('text-decoration', '').style('fill', O.theme.textColor)
+                    el.select('text')
+                        .style('text-decoration', '')
+                        .style('text-decoration-style', '')
+                        .style('text-decoration-color', '')
+                        .style('fill', '');
                 })
                 .text(column.name);
             const nativeWidth = el.node().getBBox().width;
