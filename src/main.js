@@ -469,8 +469,9 @@ class FunkyHeatmap {
         let bodyWidth = 0;
         let nonZeroRotate = false;
         const groups = this.header.append('g');
+        const columnGroups = Array.from(this.columnGroups.values());
 
-        const nLevels = Math.max(...this.columnGroups.values().map(group => {
+        const nLevels = Math.max(...columnGroups.map(group => {
             let i = 1;
             while (true) {
                 if (group[`level${i}`] === undefined) {
